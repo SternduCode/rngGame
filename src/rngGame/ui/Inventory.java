@@ -9,7 +9,6 @@ import javafx.scene.layout.Pane;
 import rngGame.entity.*;
 import rngGame.main.*;
 import rngGame.stats.*;
-import rngGame.tile.ImgUtil;
 
 
 // TODO: Auto-generated Javadoc
@@ -742,7 +741,7 @@ public class Inventory extends Pane {
 
 						ImageView hpView3, atkView3, resView3, dgcView3, elementView3, nameView;
 						//Demon d			= (Demon) itemTestArray[_j / 62 * 10 + _i / 62];
-						Image itemhpText = Text.getInstance().convertText("HP:" + d.getCurrenthp()+"/"+d.getMaxHp(), 48);
+						Image itemhpText = Text.getInstance().convertText("HP:" + d.getCurrentHp()+"/"+d.getMaxHp(), 48);
 						itemhpText = ImgUtil.resizeImage(
 								itemhpText, (int) itemhpText.getWidth(), (int) itemhpText.getHeight(),
 								(int) (itemhpText.getWidth() * gamepanel.getVgp().getScalingFactorX()),
@@ -818,7 +817,7 @@ public class Inventory extends Pane {
 							hpView3.setVisible(false);
 
 							Button ctbi1, ctbi2, ctbi3, ctbi4, ctbi5, ctbi6;
-
+							//TODO tiles add water
 							ctbi1 = new Button(gamepanel.getVgp());
 							ctbi2 = new Button(gamepanel.getVgp());
 							ctbi3 = new Button(gamepanel.getVgp());
@@ -1478,7 +1477,7 @@ public class Inventory extends Pane {
 		getCurrentDemon().getDemon().setLayoutX(180 * gamepanel.getVgp().getScalingFactorX());
 		getCurrentDemon().getDemon().setLayoutY(50 * gamepanel.getVgp().getScalingFactorX());
 
-		Image hpText1 = Text.getInstance().convertText("HP:" + getCurrentDemon().getCurrenthp()+"/"+getCurrentDemon().getMaxHp(), 48);
+		Image hpText1 = Text.getInstance().convertText("HP:" + getCurrentDemon().getCurrentHp()+"/"+getCurrentDemon().getMaxHp(), 48);
 		hpText1 = ImgUtil.resizeImage(
 				hpText1, (int) hpText1.getWidth(), (int) hpText1.getHeight(),
 				(int) (hpText1.getWidth() * gamepanel.getVgp().getScalingFactorX()),

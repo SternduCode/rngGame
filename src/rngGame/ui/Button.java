@@ -1,10 +1,7 @@
 package rngGame.ui;
 
-import java.util.function.Consumer;
-
-import javafx.event.*;
+import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
-import rngGame.visual.*;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -12,48 +9,57 @@ import rngGame.visual.*;
  */
 public class Button extends AnimatedImage {
 
+	/** The on released. */
+	private EventHandler<MouseEvent> onPressed, onReleased;
+
 	/**
 	 * Instantiates a new button.
 	 *
-	 * @param gp the gp
+	 * @param scalingFactorHolder the scaling factor holder
 	 */
-	public Button(GamePanel gp) { super(gp); }
+	public Button(ScalingFactorHolder scalingFactorHolder) { super(scalingFactorHolder); }
 
 	/**
 	 * Instantiates a new button.
 	 *
 	 * @param path the path
-	 * @param gp   the gp
+	 * @param scalingFactorHolder the scaling factor holder
 	 */
-	public Button(String path, GamePanel gp) { super(path, gp); }
-
+	public Button(String path, ScalingFactorHolder scalingFactorHolder) { super(path, scalingFactorHolder); }
 
 	/**
-	 * Sets the on action.
+	 * Gets the on pressed.
 	 *
-	 * @param ev the new on action
+	 * @return the on pressed
 	 */
-	public void setOnAction(EventHandler<ActionEvent> ev) {
-		setOnReleased(me -> ev.handle(new ActionEvent(me.getSource(), me.getTarget())));
-	}
+	public EventHandler<MouseEvent> getOnPressed() { return onPressed; }
 
+	/**
+	 * Gets the on released.
+	 *
+	 * @return the on released
+	 */
+	public EventHandler<MouseEvent> getOnReleased() { return onReleased; }
 
 	/**
 	 * Sets the on pressed.
 	 *
-	 * @param mv the new on pressed
+	 * @param onPressed the new on pressed
 	 */
-	public void setOnPressed(EventHandler<MouseEvent> mv) {
-		setOnMousePressed(mv);
+	public void setOnPressed(EventHandler<MouseEvent> onPressed) {
+		this.onPressed = onPressed;
 	}
 
 	/**
 	 * Sets the on released.
 	 *
-	 * @param mv the new on released
+	 * @param onReleased the new on released
 	 */
-	public void setOnReleased(EventHandler<MouseEvent> mv) {
-		setOnMouseReleased(i -> ((Consumer<MouseEvent>) e -> gamepanel.getLgp().makeSound("click.wav")).andThen(e -> mv.handle(e)).accept(i));
+	public void setOnReleased(EventHandler<MouseEvent> onReleased) {
+		this.onReleased = mouseEvent -> {
+			SoundHandler.getInstance().makeSound("click.wav");
+			onReleased.handle(mouseEvent);
+		};
 
 	}
 

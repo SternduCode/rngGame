@@ -1,26 +1,26 @@
 package rngGame.main;
 
 import java.io.FileNotFoundException;
+import java.util.concurrent.atomic.AtomicReference;
 
-import javafx.animation.FadeTransition;
+import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.scene.image.*;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
-import rngGame.tile.ImgUtil;
-import rngGame.ui.Button;
+import rngGame.ui.*;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class TitleScreen.
  */
-public class TitleScreen extends Pane{
-
-	/** The gp. */
-	private GamePanel gp;
+public class TitleScreen extends Pane {
 
 	/** The iv. */
 	private final ImageView iv;
+
+	/** The scaling factor holder. */
+	private final ScalingFactorHolder scalingFactorHolder;
 
 	/** The last. */
 	private long last = 0l;
@@ -34,85 +34,111 @@ public class TitleScreen extends Pane{
 	/** The pfail. */
 	private Button ploy = null, settins = null, clous = null, pfail = null;
 
+	/** The game panel pane. */
+	private final Pane gamePanelPane;
+
+	/** The target FPS. */
+	private final double targetFPS = 60;
+
+	/** The game panel. */
+	private GamePanel gamePanel;
+
+	/** The game panel visual. */
+	private rngGame.visual.GamePanel gamePanelVisual;
+
+	/** The pfail visual. */
+	private rngGame.visual.Button ployVisual = null, settinsVisual = null, clousVisual = null, pfailVisual = null;
+
+	/** The loading screen visual. */
+	private final rngGame.visual.LoadingScreen loadingScreenVisual;
+
 	/**
 	 * Instantiates a new title screen.
+	 *
+	 * @param scalingFactorHolder the scaling factor holder
 	 */
-	public TitleScreen() {
-		try {
-			gp = new GamePanel();
-			Input.getInstance().setGamePanel(gp.getVgp()); // pass instance of GamePanel to the Instance of Input
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+	public TitleScreen(ScalingFactorHolder scalingFactorHolder) {
 		iv = new ImageView();
 
-		clous = new Button("./res/backgrounds/Clous.png", gp.getVgp());
+		gamePanelPane = new Pane();
+
+		this.scalingFactorHolder = scalingFactorHolder;
+
+		loadingScreenVisual = new rngGame.visual.LoadingScreen(LoadingScreen.getDefaultLoadingScreen(scalingFactorHolder));
+		loadingScreenVisual.setDisable(true);
+		loadingScreenVisual.setOpacity(0);
+
+		clous = new Button("./res/backgrounds/Clous.png", scalingFactorHolder);
 		clous.setOnPressed(e -> clous.init("./res/backgrounds/Clous2.png"));
 		clous.setOnReleased(e -> {
 			clous.init("./res/backgrounds/Clous.png");
 			System.exit(0);
 		});
+		clousVisual = new rngGame.visual.Button(clous);
 
-		ploy = new Button("./res/backgrounds/Ploy.png", gp.getVgp());
-		ploy.setOnMousePressed(e -> ploy.init("./res/backgrounds/Ploy2.png"));
-		ploy.setOnMouseReleased(e -> {
-			gp.getVgp().goIntoLoadingScreen();
+		ploy = new Button("./res/backgrounds/Ploy.png", scalingFactorHolder);
+		ploy.setOnPressed(e -> ploy.init("./res/backgrounds/Ploy2.png"));
+		ploy.setOnReleased(e -> {
 			new Thread(() -> {
+				loadingScreenVisual.goIntoLoadingScreen();
+
 				try {
-					Thread.sleep(200);
-				} catch (InterruptedException e1) {
+					gamePanel = new GamePanel(scalingFactorHolder);
+
+					gamePanelPane.getChildren().clear();
+					gamePanelPane.getChildren().add(gamePanelVisual = new rngGame.visual.GamePanel(gamePanel, scalingFactorHolder));
+
+					Input.getInstance(scalingFactorHolder).setGamePanel(gamePanel); // pass instance of GamePanel to the Instance of Input
+				} catch (FileNotFoundException e1) {
 					e1.printStackTrace();
 				}
 
-				Platform.runLater(() -> {
-					ploy.init("./res/backgrounds/Ploy.png");
-					iv.setVisible(false);
-					ploy.setVisible(false);
-					settins.setVisible(false);
-					clous.setVisible(false);
-					gp.getVgp().setBlockUserInputs(false);
-				});
+				ploy.init("./res/backgrounds/Ploy.png");
+				iv.setVisible(false);
+				ployVisual.setVisible(false);
+				settinsVisual.setVisible(false);
+				clousVisual.setVisible(false);
 
 				try {
 					Thread.sleep(2000);
-					FadeTransition ft = new FadeTransition(Duration.millis(250), gp.getVgp().getLoadingScreen());
-					ft.setFromValue(1);
-					ft.setToValue(0);
-					ft.play();
+					loadingScreenVisual.goOutOfLoadingScreen();
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
 				}
 			}).start();
 
 		});
+		ployVisual = new rngGame.visual.Button(ploy);
 
-		settins	= new Button("./res/backgrounds/Settins.png", gp.getVgp());
-		pfail	= new Button("./res/backgrounds/Pfail.png", gp.getVgp());
-		pfail.setVisible(false);
+		settins	= new Button("./res/backgrounds/Settins.png", scalingFactorHolder);
+		pfail	= new Button("./res/backgrounds/Pfail.png", scalingFactorHolder);
+		settinsVisual	= new rngGame.visual.Button(settins);
+		pfailVisual		= new rngGame.visual.Button(pfail);
+		pfailVisual.setVisible(false);
 		settins.setOnPressed(e -> {
 			settins.init("./res/backgrounds/Settins2.png");
 		});
 		settins.setOnReleased(e -> {
 			settins.init("./res/backgrounds/Settins.png");
-			ploy.setVisible(false);
-			clous.setVisible(false);
-			settins.setVisible(false);
-			pfail.setVisible(true);
+			ployVisual.setVisible(false);
+			clousVisual.setVisible(false);
+			settinsVisual.setVisible(false);
+			pfailVisual.setVisible(true);
 			pfail.setOnPressed(_e -> {
 				pfail.init("./res/backgrounds/Pfail2.png");
 			});
 			pfail.setOnReleased(__e -> {
 				pfail.init("./res/backgrounds/Pfail.png");
-				pfail.setVisible(false);
-				ploy.setVisible(true);
-				clous.setVisible(true);
-				settins.setVisible(true);
+				pfailVisual.setVisible(false);
+				ployVisual.setVisible(true);
+				clousVisual.setVisible(true);
+				settinsVisual.setVisible(true);
 				settins.init("./res/backgrounds/Settins.png");
 			});
 
 		});
 
-		getChildren().addAll(gp.getVgp(), iv, ploy, settins, clous, pfail);
+		getChildren().addAll(iv, ployVisual, settinsVisual, clousVisual, pfailVisual, gamePanelPane, loadingScreenVisual);
 		new Thread(()->{
 			while (true) {
 				try {
@@ -131,19 +157,59 @@ public class TitleScreen extends Pane{
 						last = t;
 					}
 				}
+				ploy.update();
+				settins.update();
+				clous.update();
+				pfail.update();
+				LoadingScreen.getDefaultLoadingScreen(scalingFactorHolder).update();
+				if (gamePanel != null) gamePanel.update();
 			}
 		}).start();
+		AtomicReference<Runnable>	runnable	= new AtomicReference<>();
+		AtomicReference<Timeline>	arTl		= new AtomicReference<>();
+		Timeline					tl			= new Timeline(
+				new KeyFrame(Duration.millis(1000 / targetFPS),
+						event -> {
+							update();
+							if ("true".equals(System.getProperty("alternateUpdate"))) {
+								arTl.get().stop();
+								Platform.runLater(runnable.get());
+							}
+						}));
+		arTl.set(tl);
+		tl.setCycleCount(Animation.INDEFINITE);
+		Runnable r = () -> {
+			update();
+			if (!MainClass.isStopping() && "true".equals(System.getProperty("alternateUpdate")))
+				Platform.runLater(runnable.get());
+			else arTl.get().play();
+		};
+		runnable.set(r);
+
+		if ("false".equals(System.getProperty("alternateUpdate"))) tl.play();
+		else Platform.runLater(r);
+
 	}
 
 	/**
 	 * Scale F 11.
 	 */
 	public void scaleF11() {
-		frames = ImgUtil.getScaledImages(gp.getVgp(), "./res/backgrounds/Main BG.gif");
+		frames = ImgUtil.getScaledImages(scalingFactorHolder, "./res/backgrounds/Main BG.gif");
+		LoadingScreen.getDefaultLoadingScreen(scalingFactorHolder).scaleF11();
 		iv.setImage(frames[0]);
-		gp.getVgp().setBlockUserInputs(true);
+	}
 
-		gp.getVgp().startLogicThread();
+	/**
+	 * Update.
+	 */
+	public void update() {
+		ployVisual.update();
+		settinsVisual.update();
+		pfailVisual.update();
+		clousVisual.update();
+		loadingScreenVisual.update();
+		if (gamePanelVisual != null) gamePanelVisual.update();
 	}
 
 }

@@ -6,7 +6,6 @@ import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import rngGame.entity.MobRan;
 import rngGame.stats.Demon;
-import rngGame.tile.ImgUtil;
 import rngGame.ui.*;
 
 // TODO: Auto-generated Javadoc
@@ -23,6 +22,9 @@ public class Fight extends Pane{
 
 	/** The demon mob. */
 	private Demon eigenMob;
+
+	/** The b. */
+	private final Button b;
 
 	/** The demon mob. */
 	private final Demon demonMob;
@@ -52,6 +54,14 @@ public class Fight extends Pane{
 		majyc					= new Button(gamepanel);
 		stych					= new Button(gamepanel);
 
+		b = new Button(gamepanel);
+
+		b.init("./res/fight/Leaf.gif", 10);
+
+		b.setOnPressed(e -> b.init("./res/fight/Stych2.png"));
+
+		b.setOnReleased(e -> b.init("./res/fight/Leaf.gif", 10));
+
 		leaf.setOnPressed(e -> leaf.init("./res/fight/Leaf2.png"));
 		leaf.setOnReleased(e -> {
 			leaf.init("./res/fight/Leaf.gif");
@@ -75,15 +85,14 @@ public class Fight extends Pane{
 		});
 
 		stych.setOnPressed(e -> stych.init("./res/fight/Stych2.png"));
-		stych.setOnReleased(e -> {
+		stych.setOnReleased(e -> {// TODO maybe only scale clored stuff
 			stych.init("./res/fight/Stych.gif");
 			demonMob.changeCurrenthp(-eigenMob.getAtk());
-
 		});
 
 
 
-		getChildren().addAll(battlebackgroundvisual, fight, leaf, majyc, stych);
+		getChildren().addAll(battlebackgroundvisual, fight, leaf, majyc, stych, b);
 		scaleF11();
 
 	}

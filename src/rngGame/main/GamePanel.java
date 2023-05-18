@@ -3,27 +3,575 @@ package rngGame.main;
 import java.io.*;
 import java.util.*;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.sterndu.multicore.Updater;
+import com.sterndu.json.*;
 
 import javafx.animation.*;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.*;
-import javafx.scene.layout.Pane;
-import javafx.scene.media.*;
+import javafx.scene.control.Label;
+import javafx.scene.image.*;
+import javafx.scene.layout.*;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
-import rngGame.buildings.Building;
+import rngGame.buildings.*;
 import rngGame.entity.*;
 import rngGame.tile.*;
+import rngGame.tile.TileManager;
+import rngGame.ui.*;
+import rngGame.visual.AnimatedImage;
+import rngGame.visual.Button;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class GamePanel.
  */
-public class GamePanel extends Pane {
+public class GamePanel {
+
+	/**
+	 * The Class GP.
+	 */
+	private class GP {
+
+		/** The loading screen. */
+		private final ImageView loadingScreen;
+
+		/** The fps label. */
+		private final Label fpsLabel;
+
+		/** The overlay. */
+		private final ImageView overlay;
+
+		/** The bubble text. */
+		private final Pane bubbleText;
+
+		/** The layer group. */
+		private final GroupGroup layerGroup;
+
+		/** The point group. */
+		private final Group pointGroup;
+
+		/** The frame times. */
+		private List<Long> frameTimes;
+
+		/** The last frame. */
+		private Long lastFrame;
+
+		/** The tile M. */
+		private final TileManager tileManager;
+
+		/** The aktionbutton. */
+		private final AktionButton aktionbutton;
+
+		/** The select tool. */
+		private final SelectTool selectTool;
+
+		/** The gamemenu. */
+		private final TabMenu gamemenu;
+
+		/** The target FPS. */
+		private final int targetFPS = 80;
+
+		/** The scaling factor Y. */
+		private double scalingFactorX = 1, scalingFactorY = 1;
+
+		/** The b. */
+		private final Button b;
+
+		/** The block size. */
+		private final int blockSize = 48;
+
+		/** The x blocks. */
+		private final int xBlocks = 20;
+
+		/** The y blocks. */
+		private final int yBlocks = 11;
+
+		/** The scleed blockSizes. */
+		private int blockSizeX = blockSize, blockSizeY = blockSize;
+
+		/** The game height. */
+		private int gameHeight = blockSizeY * yBlocks;
+
+		/** The game width. */
+		private int gameWidth = blockSizeX * xBlocks;
+
+		/** The fps. */
+		private Double fps = 0d;
+
+		/** The block user inputs. */
+		private boolean blockUserInputs;
+
+		/** The player. */
+		private final Player player;
+
+		/** The lgp. */
+		private final rngGame.main.GamePanel logic;
+
+		/** The animated images. */
+		private final List<AnimatedImage> animatedImages;
+
+		/**
+		 * Instantiates a new game panel.
+		 *
+		 * @param logic the logic
+		 * @throws FileNotFoundException the file not found exception
+		 */
+		public GamePanel(rngGame.main.GamePanel logic)
+				throws FileNotFoundException {
+			setPrefSize(gameWidth, gameHeight);
+
+			animatedImages = new ArrayList<>();
+
+			b = new Button(this);
+
+			b.init("./res/fight/Leaf.gif", 10);
+
+			b.setOnPressed(e -> b.init("./res/fight/Stych2.png"));
+
+			b.setOnReleased(e -> b.init("./res/fight/Leaf.gif", 10));
+
+			lgp.setVgp(this);
+
+			this.logic = logic;
+
+			bubbleText = new Pane();
+
+			overlay = new ImageView();
+
+			getOverlay().setDisable(true);
+
+			loadingScreen = new ImageView(new Image(new FileInputStream(new File("./res/gui/Loadingscreen.gif"))));
+			getLoadingScreen().setDisable(true);
+
+			fpsLabel = new Label(fps + "");
+			fpsLabel.setBackground(new Background(new BackgroundFill(Color.color(.5, .5, .5, 1), null, null)));
+			fpsLabel.setTextFill(Color.color(.1, .1, .1));
+			fpsLabel.setOpacity(.6);
+			fpsLabel.setDisable(true);
+			fpsLabel.setVisible(false);
+
+			pointGroup = new Group();
+			getPointGroup().setDisable(true);
+
+			layerGroup = new GroupGroup();
+			getLayerGroup().getChildren().add(new Group());
+
+			selectTool = new SelectTool(this);
+
+			tileManager = new TileManager(this);
+			tileManager.setPrefSize(gameWidth, gameHeight);
+
+			player = new Player(this, tileManager.getCM(), tileManager.getRequestorN());
+
+			aktionbutton = new AktionButton(this);
+
+			lgp.setMap("./res/maps/lavaMap2.json");
+			gamemenu = new TabMenu(getLgp());
+
+			getChildren().addAll(tileManager, getLayerGroup(), getOverlay(), getPointGroup(), selectTool, aktionbutton, lgp.getBubble(), bubbleText,
+					gamemenu, fpsLabel,
+					getLoadingScreen());
+		}
+
+		/**
+		 * Adds the animated image.
+		 *
+		 * @param animatedImage the animated image
+		 */
+		public void addAnimatedImage(AnimatedImage animatedImage) {
+			animatedImages.add(animatedImage);
+		}
+
+		/**
+		 * Scale textures.
+		 *
+		 * @param scaleFactorX the scale factor X
+		 * @param scaleFactorY the scale factor Y
+		 */
+		public void changeScalingFactor(double scaleFactorX, double scaleFactorY) {
+			player.setPosition(player.getX() * (scaleFactorX / scalingFactorX),
+					player.getY() * (scaleFactorY / scalingFactorY));
+			scalingFactorX = scaleFactorX;
+			scalingFactorY = scaleFactorY;
+			blockSizeX		= (int) (blockSize * scaleFactorX);
+			blockSizeY		= (int) (blockSize * scaleFactorY);
+			gameWidth		= blockSizeX * xBlocks;
+			gameHeight		= blockSizeY * yBlocks;
+			reload();
+			player.getPlayerImage();
+			player.generateCollisionBox();
+			System.out.println(player.getX() + " " + player.getY());
+		}
+
+		/**
+		 * Gets the aktionbutton.
+		 *
+		 * @return the aktionbutton
+		 */
+		public AktionButton getAktionbutton() { return aktionbutton; }
+
+		/**
+		 * Gets the block size.
+		 *
+		 * @return the block size
+		 */
+		public int getBlockSize() { return blockSize; }
+
+		/**
+		 * Gets the block size X.
+		 *
+		 * @return the block size X
+		 */
+		public int getBlockSizeX() { return blockSizeX; }
+
+		/**
+		 * Gets the block size Y.
+		 *
+		 * @return the block size Y
+		 */
+		public int getBlockSizeY() { return blockSizeY; }
+
+		/**
+		 * Gets the bubble text.
+		 *
+		 * @return the bubble text
+		 */
+		public Pane getBubbleText() {
+			return bubbleText;
+		}
+
+		/**
+		 * Gets the fps.
+		 *
+		 * @return the fps
+		 */
+		public Double getFps() { return fps; }
+
+		/**
+		 * Gets the game height.
+		 *
+		 * @return the game height
+		 */
+		public int getGameHeight() { return gameHeight; }
+
+		/**
+		 * Gets the gamemenu.
+		 *
+		 * @return the gamemenu
+		 */
+		public TabMenu getGamemenu() { return gamemenu; }
+
+		/**
+		 * Gets the game width.
+		 *
+		 * @return the game width
+		 */
+		public int getGameWidth() { return gameWidth; }
+
+		/**
+		 * Gets the layer group.
+		 *
+		 * @return the layer group
+		 */
+		public GroupGroup getLayerGroup() { return layerGroup; }
+
+		/**
+		 * Gets the lgp.
+		 *
+		 * @return the lgp
+		 */
+		public rngGame.main.GamePanel getLgp() { return lgp; }
+
+		/**
+		 * Gets the loading screen.
+		 *
+		 * @return the loading screen
+		 */
+		public ImageView getLoadingScreen() { return loadingScreen; }
+
+		/**
+		 * Gets the overlay.
+		 *
+		 * @return the overlay
+		 */
+		public ImageView getOverlay() { return overlay; }
+
+		/**
+		 * Gets the player.
+		 *
+		 * @return the player
+		 */
+		public Player getPlayer() { return player; }
+
+		/**
+		 * Gets the point group.
+		 *
+		 * @return the point group
+		 */
+		public Group getPointGroup() { return pointGroup; }
+
+		/**
+		 * Gets the scaling factor X.
+		 *
+		 * @return the scaling factor X
+		 */
+		public double getScalingFactorX() { return scalingFactorX; }
+
+		/**
+		 * Gets the scaling factor Y.
+		 *
+		 * @return the scaling factor Y
+		 */
+		public double getScalingFactorY() { return scalingFactorY; }
+
+		/**
+		 * Gets the select tool.
+		 *
+		 * @return the select tool
+		 */
+		public SelectTool getSelectTool() { return selectTool; }
+
+		/**
+		 * Gets the target FPS.
+		 *
+		 * @return the target FPS
+		 */
+		public int getTargetFPS() { return targetFPS; }
+
+		/**
+		 * Gets the tile M.
+		 *
+		 * @return the tile M
+		 */
+		public TileManager getTileManager() { return tileManager; }
+
+		/**
+		 * Gets the view groups.
+		 *
+		 * @return the view groups
+		 */
+		public List<Group> getViewGroups() { return getLayerGroup().getGroupChildren(); }
+
+		/**
+		 * Gets the x blocks.
+		 *
+		 * @return the x blocks
+		 */
+		public int getxBlocks() { return xBlocks; }
+
+		/**
+		 * Gets the y blocks.
+		 *
+		 * @return the y blocks
+		 */
+		public int getyBlocks() { return yBlocks; }
+
+		/**
+		 * Reload.
+		 */
+		public void reload() {
+			getLayerGroup().getChildren().stream().map(n -> ((Group) n).getChildren()).forEach(ObservableList::clear);
+			getPointGroup().getChildren().clear();
+
+			if (!"".equals(getTileManager().getOverlay()))
+				getOverlay().setImage(ImgUtil.getScaledImage(this, "./res/gui/" + getTileManager().getOverlay()));
+			else getOverlay().setImage(null);
+
+			tileManager.reload();
+			tileManager.update();
+			aktionbutton.f11Scale();
+			if (tileManager.getBackgroundPath() != null) try {
+				setBackground(new Background(
+						new BackgroundImage(new Image(new FileInputStream("./res/" + tileManager.getBackgroundPath())),
+								BackgroundRepeat.NO_REPEAT,
+								BackgroundRepeat.NO_REPEAT, null,
+								new BackgroundSize(getGameWidth(), getGameHeight() + getScalingFactorY(), false, false, false, false))));
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			else setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+
+			player.setLayer(tileManager.getPlayerLayer());
+
+			getLgp().setBuildings(tileManager.getBuildingsFromMap());
+			getLgp().setNpcs(tileManager.getNPCSFromMap());
+			getLgp().setTest(tileManager.getMobsFromMap());
+
+			Circle spawn = new Circle(getTileManager().getSpawnPoint().getX() * getScalingFactorX(),
+					getTileManager().getSpawnPoint().getY() * getScalingFactorY(), 15,
+					Color.color(0, 1, 0, .75));
+			lgp.getPoints().put(tileManager.getSpawnPoint(), spawn);
+			getPointGroup().getChildren().add(spawn);
+
+			getLgp().getBuildings().forEach(b -> {
+				if (b instanceof House h) {
+					String map = h.getMap();
+					try {
+						JsonObject jo = (JsonObject) JsonParser.parse(new File("./res/maps/" + map));
+						if (jo.containsKey("exit")) {
+							JsonObject exit = (JsonObject) jo.get("exit");
+							if (getTileManager().getPath().endsWith( ((StringValue) exit.get("map")).getValue())) {
+								JsonArray	spawnPosition	= (JsonArray) exit.get("spawnPosition");
+								Point2D		p				= new Point2D( ((NumberValue) spawnPosition.get(0)).getValue().longValue(),
+										((NumberValue) spawnPosition.get(1)).getValue().longValue());
+								Circle		respawn			= new Circle(p.getX() * getScalingFactorX(), p.getY() * getScalingFactorY(),
+										15,
+										Color.color(0, 1, 0, .75));
+								lgp.getPoints().put(p, respawn);
+								getPointGroup().getChildren().add(respawn);
+							}
+						}
+					} catch (JsonParseException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+
+			gamemenu.f11Scale();
+			if (gamemenu != null && gamemenu.getInventory().getCurrentDemon() != null && gamemenu.getInventory().getCurrentDemon().getDemon() != null)
+				getLgp().getNpcs().add(gamemenu.getInventory().getCurrentDemon().getDemon());
+
+		}
+
+		/**
+		 * Sets the block user inputs.
+		 *
+		 * @param blockUserInputs the new block user inputs
+		 */
+		public void setBlockUserInputs(boolean blockUserInputs) { this.blockUserInputs = blockUserInputs; }
+
+		/**
+		 * Sets the map.
+		 *
+		 * @param path the path
+		 * @param position the position
+		 */
+		public void setMap(String path, double[] position) {
+
+			getLayerGroup().getChildren().stream().map(n -> ((Group) n).getChildren()).forEach(ObservableList::clear);
+			getPointGroup().getChildren().clear();
+
+			tileManager.setMap(path);
+			if (tileManager.getBackgroundPath() != null) try {
+				setBackground(new Background(
+						new BackgroundImage(new Image(new FileInputStream("./res/" + tileManager.getBackgroundPath())),
+								BackgroundRepeat.NO_REPEAT,
+								BackgroundRepeat.NO_REPEAT, null,
+								new BackgroundSize(getGameWidth(), getGameHeight(), false, false, false, false))));
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			else setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+
+			if (!"".equals(tileManager.getOverlay())) getOverlay().setImage(ImgUtil.getScaledImage(this, "./res/gui/" + tileManager.getOverlay()));
+			else getOverlay().setImage(null);
+
+			lgp.setBuildings(tileManager.getBuildingsFromMap());
+			lgp.setNpcs(tileManager.getNPCSFromMap());
+			lgp.setTest(tileManager.getMobsFromMap());
+			Circle spawn = new Circle(tileManager.getSpawnPoint().getX() * getScalingFactorX(),
+					tileManager.getSpawnPoint().getY() * getScalingFactorY(), 15,
+					Color.color(0, 1, 0, .75));
+			lgp.getPoints().put(tileManager.getSpawnPoint(), spawn);
+			getPointGroup().getChildren().add(spawn);
+			lgp.getBuildings().forEach(b -> {
+				if (b instanceof House h) {
+					String map = h.getMap();
+					try {
+						JsonObject jo = (JsonObject) JsonParser.parse(new File("./res/maps/" + map));
+						if (jo.containsKey("exit")) {
+							JsonObject exit = (JsonObject) jo.get("exit");
+							if (tileManager.getPath().endsWith( ((StringValue) exit.get("map")).getValue())) {
+								JsonArray	spawnPosition	= (JsonArray) exit.get("spawnPosition");
+								Point2D		p				= new Point2D(
+										((NumberValue) spawnPosition.get(0)).getValue().longValue(),
+										((NumberValue) spawnPosition.get(1)).getValue().longValue());
+								Circle		respawn			= new Circle(p.getX(), p.getY(), 15,
+										Color.color(0, 1, 0, .75));
+								lgp.getPoints().put(p, respawn);
+								getPointGroup().getChildren().add(respawn);
+							}
+						}
+					} catch (JsonParseException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+
+			if (position != null)
+				player.setPosition(new double[] {
+						position[0] * getScalingFactorX(), position[1] * getScalingFactorY()
+				});
+			else {
+				double[] posi = tileManager.getStartingPosition();
+				player.setPosition(new double[] {
+						posi[0] * getScalingFactorX(), posi[1] * getScalingFactorY()
+				});
+			}
+			player.setLayer(tileManager.getPlayerLayer());
+
+			if (gamemenu != null && gamemenu.getInventory().getCurrentDemon() != null && gamemenu.getInventory().getCurrentDemon().getDemon() != null)
+				getLgp().getNpcs().add(gamemenu.getInventory().getCurrentDemon().getDemon());
+		}
+
+		/**
+		 * Start logic thread.
+		 */
+		public void startLogicThread() {
+
+			frameTimes	= new ArrayList<>();
+			lastFrame	= System.currentTimeMillis();
+
+
+
+		}
+
+		/**
+		 * Update.
+		 */
+		public void update() {
+
+			long lastFrameTime = frameTimes.size() > 0 ? frameTimes.get(frameTimes.size() - 1) : 0;
+
+			fpsLabel.setText(String.format("%.2f", 1000 / fps));
+			fpsLabel.setLayoutX(gameWidth - fpsLabel.getWidth());
+
+			try {
+				player.update(lastFrameTime);
+			} catch (ConcurrentModificationException e) {}
+
+			selectTool.update();
+
+			aktionbutton.update();
+
+			for (Entry<Point2D, Circle> point : lgp.getPoints().entrySet()) {
+				point.getValue().setCenterX(point.getKey().getX() * getScalingFactorX() - player.getX() + player.getScreenX());
+				point.getValue().setCenterY(point.getKey().getY() * getScalingFactorY() - player.getY() + player.getScreenY());
+			}
+
+			tileManager.update();
+
+			getLgp().update();
+
+			long frameTime = System.currentTimeMillis() - lastFrame;
+			lastFrame = System.currentTimeMillis();
+			frameTimes.add(frameTime);
+			fps = frameTimes.stream().mapToLong(l -> l).average().getAsDouble();
+			while (frameTimes.size() > Math.pow(fps * 12, 1.2)) frameTimes.remove(0);
+
+			Text.getInstance().update(lastFrameTime);
+
+			animatedImages.forEach(AnimatedImage::update);
+
+		}
+	}
 
 	/** The difficulty. */
 	private Difficulty difficulty;
@@ -67,12 +615,23 @@ public class GamePanel extends Pane {
 	/** The clipboard. */
 	private List<List<TextureHolder>> clipboard;
 
+	/** The fps label visible. */
+	private boolean fpsLabelVisible;
+
+	/** The scaling factor holder. */
+	private final ScalingFactorHolder scalingFactorHolder;
+
 	/**
 	 * Instantiates a new game panel.
 	 *
+	 * @param scalingFactorHolder the scaling factor holder
 	 * @throws FileNotFoundException the file not found exception
 	 */
-	public GamePanel() throws FileNotFoundException {
+	public GamePanel(ScalingFactorHolder scalingFactorHolder) throws FileNotFoundException {
+
+		this.scalingFactorHolder = scalingFactorHolder;
+
+		fpsLabelVisible = false;
 
 		frameTimes	= new ArrayList<>();
 		lastFrame	= System.currentTimeMillis();
@@ -81,13 +640,32 @@ public class GamePanel extends Pane {
 
 		difficulty = Difficulty.EASY;
 
-		input = Input.getInstance();
+		input = Input.getInstance(scalingFactorHolder);
 
 		points = new HashMap<>();
 
 		clipboard = new ArrayList<>();
+	}
 
-		setVgp(new rngGame.visual.GamePanel(this));
+	/**
+	 * Convert layout point to world point.
+	 *
+	 * @param layoutPoint the layout point
+	 *
+	 * @return the world point
+	 */
+	public Point2D convertLayoutPointToWorldPoint(Point2D layoutPoint) {
+
+	}
+
+	/**
+	 * Convert world point to layout point.
+	 *
+	 * @param worldPoint the world point
+	 *
+	 * @return the layout point
+	 */
+	public Point2D convertWorldPointToLayoutPoint(Point2D worldPoint) {
 
 	}
 
@@ -96,9 +674,7 @@ public class GamePanel extends Pane {
 	 *
 	 * @return the bubble
 	 */
-	public Pane getBubble() {
-		return bubble;
-	}
+	public Pane getBubble() { return bubble; }
 
 	/**
 	 * Gets the buildings.
@@ -159,30 +735,33 @@ public class GamePanel extends Pane {
 	public rngGame.visual.GamePanel getVgp() { return vgp; }
 
 	/**
-	 * Make sound.
+	 * Checks if is block user inputs.
 	 *
-	 * @param soundname the soundname
+	 * @return true, if is block user inputs
 	 */
-	public void makeSound(String soundname){
-		MediaPlayer mp = new MediaPlayer(new Media(new File("./res/music/" + soundname).toURI().toString()));
-		mp.setAutoPlay(true);
-		mp.setVolume(.2);
+	public boolean isBlockUserInputs() {
+		return isInLoadingScreen() || blockUserInputs;
 	}
+
+	/**
+	 * Checks if is in loading screen.
+	 *
+	 * @return true, if is in loading screen
+	 */
+	public boolean isInLoadingScreen() { return getLoadingScreen().getOpacity() > .5; }
 
 	/**
 	 * Reload.
 	 */
 	public void reload() {
 		getPoints().clear();
-
-		vgp.reload();
 	}
 
 	/**
 	 * Save map.
 	 */
 	public void saveMap() {
-		vgp.getTileManager().save();
+		getTileManager().save();
 		System.out.println("don");
 	}
 
@@ -216,14 +795,12 @@ public class GamePanel extends Pane {
 	 *
 	 * @param path the new map
 	 */
-	public void setMap(String path) {
-		setMap(path, null);
-	}
+	public void setMap(String path) { setMap(path, null); }
 
 	/**
 	 * Sets the map.
 	 *
-	 * @param path the path
+	 * @param path     the path
 	 * @param position the position
 	 */
 	public void setMap(String path, double[] position) {
@@ -232,24 +809,15 @@ public class GamePanel extends Pane {
 
 		UndoRedo.getInstance().clearActions();
 
-		if (mp != null) mp.stop();
+		SoundHandler.getInstance().endBackgroundMusic();
 
 		getPoints().clear();
 
 		vgp.setMap(path, position);
 
-		if (!"".equals(vgp.getTileManager().getBackgroundMusic())) {
-			mp = new MediaPlayer(new Media(new File("./res/" + vgp.getTileManager().getBackgroundMusic()).toURI().toString()));
-			mp.setAutoPlay(true);
-			mp.setVolume(.2);
-			// mp.setCycleCount(MediaPlayer.INDEFINITE);
-			Updater.getInstance().add((Runnable) () -> {
-				Duration	duration	= mp.getMedia().getDuration();
-				Duration	curr		= mp.getCurrentTime();
-				// System.out.println("meow " + duration + " " + curr);
-				if (duration.subtract(curr).lessThan(Duration.millis(34.2))) mp.seek(Duration.millis(2.5));
-			}, "CheckIfMusicIsDone");
-		} else mp = null;
+		if (!"".equals(vgp.getTileManager().getBackgroundMusic()))
+			SoundHandler.getInstance().setBackgroundMusic(vgp.getTileManager().getBackgroundMusic());
+		else SoundHandler.getInstance().endBackgroundMusic();
 
 		FadeTransition ft = new FadeTransition(Duration.millis(500), getVgp().getLoadingScreen());
 		ft.setFromValue(1);
@@ -311,6 +879,13 @@ public class GamePanel extends Pane {
 		if ("false".equals(System.getProperty("alternateUpdate"))) tl.play();
 		else Platform.runLater(r);
 
+	}
+
+	/**
+	 * Toggle fps label visible.
+	 */
+	public void toggleFpsLabelVisible() {
+		fpsLabelVisible = !fpsLabelVisible;
 	}
 
 	/**

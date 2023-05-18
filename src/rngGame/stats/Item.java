@@ -2,7 +2,7 @@ package rngGame.stats;
 
 import javafx.scene.image.Image;
 import rngGame.main.GamePanel;
-import rngGame.tile.ImgUtil;
+import rngGame.ui.ImgUtil;
 
 // TODO: Auto-generated Javadoc
 /**

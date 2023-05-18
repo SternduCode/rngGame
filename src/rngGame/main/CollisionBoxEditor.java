@@ -12,7 +12,7 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.text.Font;
 import javafx.stage.*;
 import javafx.stage.FileChooser.ExtensionFilter;
-import rngGame.tile.ImgUtil;
+import rngGame.ui.ImgUtil;
 
 public class CollisionBoxEditor extends Application {
 

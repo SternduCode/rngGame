@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.*;
 
 import javafx.scene.image.*;
+import rngGame.ui.ImgUtil;
 import rngGame.visual.GamePanel;
 
 // TODO: Auto-generated Javadoc

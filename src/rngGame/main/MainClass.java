@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.stage.*;
+import rngGame.ui.ScalingFactorHolder;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -53,7 +54,6 @@ public class MainClass extends Application {
 	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		TitleScreen ts = new TitleScreen();
 
 		primaryStage.setFullScreen(false);
 		primaryStage.setResizable(false);
@@ -62,7 +62,10 @@ public class MainClass extends Application {
 		primaryStage.setFullScreenExitHint("");
 		primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 		primaryStage.getIcons().add(new Image(new FileInputStream ("./res/gui/GameIschcon.png")));
-		Input input = Input.getInstance();
+
+		ScalingFactorHolder scalingFactorHolder = new ScalingFactorHolder(1, 1);
+
+		Input input = Input.getInstance(scalingFactorHolder);
 
 		// set eventHandlers to detect Mouse and Key Events on the whole Window
 		primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, input::keyPressed);
@@ -73,10 +76,12 @@ public class MainClass extends Application {
 		primaryStage.addEventHandler(MouseEvent.MOUSE_MOVED, input::mouseMoved);
 		primaryStage.addEventHandler(MouseEvent.MOUSE_DRAGGED, input::mouseDragged);
 
-		Scene gameScene = new Scene(ts);
+		TitleScreen titleScreen = new TitleScreen(scalingFactorHolder);
+
+		Scene gameScene = new Scene(titleScreen);
 		primaryStage.setScene(gameScene);
 
-		ts.scaleF11();
+		titleScreen.scaleF11();
 
 		primaryStage.show();
 

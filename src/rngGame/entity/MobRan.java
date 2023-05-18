@@ -371,9 +371,10 @@ public class MobRan extends NPC {
 	 */
 	@Override
 	public void update(long milis) {
-		super.update(milis);// TODO make speed like with player
+		// TODO make speed like with player
 		if(f!=null) f.update();
 		else {
+			super.update(milis);
 			if (diff[0] > 0 || diff[1] > 0)
 				step++;
 			x	+= diff[0] / steps;

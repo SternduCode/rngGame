@@ -16,7 +16,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
-import javafx.scene.layout.Pane;
 import javafx.scene.shape.*;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -24,6 +23,7 @@ import rngGame.buildings.*;
 import rngGame.entity.*;
 import rngGame.main.*;
 import rngGame.main.UndoRedo.UndoRedoActionBase;
+import rngGame.ui.ImgUtil;
 import rngGame.visual.GamePanel;
 
 
@@ -31,7 +31,7 @@ import rngGame.visual.GamePanel;
 /**
  * The Class TileManager.
  */
-public class TileManager extends Pane {
+public class TileManager {
 
 	/**
 	 * The Class FakeTextureHolder for making tiles outside of the map.

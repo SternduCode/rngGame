@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 
 import javafx.scene.image.*;
 import javafx.scene.layout.Pane;
-import rngGame.tile.ImgUtil;
+import rngGame.ui.ImgUtil;
 import rngGame.visual.GamePanel;
 
 // TODO: Auto-generated Javadoc

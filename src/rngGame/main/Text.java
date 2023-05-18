@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 import javafx.scene.image.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import rngGame.tile.ImgUtil;
+import rngGame.ui.ImgUtil;
 
 // TODO: Auto-generated Javadoc
 /**

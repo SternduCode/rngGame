@@ -10,7 +10,7 @@ import javafx.scene.shape.Polygon;
 import javafx.stage.Stage;
 import rngGame.buildings.Building;
 import rngGame.tile.TextureHolder;
-import rngGame.visual.GamePanel;
+import rngGame.ui.ScalingFactorHolder;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -30,7 +30,7 @@ public class Input {
 			boolean isSuperPressed, boolean isAltPressed, boolean isAltgrPressed) {}
 
 	/** The Constant INSTANCE. */
-	private static final Input INSTANCE = new Input();
+	private static Input INSTANCE;
 
 	/** The key up handlers. */
 	private final Map<KeyCode, List<Consumer<ModKeysState>>> keyDownHandlers = new HashMap<>(),
@@ -49,12 +49,18 @@ public class Input {
 	private GameObject move, resize;
 
 	/** The gamepanel. */
-	private GamePanel gamepanel;
+	private GamePanel gamePanel;
+
+	/** The scaling factor holder. */
+	private final ScalingFactorHolder scalingFactorHolder;
 
 	/**
 	 * Instantiates a new input.
+	 *
+	 * @param scalingFactorHolder the scaling factor holder
 	 */
-	private Input() {
+	private Input(ScalingFactorHolder scalingFactorHolder) {
+		this.scalingFactorHolder = scalingFactorHolder;
 		setKeyHandler("ControlDown", mod -> {
 			ctrlState = true;
 		}, KeyCode.CONTROL, false);
@@ -103,11 +109,12 @@ public class Input {
 			else System.setProperty("alternateUpdate", "true");
 		}, KeyCode.M, false);
 		setKeyHandler("Reload", mod -> {
-			if (mod.isControlPressed()) if (gamepanel != null)
-				gamepanel.reload();
+			if (mod.isControlPressed()) if (gamePanel != null)
+				gamePanel.reload();
 		}, KeyCode.R, false);
 		setKeyHandler("ToggleFPSLabel", mod -> {
-			gamepanel.toggleFpsLabelVisible();
+			if (gamePanel != null)
+				gamePanel.toggleFpsLabelVisible();
 		}, KeyCode.F, false);
 		setKeyHandler("Teleport", mod -> {
 			if ("true".equals(System.getProperty("teleport"))) System.setProperty("teleport", "false");
@@ -116,11 +123,16 @@ public class Input {
 	}
 
 	/**
-	 * Gets the single instance of Input.
+	 * Gets the only instance of Input.
 	 *
-	 * @return single instance of Input
+	 * @param scalingFactorHolder the scaling factor holder
+	 *
+	 * @return only instance of Input
 	 */
-	public static Input getInstance() { return INSTANCE; }
+	public static Input getInstance(ScalingFactorHolder scalingFactorHolder) {
+		return INSTANCE != null ? INSTANCE : (INSTANCE = new Input(scalingFactorHolder));
+
+	}
 
 	/**
 	 * New C.
@@ -152,7 +164,7 @@ public class Input {
 			raf.writeInt(t.getPoints().size());
 			boolean s = false;
 			for (Double element: t.getPoints())
-				raf.writeDouble((long) (element / ( (s = !s) ? gamepanel.getScalingFactorX() : gamepanel.getScalingFactorY())));
+				raf.writeDouble((long) (element / ( (s = !s) ? scalingFactorHolder.scalingFactorX() : scalingFactorHolder.scalingFactorY())));
 			raf.setLength(4l + t.getPoints().size() * 8l);
 			raf.close();
 
@@ -167,11 +179,9 @@ public class Input {
 	/**
 	 * Sets the game panel.
 	 *
-	 * @param gp the new game panel
+	 * @param gamePanel the new game panel
 	 */
-	protected void setGamePanel(GamePanel gp) {
-		gamepanel=gp;
-	}
+	protected void setGamePanel(GamePanel gamePanel) { this.gamePanel = gamePanel; }
 
 	/**
 	 * Drag detected.
@@ -228,7 +238,7 @@ public class Input {
 	 * @param e the e
 	 */
 	public void keyPressed(KeyEvent e) {
-		if (!gamepanel.isInLoadingScreen()) {
+		if (gamePanel != null && !gamePanel.isInLoadingScreen()) {
 			KeyCode code = e.getCode();
 
 			ModKeysState modKeysState = new ModKeysState(ctrlState, shiftState, capsState, superState, altState,
@@ -249,7 +259,7 @@ public class Input {
 	 * @param e the e
 	 */
 	public void keyReleased(KeyEvent e) {
-		if (!gamepanel.isInLoadingScreen()) {
+		if (gamePanel != null && !gamePanel.isBlockUserInputs()) {
 
 			KeyCode code = e.getCode();
 
@@ -285,26 +295,20 @@ public class Input {
 	 * @param me the me
 	 */
 	public void mouseDragged(MouseEvent me) {
-		if (gamepanel != null && !gamepanel.isInLoadingScreen()) if (move != null) {
-			move.setX((long) (me.getSceneX() - gamepanel.getPlayer().getScreenX() + gamepanel.getPlayer().getX() - move.getWidth() / 2));
-			move.setY((long) (me.getSceneY() - gamepanel.getPlayer().getScreenY() + gamepanel.getPlayer().getY() - move.getHeight() / 2));
-		}
-		else if (resize != null) {
-			resize.setReqWidth((int) (me.getSceneX() - gamepanel.getPlayer().getScreenX() + gamepanel.getPlayer().getX() - resize.getX()));
+		if (gamePanel != null && !gamePanel.isBlockUserInputs()) if (move != null) {
+			move.setX((long) (me.getSceneX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX() - move.getWidth() / 2));
+			move.setY((long) (me.getSceneY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY() - move.getHeight() / 2));
+		} else if (resize != null) {
+			resize.setReqWidth((int) (me.getSceneX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX() - resize.getX()));
 			resize.setReqHeight(
-					(int) (me.getSceneY() - gamepanel.getPlayer().getScreenY() + gamepanel.getPlayer().getY() - resize.getY()));
+					(int) (me.getSceneY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY() - resize.getY()));
 			resize.reloadTextures();
 		} else {
-			Node target = gamepanel.getTileManager().getObjectAt(me.getSceneX() - gamepanel.getPlayer().getScreenX() + gamepanel.getPlayer().getX(),
-					me.getSceneY() - gamepanel.getPlayer().getScreenY() + gamepanel.getPlayer().getY());
-			if (!gamepanel.getSelectTool().isDragging() && target instanceof TextureHolder)
-				gamepanel.getSelectTool().startDrag(me);
-			else if (gamepanel.getSelectTool().isDragging()) gamepanel.getSelectTool().doDrag(me);
-			else if (target instanceof GameObject go) {
-
-			} else {
-
-			}
+			Node target = gamePanel.getTileManager().getObjectAt(me.getSceneX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX(),
+					me.getSceneY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY());
+			if (!gamePanel.getSelectTool().isDragging() && target instanceof TextureHolder)
+				gamePanel.getSelectTool().startDrag(me);
+			else if (gamePanel.getSelectTool().isDragging()) gamePanel.getSelectTool().doDrag(me);
 		}
 	}
 
@@ -314,9 +318,9 @@ public class Input {
 	 * @param me the me
 	 */
 	public void mouseMoved(MouseEvent me) {
-		if (gamepanel != null) if (!gamepanel.getSelectTool().isDragging() && !gamepanel.getTileManager().getCM().isShowing())
-			if ("true".equals(System.getProperty("edit"))) gamepanel.getSelectTool().drawOutlines(me);
-			else gamepanel.getSelectTool().undrawOutlines();
+		if (gamePanel != null) if (!gamePanel.getSelectTool().isDragging() && !gamePanel.getTileManager().getCM().isShowing())
+			if ("true".equals(System.getProperty("edit"))) gamePanel.getSelectTool().drawOutlines(me);
+			else gamePanel.getSelectTool().undrawOutlines();
 	}
 
 	/**
@@ -327,15 +331,15 @@ public class Input {
 	public void mouseReleased(MouseEvent me) {
 		if ("true".equals(System.getProperty("debug")))
 			System.out.println("Released " + me);
-		if (gamepanel != null) {
-			Node target = gamepanel.getTileManager().getObjectAt(me.getSceneX() - gamepanel.getPlayer().getScreenX() + gamepanel.getPlayer().getX(),
-					me.getSceneY() - gamepanel.getPlayer().getScreenY() + gamepanel.getPlayer().getY());
-			if ("true".equals(System.getProperty("teleport"))) gamepanel.getPlayer().setPosition(
-					me.getSceneX() - gamepanel.getPlayer().getScreenX() + gamepanel.getPlayer().getX()-gamepanel.getPlayer().getColliBoxX(),
-					me.getSceneY() - gamepanel.getPlayer().getScreenY() + gamepanel.getPlayer().getY()-gamepanel.getPlayer().getColliBoxY());
+		if (gamePanel != null) {
+			Node target = gamePanel.getTileManager().getObjectAt(me.getSceneX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX(),
+					me.getSceneY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY());
+			if ("true".equals(System.getProperty("teleport"))) gamePanel.getPlayer().setPosition(
+					me.getSceneX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX() - gamePanel.getPlayer().getColliBoxX(),
+					me.getSceneY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY() - gamePanel.getPlayer().getColliBoxY());
 			else if (target instanceof TextureHolder t) {
 
-				if (gamepanel.getSelectTool().isDragging()) gamepanel.getSelectTool().endDrag();
+				if (gamePanel.getSelectTool().isDragging()) gamePanel.getSelectTool().endDrag();
 				else
 					if ("true".equals(System.getProperty("coll"))) if (!ctrlState || !s && !n) {
 						t.getPoly().getPoints().addAll(me.getX() - t.getLayoutX(), me.getY() - t.getLayoutY());
@@ -345,7 +349,7 @@ public class Input {
 					} else if (ctrlState && s) {
 						String[] sp = t.getTile().name.split("[.]");
 						save(t.getPoly(),
-								gamepanel.getTileManager().getDir() + "/" + String.join(".", Arrays.copyOf(sp, sp.length - 1))
+								gamePanel.getTileManager().getDir() + "/" + String.join(".", Arrays.copyOf(sp, sp.length - 1))
 								+ ".collisionbox");
 					} else if (ctrlState && n) newC(t.getPoly());
 			} else
@@ -401,8 +405,8 @@ public class Input {
 	 * Save map.
 	 */
 	public void saveMap() {
-		if (gamepanel != null)
-			gamepanel.getLgp().saveMap();
+		if (gamePanel != null)
+			gamePanel.saveMap();
 	}
 
 	/**
@@ -463,17 +467,18 @@ public class Input {
 	 */
 	public void toggleFullScreen() {
 		double scaleFactorX, scaleFactorY;
-		scaleFactorX = gamepanel.getScene().getWidth();
-		scaleFactorY = gamepanel.getScene().getHeight();
-		if (((Stage) gamepanel.getScene().getWindow()).isFullScreen())
-			((Stage) gamepanel.getScene().getWindow()).setFullScreen(false);
-		else((Stage) gamepanel.getScene().getWindow()).setFullScreen(true);
-		if (gamepanel.getScalingFactorX() > 1) scaleFactorX = 1;
-		else scaleFactorX = gamepanel.getScene().getWidth() / scaleFactorX;
-		if (gamepanel.getScalingFactorY() > 1) scaleFactorY = 1;
-		else scaleFactorY = gamepanel.getScene().getHeight() / scaleFactorY;
+		scaleFactorX	= gamePanel.getScene().getWidth();
+		scaleFactorY	= gamePanel.getScene().getHeight();
+		if ( ((Stage) gamePanel.getScene().getWindow()).isFullScreen())
+			((Stage) gamePanel.getScene().getWindow()).setFullScreen(false);
+		else ((Stage) gamePanel.getScene().getWindow()).setFullScreen(true);
+		if (scalingFactorHolder.scalingFactorX() > 1) scaleFactorX = 1;
+		else scaleFactorX = gamePanel.getScene().getWidth() / scaleFactorX;
+		if (scalingFactorHolder.scalingFactorY() > 1) scaleFactorY = 1;
+		else scaleFactorY = gamePanel.getScene().getHeight() / scaleFactorY;
 		System.out.println(scaleFactorX + " " + scaleFactorY);
-		gamepanel.changeScalingFactor(scaleFactorX, scaleFactorY);
+		scalingFactorHolder.setScalingFactorX(scaleFactorX);
+		scalingFactorHolder.setScalingFactorY(scaleFactorY);
 	}
 
 	/**

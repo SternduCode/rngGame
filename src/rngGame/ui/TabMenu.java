@@ -10,7 +10,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import rngGame.main.*;
-import rngGame.tile.ImgUtil;
 
 // TODO: Auto-generated Javadoc
 /**

@@ -1,4 +1,4 @@
-package rngGame.tile;
+package rngGame.ui;
 
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -11,7 +11,6 @@ import javax.imageio.stream.ImageInputStream;
 import org.w3c.dom.Node;
 
 import javafx.scene.image.*;
-import rngGame.visual.GamePanel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -22,24 +21,14 @@ public class ImgUtil {
 	/**
 	 * Gets the scaled image.
 	 *
-	 * @param gamepanel the gamepanel
+	 * @param scalingFactorHolder the scaling factor holder
 	 * @param path the path
 	 * @return the scaled image
 	 */
-	public static Image getScaledImage(GamePanel gamepanel, String path) {
+	public static Image getScaledImage(ScalingFactorHolder scalingFactorHolder, String path) {
 		try {
 			Image wi = new Image(new FileInputStream(path));
-			return getScaledImage(gamepanel, path, (int)wi.getWidth(),  (int)wi.getHeight());
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	public static Image getScaledImage(GamePanel gamepanel, String path, boolean flip) {
-		try {
-			Image wi = new Image(new FileInputStream(path));
-			return getScaledImage(gamepanel, path, (int)wi.getWidth(),  (int)wi.getHeight(), flip);
+			return getScaledImage(scalingFactorHolder, path, (int) wi.getWidth(), (int) wi.getHeight());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return null;
@@ -49,77 +38,108 @@ public class ImgUtil {
 	/**
 	 * Gets the scaled image.
 	 *
-	 * @param gamepanel the gamepanel
+	 * @param scalingFactorHolder the scaling factor holder
+	 * @param path the path
+	 * @param flip the flip
+	 * @return the scaled image
+	 */
+	public static Image getScaledImage(ScalingFactorHolder scalingFactorHolder, String path, boolean flip) {
+		try {
+			Image wi = new Image(new FileInputStream(path));
+			return getScaledImage(scalingFactorHolder, path, (int) wi.getWidth(), (int) wi.getHeight(), flip);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * Gets the scaled image.
+	 *
+	 * @param scalingFactorHolder the scaling factor holder
 	 * @param path the path
 	 * @param width the width
 	 * @param height the height
 	 * @return the scaled image
 	 */
-	public static Image getScaledImage(GamePanel gamepanel, String path, int width, int height) {
-		return getScaledImages(gamepanel, path, width, height)[0];
-	}
-	
-	public static Image getScaledImage(GamePanel gamepanel, String path, int width, int height, boolean flip) {
-		return getScaledImages(gamepanel, path, width, height, flip)[0];
+	public static Image getScaledImage(ScalingFactorHolder scalingFactorHolder, String path, int width, int height) {
+		return getScaledImages(scalingFactorHolder, path, width, height)[0];
 	}
 
 	/**
 	 * Gets the scaled image.
 	 *
-	 * @param gamepanel the gamepanel
-	 * @param path the path
-	 * @return the scaled image
-	 */
-	public static Image getScaledImage(rngGame.main.GamePanel gamepanel, String path) {
-		return getScaledImage(gamepanel.getVgp(), path);
-	}
-	
-	public static Image getScaledImage(rngGame.main.GamePanel gamepanel, String path, boolean flip) {
-		return getScaledImage(gamepanel.getVgp(), path, flip);
-	}
-
-	/**
-	 * Gets the scaled image.
-	 *
-	 * @param gamepanel the gamepanel
-	 * @param path the path
-	 * @return the scaled image
-	 */
-	public static Image[] getScaledImages(GamePanel gamepanel, String path) {
-		try {
-			Image wi = new Image(new FileInputStream(path));
-			return getScaledImages(gamepanel, path, (int)wi.getWidth(),  (int)wi.getHeight());
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	public static Image[] getScaledImages(GamePanel gamepanel, String path, boolean flip) {
-		try {
-			Image wi = new Image(new FileInputStream(path));
-			return getScaledImages(gamepanel, path, (int)wi.getWidth(),  (int)wi.getHeight(), flip);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	public static Image[] getScaledImages(GamePanel gamepanel, String path, int width, int height) {
-		return getScaledImages(gamepanel, path, width, height, false);
-	}
-
-	/**
-	 * For gifs put {@code 			iv.setScaleX(gamepanel.getScalingFactorX());
-	 * 			iv.setScaleY(gamepanel.getScalingFactorY());} to set the scale
-	 *
-	 * @param gamepanel the gamepanel
+	 * @param scalingFactorHolder the scaling factor holder
 	 * @param path the path
 	 * @param width the width
 	 * @param height the height
+	 * @param flip the flip
 	 * @return the scaled image
 	 */
-	public static Image[] getScaledImages(GamePanel gamepanel, String path, int width, int height, boolean flip) {
+	public static Image getScaledImage(ScalingFactorHolder scalingFactorHolder, String path, int width, int height, boolean flip) {
+		return getScaledImages(scalingFactorHolder, path, width, height, flip)[0];
+	}
+
+	/**
+	 * Gets the scaled image.
+	 *
+	 * @param scalingFactorHolder the scaling factor holder
+	 * @param path the path
+	 * @return the scaled image
+	 */
+	public static Image[] getScaledImages(ScalingFactorHolder scalingFactorHolder, String path) {
+		try {
+			Image wi = new Image(new FileInputStream(path));
+			return getScaledImages(scalingFactorHolder, path, (int) wi.getWidth(), (int) wi.getHeight());
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * Gets the scaled images.
+	 *
+	 * @param scalingFactorHolder the scaling factor holder
+	 * @param path the path
+	 * @param flip the flip
+	 * @return the scaled images
+	 */
+	public static Image[] getScaledImages(ScalingFactorHolder scalingFactorHolder, String path, boolean flip) {
+		try {
+			Image wi = new Image(new FileInputStream(path));
+			return getScaledImages(scalingFactorHolder, path, (int) wi.getWidth(), (int) wi.getHeight(), flip);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * Gets the scaled images.
+	 *
+	 * @param scalingFactorHolder the scaling factor holder
+	 * @param path the path
+	 * @param width the width
+	 * @param height the height
+	 * @return the scaled images
+	 */
+	public static Image[] getScaledImages(ScalingFactorHolder scalingFactorHolder, String path, int width, int height) {
+		return getScaledImages(scalingFactorHolder, path, width, height, false);
+	}
+
+	/**
+	 * Gets the scaled images.
+	 *
+	 * @param scalingFactorHolder the scaling factor holder
+	 * @param path                the path
+	 * @param width               the width
+	 * @param height              the height
+	 * @param flip                the flip
+	 *
+	 * @return the scaled image
+	 */
+	public static Image[] getScaledImages(ScalingFactorHolder scalingFactorHolder, String path, int width, int height, boolean flip) {
 		String[] sp = path.split("[.]");
 		try {
 			if ("gif".equals(sp[sp.length - 1])) {
@@ -163,19 +183,17 @@ public class ImgUtil {
 
 				for (int i = 0; i < out.length; i++) out[i] = ImgUtil.resizeImage(
 						awtToFx[i], (int) awtToFx[i].getWidth(), (int) awtToFx[i].getHeight(),
-						(int) (width * gamepanel.getScalingFactorX()),
-						(int) (height * gamepanel.getScalingFactorY()), flip);
+						(int) (width * scalingFactorHolder.scalingFactorX()),
+						(int) (height * scalingFactorHolder.scalingFactorY()), flip);
 
 				return out;
 			}
 			Image wi = new Image(new FileInputStream(path));
 			Image[] imgs = new Image[1];
-			for (int k = 0; k < imgs.length; k++) {
-				imgs[k] = ImgUtil.resizeImage(
-							wi, (int) wi.getWidth(), (int) wi.getHeight(),
-							(int) (width * gamepanel.getScalingFactorX()),
-							(int) (height * gamepanel.getScalingFactorY()), flip);
-			}
+			for (int k = 0; k < imgs.length; k++) imgs[k] = ImgUtil.resizeImage(
+					wi, (int) wi.getWidth(), (int) wi.getHeight(),
+					(int) (width * scalingFactorHolder.scalingFactorX()),
+					(int) (height * scalingFactorHolder.scalingFactorY()), flip);
 			return imgs;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -248,7 +266,17 @@ public class ImgUtil {
 		}
 		return bi;
 	}
-	
+
+	/**
+	 * Resize image.
+	 *
+	 * @param input the input
+	 * @param w1 the w 1
+	 * @param h1 the h 1
+	 * @param w2 the w 2
+	 * @param h2 the h 2
+	 * @return the image
+	 */
 	public static Image resizeImage(Image input, int w1, int h1, int w2, int h2) {
 		return resizeImage(input, w1, h1, w2, h2, false);
 	}
@@ -261,6 +289,7 @@ public class ImgUtil {
 	 * @param h1 the h 1
 	 * @param w2 the w 2
 	 * @param h2 the h 2
+	 * @param flip the flip
 	 * @return the image
 	 */
 	public static Image resizeImage(Image input, int w1, int h1, int w2, int h2, boolean flip) {

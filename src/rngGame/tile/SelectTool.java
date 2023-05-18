@@ -14,7 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import rngGame.ui.PartialFillDialog;
+import rngGame.ui.*;
 import rngGame.visual.GamePanel;
 
 

@@ -15,7 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Polyline;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import rngGame.tile.ImgUtil;
+import rngGame.ui.ImgUtil;
 
 public class TestCollBoxGen extends Application {
 

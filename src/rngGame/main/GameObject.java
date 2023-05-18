@@ -21,7 +21,6 @@ import javafx.scene.shape.*;
 import javafx.stage.*;
 import javafx.stage.FileChooser.ExtensionFilter;
 import rngGame.entity.Player;
-import rngGame.tile.ImgUtil;
 import rngGame.ui.*;
 import rngGame.visual.GamePanel;
 

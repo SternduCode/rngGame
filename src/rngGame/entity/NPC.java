@@ -13,7 +13,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import rngGame.main.*;
 import rngGame.main.Text.AnimatedText;
-import rngGame.tile.ImgUtil;
+import rngGame.ui.ImgUtil;
 import rngGame.visual.GamePanel;
 
 // TODO: Auto-generated Javadoc
