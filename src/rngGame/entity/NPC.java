@@ -118,11 +118,15 @@ public class NPC extends Entity implements JsonValue {
 			gpt.getAktionbutton().setInteractionbuttonKann(true, gp2 -> {
 				try {
 					gp2.setBlockUserInputs(true);
-					Image img = ImgUtil.getScaledImage(gp2, "./res/gui/bubble/SpeakBubble2.png");
-					gamepanel.getLgp().getBubble().getChildren().add(new ImageView(img));
+					Image img = ImgUtil.getScaledImage(gp2, "./res/gui/bubble/SpeakBubbledrai.png");
+					ImageView kek = new ImageView(img);
+					gamepanel.getLgp().getBubble().getChildren().add(kek);
 					Random r = new Random();
 					BufferedReader flr = new BufferedReader(new FileReader(new File("./res/texts/Guenther.txt")));
 
+					if(getTextureFiles().containsValue("FritzA.png")) flr = new BufferedReader(new FileReader(new File("./res/texts/Fritsch.txt")));
+					else if(getTextureFiles().containsValue("GandalfA.png")) flr = new BufferedReader(new FileReader(new File("./res/texts/Gandalfus.txt")));
+					
 					String line = "";
 					int uff = r.nextInt(5)+1;
 					try {
@@ -141,12 +145,24 @@ public class NPC extends Entity implements JsonValue {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					AnimatedText at = Text.getInstance().convertText(line.replace("<<", "\n"), 64, false, Color.WHEAT);
+					AnimatedText at = Text.getInstance().convertText(line.replace("<<", "\n"), 64, false, Color.WHITE);
+					at.setOnMouseReleased(e->{
+						gp2.setBlockUserInputs(false);
+						gamepanel.getLgp().getBubble().getChildren().clear();
+						gamepanel.getBubbleText().getChildren().clear();
+					});
+					
+					kek.setOnMouseReleased(e->{
+						gp2.setBlockUserInputs(false);
+						gamepanel.getLgp().getBubble().getChildren().clear();
+						gamepanel.getBubbleText().getChildren().clear();
+					});
+					
 					// gp2.getBubbleText().setImage(Text.getInstance().convertText(line.replace("<<", "\n"),64));
 					gp2.getBubbleText().getChildren().add(at);
 					gp2.getBubbleText().setLayoutX(gp2.getGameWidth() / 2 - at.getImgWidth() / 2);
 					gp2.getBubbleText().setLayoutY(gp2.getGameHeight() / 1.4 - at.getImgHeight() / 2.0);
-
+					
 					System.out.println(at.getWidth());
 					System.out.println(line);
 					System.out.println(uff);

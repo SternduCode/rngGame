@@ -6,6 +6,11 @@ import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import rngGame.entity.MobRan;
 import rngGame.stats.Demon;
+<<<<<<< HEAD
+=======
+import rngGame.stats.Element;
+import rngGame.tile.ImgUtil;
+>>>>>>> refs/remotes/origin/main
 import rngGame.ui.*;
 
 // TODO: Auto-generated Javadoc
@@ -22,9 +27,6 @@ public class Fight extends Pane{
 
 	/** The demon mob. */
 	private Demon eigenMob;
-
-	/** The b. */
-	private final Button b;
 
 	/** The demon mob. */
 	private final Demon demonMob;
@@ -54,14 +56,6 @@ public class Fight extends Pane{
 		majyc					= new Button(gamepanel);
 		stych					= new Button(gamepanel);
 
-		b = new Button(gamepanel);
-
-		b.init("./res/fight/Leaf.gif", 10);
-
-		b.setOnPressed(e -> b.init("./res/fight/Stych2.png"));
-
-		b.setOnReleased(e -> b.init("./res/fight/Leaf.gif", 10));
-
 		leaf.setOnPressed(e -> leaf.init("./res/fight/Leaf2.png"));
 		leaf.setOnReleased(e -> {
 			leaf.init("./res/fight/Leaf.gif");
@@ -88,11 +82,21 @@ public class Fight extends Pane{
 		stych.setOnReleased(e -> {// TODO maybe only scale clored stuff
 			stych.init("./res/fight/Stych.gif");
 			demonMob.changeCurrenthp(-eigenMob.getAtk());
+			majyc.setDisable(true);
+			leaf.setDisable(true);
+			stych.setDisable(true);
 		});
 
+		majyc.setOnPressed(e-> majyc.init("./res/fight/Majyc2.png"));
+		majyc.setOnReleased(e->{
+			majyc.init("./res/fight/Majyc.png");
+			majyc.setDisable(true);
+			leaf.setDisable(true);
+			stych.setDisable(true);
+			sheeesh();
+		});
 
-
-		getChildren().addAll(battlebackgroundvisual, fight, leaf, majyc, stych, b);
+		getChildren().addAll(battlebackgroundvisual, fight, leaf, majyc, stych);
 		scaleF11();
 
 	}
@@ -104,6 +108,8 @@ public class Fight extends Pane{
 		gamepanel.getLgp().getMobRans().remove(mob);
 		gamepanel.getViewGroups().get(mob.getLayer()).getChildren().remove(mob);
 	}
+
+
 
 	/**
 	 * Scale F 11.
@@ -133,6 +139,86 @@ public class Fight extends Pane{
 		leaf.init("./res/fight/Leaf.gif", 10);
 		majyc.init("./res/fight/Majyc.gif", 10);
 		stych.init("./res/fight/Stych.gif", 10);
+		tescht.init("./res/npc/rdmDemon.gif", 20);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/**
+	 * Sheeesh.
+	 */
+	public void sheeesh() {
+		switch (eigenMob.getElement()) {
+			case Fire -> {
+				if(demonMob.getElement() == Element.Plant) demonMob.changeCurrenthp(-eigenMob.getAtk()*2);
+				else if(demonMob.getElement() == Element.Water || demonMob.getElement() == Element.Void || demonMob.getElement() == Element.DimensionMaster)
+					demonMob.changeCurrenthp((int) (-eigenMob.getAtk()*0.5));
+				else demonMob.changeCurrenthp(-eigenMob.getAtk());
+			}
+			case Water -> {
+				if(demonMob.getElement() == Element.Fire) demonMob.changeCurrenthp(-eigenMob.getAtk()*2);
+				else if(demonMob.getElement() == Element.Plant || demonMob.getElement() == Element.Void || demonMob.getElement() == Element.DimensionMaster)
+					demonMob.changeCurrenthp((int) (-eigenMob.getAtk()*0.5));
+				else demonMob.changeCurrenthp(-eigenMob.getAtk());
+			}
+			case Plant -> {
+				if(demonMob.getElement() == Element.Water) demonMob.changeCurrenthp(-eigenMob.getAtk()*2);
+				else if(demonMob.getElement() == Element.Fire || demonMob.getElement() == Element.Void || demonMob.getElement() == Element.DimensionMaster)
+					demonMob.changeCurrenthp((int) (-eigenMob.getAtk()*0.5));
+				else demonMob.changeCurrenthp(-eigenMob.getAtk());
+			}
+			case Light -> {
+				if(demonMob.getElement() == Element.Fire || demonMob.getElement() == Element.Plant || demonMob.getElement() == Element.Water)
+					demonMob.changeCurrenthp(-eigenMob.getAtk()*2);
+				else if(demonMob.getElement() == Element.Void || demonMob.getElement() == Element.DimensionMaster)
+					demonMob.changeCurrenthp((int) (-eigenMob.getAtk()*0.5));
+				else if(demonMob.getElement() == Element.Shadow) demonMob.changeCurrenthp((int) (-eigenMob.getAtk()*1.5));
+				else demonMob.changeCurrenthp(-eigenMob.getAtk());
+			}
+			case Shadow -> {
+				if(demonMob.getElement() == Element.Fire || demonMob.getElement() == Element.Plant || demonMob.getElement() == Element.Water)
+					demonMob.changeCurrenthp(-eigenMob.getAtk()*2);
+				else if(demonMob.getElement() == Element.Void || demonMob.getElement() == Element.DimensionMaster)
+					demonMob.changeCurrenthp((int) (-eigenMob.getAtk()*0.5));
+				else if(demonMob.getElement() == Element.Light) demonMob.changeCurrenthp((int) (-eigenMob.getAtk()*1.5));
+				else demonMob.changeCurrenthp(-eigenMob.getAtk());
+			}
+			case Void -> {
+				if(demonMob.getElement() == Element.DimensionMaster) demonMob.changeCurrenthp((int) (-eigenMob.getAtk()*0.5));
+				else if (demonMob.getElement() == Element.Void) demonMob.changeCurrenthp(-eigenMob.getAtk());
+				else demonMob.changeCurrenthp(-eigenMob.getAtk()*2);
+			}
+			case DimensionMaster -> {
+				if (demonMob.getElement() == Element.DimensionMaster) demonMob.changeCurrenthp(-eigenMob.getAtk());
+				else if(demonMob.getElement() == Element.Fire || demonMob.getElement() == Element.Water || demonMob.getElement() == Element.Plant)
+					demonMob.changeCurrenthp(-eigenMob.getAtk()*3);
+				else demonMob.changeCurrenthp(-eigenMob.getAtk()*2);
+			}
+
+
+
+
+		}
 	}
 
 	/**
