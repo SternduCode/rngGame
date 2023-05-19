@@ -15,17 +15,17 @@ public class Button extends AnimatedImage {
 	/**
 	 * Instantiates a new button.
 	 *
-	 * @param scalingFactorHolder the scaling factor holder
+	 * @param path the path
+	 * @param windowDataHolder the window data holder
 	 */
-	public Button(ScalingFactorHolder scalingFactorHolder) { super(scalingFactorHolder); }
+	public Button(String path, WindowDataHolder windowDataHolder) { super(path, windowDataHolder); }
 
 	/**
 	 * Instantiates a new button.
 	 *
-	 * @param path the path
-	 * @param scalingFactorHolder the scaling factor holder
+	 * @param windowDataHolder the window data holder
 	 */
-	public Button(String path, ScalingFactorHolder scalingFactorHolder) { super(path, scalingFactorHolder); }
+	public Button(WindowDataHolder windowDataHolder) { super(windowDataHolder); }
 
 	/**
 	 * Gets the on pressed.

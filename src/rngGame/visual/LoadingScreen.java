@@ -22,8 +22,8 @@ public class LoadingScreen extends AnimatedImage {
 	 */
 	public void goIntoLoadingScreen() {
 
-		setFitWidth(getImage().getWidth() * logic.getScalingFactorHolder().scalingFactorX());
-		setFitHeight(getImage().getHeight() * logic.getScalingFactorHolder().scalingFactorY());
+		setFitWidth(getImage().getWidth() * logic.getWindowDataHolder().scalingFactorX());
+		setFitHeight(getImage().getHeight() * logic.getWindowDataHolder().scalingFactorY());
 
 		FadeTransition ft = new FadeTransition(Duration.millis(250), this);
 		ft.setFromValue(0);
@@ -36,8 +36,8 @@ public class LoadingScreen extends AnimatedImage {
 	 * Go out of loading screen.
 	 */
 	public void goOutOfLoadingScreen() {
-		setFitWidth(getImage().getWidth() * logic.getScalingFactorHolder().scalingFactorX());
-		setFitHeight(getImage().getHeight() * logic.getScalingFactorHolder().scalingFactorY());
+		setFitWidth(getImage().getWidth() * logic.getWindowDataHolder().scalingFactorX());
+		setFitHeight(getImage().getHeight() * logic.getWindowDataHolder().scalingFactorY());
 
 		FadeTransition ft = new FadeTransition(Duration.millis(250), this);
 		ft.setFromValue(1);

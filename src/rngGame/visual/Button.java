@@ -11,7 +11,7 @@ import javafx.scene.input.MouseEvent;
 public class Button extends AnimatedImage {
 
 	/** The logic. */
-	private final rngGame.ui.Button logic;
+	protected final rngGame.ui.Button logic;
 
 	/**
 	 * Instantiates a new button.

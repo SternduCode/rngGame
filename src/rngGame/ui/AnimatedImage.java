@@ -28,28 +28,17 @@ public class AnimatedImage {
 	private int fps;
 
 	/** The scaling factor holder. */
-	private final ScalingFactorHolder scalingFactorHolder;
-
-	/**
-	 * Instantiates a new animated image.
-	 *
-	 * @param scalingFactorHolder the scaling factor holder
-	 */
-	public AnimatedImage(ScalingFactorHolder scalingFactorHolder) {
-		this.scalingFactorHolder	= scalingFactorHolder;
-		fps							= 7;
-
-	}
+	private final WindowDataHolder windowDataHolder;
 
 	/**
 	 * Instantiates a new animated image.
 	 *
 	 * @param path                the path
-	 * @param scalingFactorHolder the scaling factor holder
+	 * @param windowDataHolder the window data holder
 	 */
-	public AnimatedImage(String path, ScalingFactorHolder scalingFactorHolder) {
+	public AnimatedImage(String path, WindowDataHolder windowDataHolder) {
 		this.path					= path;
-		this.scalingFactorHolder	= scalingFactorHolder;
+		this.windowDataHolder	= windowDataHolder;
 		fps							= 7;
 		scaleF11();
 		update();
@@ -60,15 +49,26 @@ public class AnimatedImage {
 	 * Instantiates a new animated image.
 	 *
 	 * @param path                the path
-	 * @param scalingFactorHolder the scaling factor holder
+	 * @param windowDataHolder the window data holder
 	 * @param fps                 the fps
 	 */
-	public AnimatedImage(String path, ScalingFactorHolder scalingFactorHolder, int fps) {
+	public AnimatedImage(String path, WindowDataHolder windowDataHolder, int fps) {
 		this.path					= path;
-		this.scalingFactorHolder	= scalingFactorHolder;
+		this.windowDataHolder	= windowDataHolder;
 		this.fps					= fps;
 		scaleF11();
 		update();
+
+	}
+
+	/**
+	 * Instantiates a new animated image.
+	 *
+	 * @param windowDataHolder the window data holder
+	 */
+	public AnimatedImage(WindowDataHolder windowDataHolder) {
+		this.windowDataHolder	= windowDataHolder;
+		fps							= 7;
 
 	}
 
@@ -107,7 +107,7 @@ public class AnimatedImage {
 	 *
 	 * @return the scaling factor holder
 	 */
-	public ScalingFactorHolder getScalingFactorHolder() { return scalingFactorHolder; }
+	public WindowDataHolder getWindowDataHolder() { return windowDataHolder; }
 
 	/**
 	 * Inits the.
@@ -160,7 +160,7 @@ public class AnimatedImage {
 	 * Scale F 11.
 	 */
 	public void scaleF11() {
-		frames = ImgUtil.getScaledImages(scalingFactorHolder, path);
+		frames = ImgUtil.getScaledImages(windowDataHolder, path);
 		if (frameIndex >= frames.length)
 			frameIndex = 0;
 		dirty = true;

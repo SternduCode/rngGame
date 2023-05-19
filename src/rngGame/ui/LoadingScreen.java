@@ -13,28 +13,28 @@ public class LoadingScreen extends AnimatedImage {
 	 * Instantiates a new loading screen.
 	 *
 	 * @param path the path
-	 * @param scalingFactorHolder the scaling factor holder
+	 * @param windowDataHolder the window data holder
 	 */
-	public LoadingScreen(String path, ScalingFactorHolder scalingFactorHolder) { super(path, scalingFactorHolder); }
+	public LoadingScreen(String path, WindowDataHolder windowDataHolder) { super(path, windowDataHolder); }
 
 	/**
 	 * Instantiates a new loading screen.
 	 *
 	 * @param path                the path
-	 * @param scalingFactorHolder the scaling factor holder
+	 * @param windowDataHolder the window data holder
 	 * @param fps                 the fps
 	 */
-	public LoadingScreen(String path, ScalingFactorHolder scalingFactorHolder, int fps) { super(path, scalingFactorHolder, fps); }
+	public LoadingScreen(String path, WindowDataHolder windowDataHolder, int fps) { super(path, windowDataHolder, fps); }
 
 	/**
 	 * Gets the default loading screen.
 	 *
-	 * @param scalingFactorHolder the scaling factor holder
+	 * @param windowDataHolder the window data holder
 	 * @return the default loading screen
 	 */
-	public static LoadingScreen getDefaultLoadingScreen(ScalingFactorHolder scalingFactorHolder) {
+	public static LoadingScreen getDefaultLoadingScreen(WindowDataHolder windowDataHolder) {
 		return defaultLoadingScreen != null ? defaultLoadingScreen
-				: (defaultLoadingScreen = new LoadingScreen("./res/gui/Loadingscreen.gif", scalingFactorHolder, 10));
+				: (defaultLoadingScreen = new LoadingScreen("./res/gui/Loadingscreen.gif", windowDataHolder, 10));
 	}
 
 

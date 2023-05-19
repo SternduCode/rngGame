@@ -21,14 +21,14 @@ public class ImgUtil {
 	/**
 	 * Gets the scaled image.
 	 *
-	 * @param scalingFactorHolder the scaling factor holder
+	 * @param windowDataHolder the window data holder
 	 * @param path the path
 	 * @return the scaled image
 	 */
-	public static Image getScaledImage(ScalingFactorHolder scalingFactorHolder, String path) {
+	public static Image getScaledImage(WindowDataHolder windowDataHolder, String path) {
 		try {
 			Image wi = new Image(new FileInputStream(path));
-			return getScaledImage(scalingFactorHolder, path, (int) wi.getWidth(), (int) wi.getHeight());
+			return getScaledImage(windowDataHolder, path, (int) wi.getWidth(), (int) wi.getHeight());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return null;
@@ -38,15 +38,15 @@ public class ImgUtil {
 	/**
 	 * Gets the scaled image.
 	 *
-	 * @param scalingFactorHolder the scaling factor holder
+	 * @param windowDataHolder the window data holder
 	 * @param path the path
 	 * @param flip the flip
 	 * @return the scaled image
 	 */
-	public static Image getScaledImage(ScalingFactorHolder scalingFactorHolder, String path, boolean flip) {
+	public static Image getScaledImage(WindowDataHolder windowDataHolder, String path, boolean flip) {
 		try {
 			Image wi = new Image(new FileInputStream(path));
-			return getScaledImage(scalingFactorHolder, path, (int) wi.getWidth(), (int) wi.getHeight(), flip);
+			return getScaledImage(windowDataHolder, path, (int) wi.getWidth(), (int) wi.getHeight(), flip);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return null;
@@ -56,41 +56,41 @@ public class ImgUtil {
 	/**
 	 * Gets the scaled image.
 	 *
-	 * @param scalingFactorHolder the scaling factor holder
+	 * @param windowDataHolder the window data holder
 	 * @param path the path
 	 * @param width the width
 	 * @param height the height
 	 * @return the scaled image
 	 */
-	public static Image getScaledImage(ScalingFactorHolder scalingFactorHolder, String path, int width, int height) {
-		return getScaledImages(scalingFactorHolder, path, width, height)[0];
+	public static Image getScaledImage(WindowDataHolder windowDataHolder, String path, int width, int height) {
+		return getScaledImages(windowDataHolder, path, width, height)[0];
 	}
 
 	/**
 	 * Gets the scaled image.
 	 *
-	 * @param scalingFactorHolder the scaling factor holder
+	 * @param windowDataHolder the window data holder
 	 * @param path the path
 	 * @param width the width
 	 * @param height the height
 	 * @param flip the flip
 	 * @return the scaled image
 	 */
-	public static Image getScaledImage(ScalingFactorHolder scalingFactorHolder, String path, int width, int height, boolean flip) {
-		return getScaledImages(scalingFactorHolder, path, width, height, flip)[0];
+	public static Image getScaledImage(WindowDataHolder windowDataHolder, String path, int width, int height, boolean flip) {
+		return getScaledImages(windowDataHolder, path, width, height, flip)[0];
 	}
 
 	/**
 	 * Gets the scaled image.
 	 *
-	 * @param scalingFactorHolder the scaling factor holder
+	 * @param windowDataHolder the window data holder
 	 * @param path the path
 	 * @return the scaled image
 	 */
-	public static Image[] getScaledImages(ScalingFactorHolder scalingFactorHolder, String path) {
+	public static Image[] getScaledImages(WindowDataHolder windowDataHolder, String path) {
 		try {
 			Image wi = new Image(new FileInputStream(path));
-			return getScaledImages(scalingFactorHolder, path, (int) wi.getWidth(), (int) wi.getHeight());
+			return getScaledImages(windowDataHolder, path, (int) wi.getWidth(), (int) wi.getHeight());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return null;
@@ -100,15 +100,15 @@ public class ImgUtil {
 	/**
 	 * Gets the scaled images.
 	 *
-	 * @param scalingFactorHolder the scaling factor holder
+	 * @param windowDataHolder the window data holder
 	 * @param path the path
 	 * @param flip the flip
 	 * @return the scaled images
 	 */
-	public static Image[] getScaledImages(ScalingFactorHolder scalingFactorHolder, String path, boolean flip) {
+	public static Image[] getScaledImages(WindowDataHolder windowDataHolder, String path, boolean flip) {
 		try {
 			Image wi = new Image(new FileInputStream(path));
-			return getScaledImages(scalingFactorHolder, path, (int) wi.getWidth(), (int) wi.getHeight(), flip);
+			return getScaledImages(windowDataHolder, path, (int) wi.getWidth(), (int) wi.getHeight(), flip);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return null;
@@ -118,28 +118,27 @@ public class ImgUtil {
 	/**
 	 * Gets the scaled images.
 	 *
-	 * @param scalingFactorHolder the scaling factor holder
+	 * @param windowDataHolder the window data holder
 	 * @param path the path
 	 * @param width the width
 	 * @param height the height
 	 * @return the scaled images
 	 */
-	public static Image[] getScaledImages(ScalingFactorHolder scalingFactorHolder, String path, int width, int height) {
-		return getScaledImages(scalingFactorHolder, path, width, height, false);
+	public static Image[] getScaledImages(WindowDataHolder windowDataHolder, String path, int width, int height) {
+		return getScaledImages(windowDataHolder, path, width, height, false);
 	}
 
 	/**
 	 * Gets the scaled images.
 	 *
-	 * @param scalingFactorHolder the scaling factor holder
+	 * @param windowDataHolder the window data holder
 	 * @param path                the path
 	 * @param width               the width
 	 * @param height              the height
 	 * @param flip                the flip
-	 *
 	 * @return the scaled image
 	 */
-	public static Image[] getScaledImages(ScalingFactorHolder scalingFactorHolder, String path, int width, int height, boolean flip) {
+	public static Image[] getScaledImages(WindowDataHolder windowDataHolder, String path, int width, int height, boolean flip) {
 		String[] sp = path.split("[.]");
 		try {
 			if ("gif".equals(sp[sp.length - 1])) {
@@ -183,8 +182,8 @@ public class ImgUtil {
 
 				for (int i = 0; i < out.length; i++) out[i] = ImgUtil.resizeImage(
 						awtToFx[i], (int) awtToFx[i].getWidth(), (int) awtToFx[i].getHeight(),
-						(int) (width * scalingFactorHolder.scalingFactorX()),
-						(int) (height * scalingFactorHolder.scalingFactorY()), flip);
+						(int) (width * windowDataHolder.scalingFactorX()),
+						(int) (height * windowDataHolder.scalingFactorY()), flip);
 
 				return out;
 			}
@@ -192,8 +191,8 @@ public class ImgUtil {
 			Image[] imgs = new Image[1];
 			for (int k = 0; k < imgs.length; k++) imgs[k] = ImgUtil.resizeImage(
 					wi, (int) wi.getWidth(), (int) wi.getHeight(),
-					(int) (width * scalingFactorHolder.scalingFactorX()),
-					(int) (height * scalingFactorHolder.scalingFactorY()), flip);
+					(int) (width * windowDataHolder.scalingFactorX()),
+					(int) (height * windowDataHolder.scalingFactorY()), flip);
 			return imgs;
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -23,8 +23,11 @@ import javafx.util.Duration;
 import rngGame.buildings.*;
 import rngGame.entity.*;
 import rngGame.tile.*;
+import rngGame.tile.SelectTool;
 import rngGame.tile.TileManager;
 import rngGame.ui.*;
+import rngGame.ui.ActionButton;
+import rngGame.ui.TabMenu;
 import rngGame.visual.AnimatedImage;
 import rngGame.visual.Button;
 
@@ -39,68 +42,14 @@ public class GamePanel {
 	 */
 	private class GP {
 
-		/** The loading screen. */
-		private final ImageView loadingScreen;
-
-		/** The fps label. */
-		private final Label fpsLabel;
-
-		/** The overlay. */
-		private final ImageView overlay;
-
-		/** The bubble text. */
-		private final Pane bubbleText;
-
-		/** The layer group. */
-		private final GroupGroup layerGroup;
-
-		/** The point group. */
-		private final Group pointGroup;
-
 		/** The frame times. */
 		private List<Long> frameTimes;
 
 		/** The last frame. */
 		private Long lastFrame;
 
-		/** The tile M. */
-		private final TileManager tileManager;
-
-		/** The aktionbutton. */
-		private final AktionButton aktionbutton;
-
-		/** The select tool. */
-		private final SelectTool selectTool;
-
-		/** The gamemenu. */
-		private final TabMenu gamemenu;
-
 		/** The target FPS. */
 		private final int targetFPS = 80;
-
-		/** The scaling factor Y. */
-		private double scalingFactorX = 1, scalingFactorY = 1;
-
-		/** The b. */
-		private final Button b;
-
-		/** The block size. */
-		private final int blockSize = 48;
-
-		/** The x blocks. */
-		private final int xBlocks = 20;
-
-		/** The y blocks. */
-		private final int yBlocks = 11;
-
-		/** The scleed blockSizes. */
-		private int blockSizeX = blockSize, blockSizeY = blockSize;
-
-		/** The game height. */
-		private int gameHeight = blockSizeY * yBlocks;
-
-		/** The game width. */
-		private int gameWidth = blockSizeX * xBlocks;
 
 		/** The fps. */
 		private Double fps = 0d;
@@ -170,7 +119,7 @@ public class GamePanel {
 
 			player = new Player(this, tileManager.getCM(), tileManager.getRequestorN());
 
-			aktionbutton = new AktionButton(this);
+			aktionbutton = new ActionButton(this);
 
 			lgp.setMap("./res/maps/lavaMap2.json");
 			gamemenu = new TabMenu(getLgp());
@@ -198,12 +147,6 @@ public class GamePanel {
 		public void changeScalingFactor(double scaleFactorX, double scaleFactorY) {
 			player.setPosition(player.getX() * (scaleFactorX / scalingFactorX),
 					player.getY() * (scaleFactorY / scalingFactorY));
-			scalingFactorX = scaleFactorX;
-			scalingFactorY = scaleFactorY;
-			blockSizeX		= (int) (blockSize * scaleFactorX);
-			blockSizeY		= (int) (blockSize * scaleFactorY);
-			gameWidth		= blockSizeX * xBlocks;
-			gameHeight		= blockSizeY * yBlocks;
 			reload();
 			player.getPlayerImage();
 			player.generateCollisionBox();
@@ -215,7 +158,7 @@ public class GamePanel {
 		 *
 		 * @return the aktionbutton
 		 */
-		public AktionButton getAktionbutton() { return aktionbutton; }
+		public ActionButton getAktionbutton() { return aktionbutton; }
 
 		/**
 		 * Gets the block size.
@@ -619,17 +562,17 @@ public class GamePanel {
 	private boolean fpsLabelVisible;
 
 	/** The scaling factor holder. */
-	private final ScalingFactorHolder scalingFactorHolder;
+	private final WindowDataHolder windowDataHolder;
 
 	/**
 	 * Instantiates a new game panel.
 	 *
-	 * @param scalingFactorHolder the scaling factor holder
+	 * @param windowDataHolder the window data holder
 	 * @throws FileNotFoundException the file not found exception
 	 */
-	public GamePanel(ScalingFactorHolder scalingFactorHolder) throws FileNotFoundException {
+	public GamePanel(WindowDataHolder windowDataHolder) throws FileNotFoundException {
 
-		this.scalingFactorHolder = scalingFactorHolder;
+		this.windowDataHolder = windowDataHolder;
 
 		fpsLabelVisible = false;
 
@@ -640,7 +583,7 @@ public class GamePanel {
 
 		difficulty = Difficulty.EASY;
 
-		input = Input.getInstance(scalingFactorHolder);
+		input = Input.getInstance(windowDataHolder);
 
 		points = new HashMap<>();
 

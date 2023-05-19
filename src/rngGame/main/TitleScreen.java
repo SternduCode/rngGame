@@ -1,6 +1,5 @@
 package rngGame.main;
 
-import java.io.FileNotFoundException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javafx.animation.*;
@@ -9,6 +8,7 @@ import javafx.scene.image.*;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import rngGame.ui.*;
+import rngGame.ui.GamePanel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -20,7 +20,7 @@ public class TitleScreen extends Pane {
 	private final ImageView iv;
 
 	/** The scaling factor holder. */
-	private final ScalingFactorHolder scalingFactorHolder;
+	private final WindowDataHolder windowDataHolder;
 
 	/** The last. */
 	private long last = 0l;
@@ -55,20 +55,20 @@ public class TitleScreen extends Pane {
 	/**
 	 * Instantiates a new title screen.
 	 *
-	 * @param scalingFactorHolder the scaling factor holder
+	 * @param windowDataHolder the window data holder
 	 */
-	public TitleScreen(ScalingFactorHolder scalingFactorHolder) {
+	public TitleScreen(WindowDataHolder windowDataHolder) {
 		iv = new ImageView();
 
 		gamePanelPane = new Pane();
 
-		this.scalingFactorHolder = scalingFactorHolder;
+		this.windowDataHolder = windowDataHolder;
 
-		loadingScreenVisual = new rngGame.visual.LoadingScreen(LoadingScreen.getDefaultLoadingScreen(scalingFactorHolder));
+		loadingScreenVisual = new rngGame.visual.LoadingScreen(LoadingScreen.getDefaultLoadingScreen(windowDataHolder));
 		loadingScreenVisual.setDisable(true);
 		loadingScreenVisual.setOpacity(0);
 
-		clous = new Button("./res/backgrounds/Clous.png", scalingFactorHolder);
+		clous = new Button("./res/backgrounds/Clous.png", windowDataHolder);
 		clous.setOnPressed(e -> clous.init("./res/backgrounds/Clous2.png"));
 		clous.setOnReleased(e -> {
 			clous.init("./res/backgrounds/Clous.png");
@@ -76,22 +76,20 @@ public class TitleScreen extends Pane {
 		});
 		clousVisual = new rngGame.visual.Button(clous);
 
-		ploy = new Button("./res/backgrounds/Ploy.png", scalingFactorHolder);
+		ploy = new Button("./res/backgrounds/Ploy.png", windowDataHolder);
 		ploy.setOnPressed(e -> ploy.init("./res/backgrounds/Ploy2.png"));
 		ploy.setOnReleased(e -> {
+
+			gamePanelPane.getChildren().clear();
+
 			new Thread(() -> {
 				loadingScreenVisual.goIntoLoadingScreen();
 
-				try {
-					gamePanel = new GamePanel(scalingFactorHolder);
+				gamePanel = new GamePanel(windowDataHolder);
 
-					gamePanelPane.getChildren().clear();
-					gamePanelPane.getChildren().add(gamePanelVisual = new rngGame.visual.GamePanel(gamePanel, scalingFactorHolder));
+				Platform.runLater(() -> gamePanelPane.getChildren().add(gamePanelVisual = new rngGame.visual.GamePanel(gamePanel, windowDataHolder)));
 
-					Input.getInstance(scalingFactorHolder).setGamePanel(gamePanel); // pass instance of GamePanel to the Instance of Input
-				} catch (FileNotFoundException e1) {
-					e1.printStackTrace();
-				}
+				Input.getInstance(windowDataHolder).setGamePanel(gamePanel); // pass instance of GamePanel to the Instance of Input
 
 				ploy.init("./res/backgrounds/Ploy.png");
 				iv.setVisible(false);
@@ -110,8 +108,8 @@ public class TitleScreen extends Pane {
 		});
 		ployVisual = new rngGame.visual.Button(ploy);
 
-		settins	= new Button("./res/backgrounds/Settins.png", scalingFactorHolder);
-		pfail	= new Button("./res/backgrounds/Pfail.png", scalingFactorHolder);
+		settins			= new Button("./res/backgrounds/Settins.png", windowDataHolder);
+		pfail			= new Button("./res/backgrounds/Pfail.png", windowDataHolder);
 		settinsVisual	= new rngGame.visual.Button(settins);
 		pfailVisual		= new rngGame.visual.Button(pfail);
 		pfailVisual.setVisible(false);
@@ -161,7 +159,7 @@ public class TitleScreen extends Pane {
 				settins.update();
 				clous.update();
 				pfail.update();
-				LoadingScreen.getDefaultLoadingScreen(scalingFactorHolder).update();
+				LoadingScreen.getDefaultLoadingScreen(windowDataHolder).update();
 				if (gamePanel != null) gamePanel.update();
 			}
 		}).start();
@@ -195,8 +193,8 @@ public class TitleScreen extends Pane {
 	 * Scale F 11.
 	 */
 	public void scaleF11() {
-		frames = ImgUtil.getScaledImages(scalingFactorHolder, "./res/backgrounds/Main BG.gif");
-		LoadingScreen.getDefaultLoadingScreen(scalingFactorHolder).scaleF11();
+		frames = ImgUtil.getScaledImages(windowDataHolder, "./res/backgrounds/Main BG.gif");
+		LoadingScreen.getDefaultLoadingScreen(windowDataHolder).scaleF11();
 		iv.setImage(frames[0]);
 	}
 
