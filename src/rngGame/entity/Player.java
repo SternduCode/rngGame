@@ -3,13 +3,12 @@ package rngGame.entity;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javafx.beans.property.ObjectProperty;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import rngGame.main.Input;
 import rngGame.tile.TileManager;
-import rngGame.visual.GamePanel;
+import rngGame.ui.*;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -56,11 +55,11 @@ public class Player extends Entity {
 	 * Player is not defined in map file but some attributes of it are.
 	 *
 	 * @param gamePanel A reference to the {@link GamePanel}
-	 * @param cm        A reference to the {@link TileManager#getCM() ContextMenu} via {@link GamePanel#getTileM()}.
-	 * @param requestor Is used to know on what the {@link TileManager#getCM() ContextMenu} was triggered
+	 * @param requestor Is used to know on what the {@link TileManager#getContextMenu() ContextMenu} was triggered
+	 * @param windowDataHolder the window data holder
 	 */
-	public Player(GamePanel gamePanel, ContextMenu cm, ObjectProperty<? extends Entity> requestor) {
-		super(null, 3 * 60, gamePanel, "player", null, cm, requestor);
+	public Player(GamePanel gamePanel, ObjectProperty<? extends Entity> requestor, WindowDataHolder windowDataHolder) {
+		super(null, 3 * 60, gamePanel, "player", null, requestor, windowDataHolder);
 		setCurrentKey("down");
 
 		fps = 10.5;
@@ -69,9 +68,6 @@ public class Player extends Entity {
 		// rectangular in this case
 
 		gamepanel = gamePanel;
-
-		screenX	= gamePanel.getGameWidth() / 2 - getSize() / 2;	// Place the player in the middle of the screen
-		screenY	= gamePanel.getGameHeight() / 2 - getSize() / 2;
 
 		setPosition(0, 0); // Put player on upper left corner of the map; can be overridden in map file
 
@@ -88,31 +84,31 @@ public class Player extends Entity {
 		 * S > move down D > move right
 		 */
 
-		Input.getInstance().setKeyHandler("p", mod -> {
+		Input.getInstance(null).setKeyHandler("p", mod -> {
 			p.set(!p.get());
 		}, KeyCode.P, false);
-		Input.getInstance().setKeyHandler("wDOWN", mod -> {
+		Input.getInstance(null).setKeyHandler("wDOWN", mod -> {
 			w.set(true);
 		}, KeyCode.W, false);
-		Input.getInstance().setKeyHandler("aDOWN", mod -> {
+		Input.getInstance(null).setKeyHandler("aDOWN", mod -> {
 			a.set(true);
 		}, KeyCode.A, false);
-		Input.getInstance().setKeyHandler("sDOWN", mod -> {
+		Input.getInstance(null).setKeyHandler("sDOWN", mod -> {
 			if (!mod.isControlPressed()) s.set(true);
 		}, KeyCode.S, false);
-		Input.getInstance().setKeyHandler("dDOWN", mod -> {
+		Input.getInstance(null).setKeyHandler("dDOWN", mod -> {
 			d.set(true);
 		}, KeyCode.D, false);
-		Input.getInstance().setKeyHandler("wUP", mod -> {
+		Input.getInstance(null).setKeyHandler("wUP", mod -> {
 			w.set(false);
 		}, KeyCode.W, true);
-		Input.getInstance().setKeyHandler("aUP", mod -> {
+		Input.getInstance(null).setKeyHandler("aUP", mod -> {
 			a.set(false);
 		}, KeyCode.A, true);
-		Input.getInstance().setKeyHandler("sUP", mod -> {
+		Input.getInstance(null).setKeyHandler("sUP", mod -> {
 			s.set(false);
 		}, KeyCode.S, true);
-		Input.getInstance().setKeyHandler("dUP", mod -> {
+		Input.getInstance(null).setKeyHandler("dUP", mod -> {
 			d.set(false);
 		}, KeyCode.D, true);
 	}
@@ -126,13 +122,14 @@ public class Player extends Entity {
 		collisionBoxes.forEach((key, poly) -> {
 			poly.getPoints().clear();
 			poly.setFill(Color.color(1, 0, 1, 0.75));
-			poly.getPoints().addAll(colliBoxX * gamepanel.getScalingFactorX() - 0.5,
-					colliBoxY * gamepanel.getScalingFactorY() - 0.5, colliBoxX * gamepanel.getScalingFactorX() - 0.5,
-					(colliBoxY + colliBoxHeight) * gamepanel.getScalingFactorY() + 0.5,
-					(colliBoxX + colliBoxWidth) * gamepanel.getScalingFactorX() + 0.5,
-					(colliBoxY + colliBoxHeight) * gamepanel.getScalingFactorY() + 0.5,
-					(colliBoxX + colliBoxWidth) * gamepanel.getScalingFactorX() + 0.5,
-					colliBoxY * gamepanel.getScalingFactorY() - 0.5);
+			poly.getPoints().addAll(colliBoxX * gamepanel.getWindowDataHolder().scalingFactorX() - 0.5,
+					colliBoxY * gamepanel.getWindowDataHolder().scalingFactorY() - 0.5,
+					colliBoxX * gamepanel.getWindowDataHolder().scalingFactorX() - 0.5,
+					(colliBoxY + colliBoxHeight) * gamepanel.getWindowDataHolder().scalingFactorY() + 0.5,
+					(colliBoxX + colliBoxWidth) * gamepanel.getWindowDataHolder().scalingFactorX() + 0.5,
+					(colliBoxY + colliBoxHeight) * gamepanel.getWindowDataHolder().scalingFactorY() + 0.5,
+					(colliBoxX + colliBoxWidth) * gamepanel.getWindowDataHolder().scalingFactorX() + 0.5,
+					colliBoxY * gamepanel.getWindowDataHolder().scalingFactorY() - 0.5);
 		});
 	}
 
@@ -141,28 +138,28 @@ public class Player extends Entity {
 	 *
 	 * @return the colli box height
 	 */
-	public double getColliBoxHeight() { return colliBoxHeight * gamepanel.getScalingFactorY(); }
+	public double getColliBoxHeight() { return colliBoxHeight * gamepanel.getWindowDataHolder().scalingFactorY(); }
 
 	/**
 	 * Gets the colli box width.
 	 *
 	 * @return the colli box width
 	 */
-	public double getColliBoxWidth() { return colliBoxWidth * gamepanel.getScalingFactorX(); }
+	public double getColliBoxWidth() { return colliBoxWidth * gamepanel.getWindowDataHolder().scalingFactorX(); }
 
 	/**
 	 * Gets the colli box X.
 	 *
 	 * @return the colli box X
 	 */
-	public double getColliBoxX() { return colliBoxX * gamepanel.getScalingFactorX(); }
+	public double getColliBoxX() { return colliBoxX * gamepanel.getWindowDataHolder().scalingFactorX(); }
 
 	/**
 	 * Gets the colli box Y.
 	 *
 	 * @return the colli box Y
 	 */
-	public double getColliBoxY() { return colliBoxY * gamepanel.getScalingFactorY(); }
+	public double getColliBoxY() { return colliBoxY * gamepanel.getWindowDataHolder().scalingFactorY(); }
 
 	/**
 	 * Gets the player image.
@@ -275,7 +272,7 @@ public class Player extends Entity {
 		return "Player [size=" + getSize() + ", p=" + p + ", w=" + w + ", a=" + a + ", s=" + s
 				+ ", d=" + d + ", screenX=" + getScreenX() + ", screenY=" + getScreenY() + ", oldX=" + oldX
 				+ ", oldY=" + oldY + ", speed=" + getSpeed() + ", x=" + getX() + ", y=" + getY() + ", fps="
-				+ fps + ", images=" + getImages() + ", collisionBoxes=" + collisionBoxes + ", directory="
+				+ fps + ", collisionBoxes=" + collisionBoxes + ", directory="
 				+ directory + ", layer=" + getLayer() + ", extraData=" + extraData + ", slave=" + isSlave()
 				+ ", textureFiles=" + textureFiles + ", reqWidth=" + getReqWidth() + ", reqHeight="
 				+ getReqHeight() + ", origWidth=" + getOrigWidth() + ", origHeight=" + getOrigHeight()
@@ -306,17 +303,17 @@ public class Player extends Entity {
 		if (w.get()) { // Hoch
 			if ("left".equals(getCurrentKey()) || getCurrentKey().endsWith("L")) setCurrentKey("upL");
 			else setCurrentKey("up");
-			y -= updateSpeed * gamepanel.getScalingFactorY();
+			y -= updateSpeed * gamepanel.getWindowDataHolder().scalingFactorY();
 		} else if (s.get()) { // Runter
 			if ("left".equals(getCurrentKey()) || getCurrentKey().endsWith("L")) setCurrentKey("downL");
 			else setCurrentKey("down");
-			y += updateSpeed * gamepanel.getScalingFactorY();
+			y += updateSpeed * gamepanel.getWindowDataHolder().scalingFactorY();
 		} else if (a.get()) { // Links
 			setCurrentKey("left");
-			x -= updateSpeed * gamepanel.getScalingFactorX();
+			x -= updateSpeed * gamepanel.getWindowDataHolder().scalingFactorX();
 		} else if (d.get()) { // Rechts
 			setCurrentKey("right");
-			x += updateSpeed * gamepanel.getScalingFactorX();
+			x += updateSpeed * gamepanel.getWindowDataHolder().scalingFactorX();
 		} else if (lastKey.contains("down")) { // Idle Runter
 			if (lastKey.endsWith("L") || lastKey.contains("left")) setCurrentKey("idledownL");
 			else setCurrentKey("idledown");
@@ -336,14 +333,14 @@ public class Player extends Entity {
 
 		if (isVisible() && p.get()) setVisible(false);
 
-		gamepanel.getLgp().getBuildings().forEach(b -> {
+		gamepanel.getBuildings().forEach(b -> {
 			if (b.collides(this)) {
 				x = oldX;
 				y = oldY;
 			}
 		});
 
-		gamepanel.getLgp().getNpcs().forEach(b -> {
+		gamepanel.getNpcs().forEach(b -> {
 			if (b.collides(this)) {
 				x = oldX;
 				y = oldY;
@@ -358,8 +355,8 @@ public class Player extends Entity {
 		oldX = x;
 		oldY = y;
 
-		screenX	= (int) (gamepanel.getGameWidth() / 2 - iv.getImage().getWidth() / 2);
-		screenY	= (int) (gamepanel.getGameHeight() / 2 - iv.getImage().getHeight() / 2);
+		screenX	= (int) (gamepanel.getWindowDataHolder().gameWidth() / 2 - getImage().getFrameAt(getImage().getFrameIndex()).getWidth() / 2);
+		screenY	= (int) (gamepanel.getWindowDataHolder().gameHeight() / 2 - getImage().getFrameAt(getImage().getFrameIndex()).getHeight() / 2);
 
 	}
 }

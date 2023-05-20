@@ -7,7 +7,7 @@ import com.sterndu.json.JsonObject;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.control.ContextMenu;
 import rngGame.main.GameObject;
-import rngGame.visual.GamePanel;
+import rngGame.ui.*;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -25,10 +25,11 @@ public abstract class Entity extends GameObject {
 	 * @param entities the entities
 	 * @param cm the cm
 	 * @param requestor the requestor
+	 * @param windowDataHolder the window data holder
 	 */
 	public Entity(Entity en, List<? extends Entity> entities, ContextMenu cm,
-			ObjectProperty<? extends Entity> requestor) {
-		super(en, entities, cm, requestor);
+			ObjectProperty<? extends Entity> requestor, WindowDataHolder windowDataHolder) {
+		super(en, entities, cm, requestor, windowDataHolder);
 		speed = en.speed;
 
 	}
@@ -41,13 +42,12 @@ public abstract class Entity extends GameObject {
 	 * @param gp the gp
 	 * @param directory the directory
 	 * @param entities the entities
-	 * @param cm the cm
 	 * @param requestor the requestor
+	 * @param windowDataHolder the window data holder
 	 */
 	public Entity(JsonObject en, double speed, GamePanel gp, String directory, List<? extends Entity> entities,
-			ContextMenu cm,
-			ObjectProperty<? extends Entity> requestor) {
-		super(en, gp, directory, entities, cm, requestor);
+			ObjectProperty<? extends Entity> requestor, WindowDataHolder windowDataHolder) {
+		super(en, gp, directory, entities, requestor, windowDataHolder);
 		this.speed = speed;
 
 	}

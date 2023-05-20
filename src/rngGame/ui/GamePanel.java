@@ -4,12 +4,15 @@ import java.util.*;
 import java.util.Map;
 
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
+import javafx.scene.*;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.shape.Circle;
 import javafx.stage.Window;
-import rngGame.entity.Player;
-import rngGame.main.GameObject;
+import rngGame.buildings.Building;
+import rngGame.entity.*;
+import rngGame.main.UndoRedo;
 import rngGame.tile.*;
+import rngGame.visual.GameObject;
 
 
 // TODO: Auto-generated Javadoc
@@ -22,16 +25,16 @@ public class GamePanel {
 	private rngGame.visual.GamePanel visualGamePanel;
 
 	/** The points. */
-	private Map<Point2D, Circle> points;
+	private final Map<Point2D, Circle> points;
 
 	/** The player. */
-	private Player player;
+	private final Player player;
 
 	/** The overlay. */
-	private AnimatedImage overlay;
+	private final AnimatedImage overlay;
 
 	/** The action button. */
-	private ActionButton actionButton;
+	private final ActionButton actionButton;
 
 	/** The tile manager. */
 	private final TileManager tileManager;
@@ -40,13 +43,13 @@ public class GamePanel {
 	private TabMenu tabMenu;
 
 	/** The speak bubble. */
-	private AnimatedImage speakBubble;
+	private final AnimatedImage speakBubble;
 
 	/** The select tool. */
 	private final SelectTool selectTool;
 
 	/** The tps. */
-	private final int tps;
+	private double tps;
 
 	/** The window data holder. */
 	private final WindowDataHolder windowDataHolder;
@@ -63,6 +66,18 @@ public class GamePanel {
 	/** The difficulty. */
 	private Difficulty difficulty;
 
+	/** The frame times. */
+	private final List<Long> frameTimes;
+
+	/** The last frame. */
+	private long lastFrame;
+
+	/** The buildings. */
+	private final List<Building> buildings;
+
+	/** The npcs. */
+	private final List<NPC> npcs;
+
 	/**
 	 * Instantiates a new game panel.
 	 *
@@ -72,20 +87,58 @@ public class GamePanel {
 
 		this.windowDataHolder = windowDataHolder;
 
+		frameTimes = new ArrayList<>();
+
+		npcs = new ArrayList<>();
+
+		buildings = new ArrayList<>();
+
+		visualGamePanel = null;
+
 		fpsLabelVisible = false;
 
 		blockUserInputs = false;
 
 		tps = 0;
 
-		visualGamePanel = null;
-
 		speakBubbleElements = new ArrayList<>();
+
+		points = new HashMap<>();
 
 		selectTool = new SelectTool(this, windowDataHolder);
 
 		tileManager = new TileManager(this, windowDataHolder);
 
+		overlay = new AnimatedImage(windowDataHolder);
+
+		actionButton = new ActionButton(this, windowDataHolder);
+
+		speakBubble = new AnimatedImage(windowDataHolder);
+
+		player = new Player(this, tileManager.getRequestorN(), windowDataHolder);
+
+	}
+
+	/**
+	 * Convert layout point to world point.
+	 *
+	 * @param layoutPoint the layout point
+	 *
+	 * @return the world point
+	 */
+	public Point2D convertLayoutPointToWorldPoint(Point2D layoutPoint) {
+		return layoutPoint.add(new Point2D(player.getX(), player.getY())).subtract(new Point2D(player.getScreenX(), player.getScreenY()));
+	}
+
+	/**
+	 * Convert world point to layout point.
+	 *
+	 * @param worldPoint the world point
+	 *
+	 * @return the layout point
+	 */
+	public Point2D convertWorldPointToLayoutPoint(Point2D worldPoint) {
+		return worldPoint.subtract(new Point2D(player.getX(), player.getY())).add(new Point2D(player.getScreenX(), player.getScreenY()));
 	}
 
 	/**
@@ -96,6 +149,13 @@ public class GamePanel {
 	public ActionButton getActionButton() { return actionButton; }
 
 	/**
+	 * Gets the buildings.
+	 *
+	 * @return the buildings
+	 */
+	public List<Building> getBuildings() { return buildings; }
+
+	/**
 	 * Gets the clipboard.
 	 *
 	 * @return the clipboard
@@ -103,11 +163,25 @@ public class GamePanel {
 	public List<List<TextureHolder>> getClipboard() { return null; }
 
 	/**
+	 * Gets the context menu.
+	 *
+	 * @return the context menu
+	 */
+	public ContextMenu getContextMenu() { return visualGamePanel.getContextMenu(); }
+
+	/**
 	 * Gets the difficulty.
 	 *
 	 * @return the difficulty
 	 */
 	public Difficulty getDifficulty() { return difficulty; }
+
+	/**
+	 * Gets the npcs.
+	 *
+	 * @return the npcs
+	 */
+	public List<NPC> getNpcs() { return npcs; }
 
 	/**
 	 * Gets the object at.
@@ -118,12 +192,11 @@ public class GamePanel {
 	 * @return the object at x and y
 	 */
 	public Node getObjectAt(double x, double y) {
-		List<Node> nodes = visualGamePanel.getLayerGroup().getChildren().stream()
-				.filter(n -> n.contains(x - ((GameObject) n).getX(), y - ((GameObject) n).getY()) && n.isVisible())
-				.toList();
+		List<Node> nodes = visualGamePanel.getLayerGroup().getChildren().stream().map(l -> ((Group) l)).flatMap(l -> l.getChildren().parallelStream()
+				.filter(n -> n.contains(x - ((GameObject) n).getLogic().getX(), y - ((GameObject) n).getLogic().getY()) && n.isVisible())).toList();
 		if (nodes.size() != 0) return nodes.get(nodes.size() - 1);
 		if (x < 0 || y < 0) return null;
-		return tileManager.getTileAt(x, y);
+		return visualGamePanel.getTileAt(x, y);
 
 	}
 
@@ -188,7 +261,7 @@ public class GamePanel {
 	 *
 	 * @return the tps
 	 */
-	public int getTps() { return tps; }
+	public double getTps() { return tps; }
 
 	/**
 	 * Gets the window.
@@ -196,6 +269,13 @@ public class GamePanel {
 	 * @return the window
 	 */
 	public Window getWindow() { return visualGamePanel.getScene().getWindow(); }
+
+	/**
+	 * Gets the window data holder.
+	 *
+	 * @return the window data holder
+	 */
+	public WindowDataHolder getWindowDataHolder() { return windowDataHolder; }
 
 	/**
 	 * Go into full screen.
@@ -212,7 +292,7 @@ public class GamePanel {
 	 *
 	 * @return true, if is block user inputs
 	 */
-	public boolean isBlockUserInputs() { return visualGamePanel.isInLoadingScreen() || blockUserInputs; }
+	public boolean isBlockUserInputs() { return visualGamePanel == null || visualGamePanel.isInLoadingScreen() || blockUserInputs; }
 
 	/**
 	 * Checks if is full screen.
@@ -236,7 +316,7 @@ public class GamePanel {
 	 *
 	 * @param blockUserInputs the new blcokuser inputs
 	 */
-	public void setBlcokuserInputs(boolean blockUserInputs) {
+	public void setBlockUserInputs(boolean blockUserInputs) {
 		this.blockUserInputs = blockUserInputs;
 	}
 
@@ -246,6 +326,36 @@ public class GamePanel {
 	 * @param map the new clipboard
 	 */
 	public void setClipboard(List<List<TextureHolder>> map) {}
+
+	/**
+	 * Sets the map.
+	 *
+	 * @param path the new map
+	 */
+	public void setMap(String path) { setMap(path, null); }
+
+	/**
+	 * Sets the map.
+	 *
+	 * @param string the string
+	 * @param exitStartingPosition the exit starting position
+	 */
+	public void setMap(String string, double[] exitStartingPosition) {
+
+		visualGamePanel.goIntoLoadingScreen();
+
+		UndoRedo.getInstance().clearActions();
+
+		SoundHandler.getInstance().endBackgroundMusic();
+
+		getPoints().clear();
+
+		if (!"".equals(getTileManager().getBackgroundMusic()))
+			SoundHandler.getInstance().setBackgroundMusic(getTileManager().getBackgroundMusic());
+		else SoundHandler.getInstance().endBackgroundMusic();
+
+		visualGamePanel.goOutOfLoadingScreen();
+	}
 
 	/**
 	 * Sets the visual game panel.
@@ -263,6 +373,26 @@ public class GamePanel {
 	 * Update.
 	 */
 	public void update() {
+
+		long lastFrameTime = frameTimes.size() > 0 ? frameTimes.get(frameTimes.size() - 1) : 0;
+
+		selectTool.update();
+
+		tileManager.update();
+
+		overlay.update();
+
+		actionButton.update();
+
+		speakBubble.update();
+
+		player.update(lastFrameTime);
+
+		long frameTime = System.currentTimeMillis() - lastFrame;
+		lastFrame = System.currentTimeMillis();
+		frameTimes.add(frameTime);
+		tps = frameTimes.stream().mapToLong(l -> l).average().getAsDouble();
+		while (frameTimes.size() > Math.pow(tps * 12, 1.2)) frameTimes.remove(0);
 
 	}
 

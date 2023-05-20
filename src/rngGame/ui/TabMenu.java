@@ -7,15 +7,14 @@ import javafx.animation.TranslateTransition;
 import javafx.scene.Group;
 import javafx.scene.image.*;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Pane;
 import javafx.util.Duration;
-import rngGame.main.*;
+import rngGame.main.Input;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class TabMenu.
  */
-public class TabMenu extends Pane {
+public class TabMenu {
 
 	/** The gamemenu. */
 	private final ImageView gamemenu;

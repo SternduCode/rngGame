@@ -33,13 +33,44 @@ public class AnimatedImage {
 	/**
 	 * Instantiates a new animated image.
 	 *
-	 * @param path                the path
+	 * @param frames the frames
+	 * @param windowDataHolder the window data holder
+	 */
+	public AnimatedImage(Image[] frames, WindowDataHolder windowDataHolder) {
+		path					= null;
+		this.frames = frames;
+		this.windowDataHolder	= windowDataHolder;
+		fps							= 7;
+		update();
+
+	}
+
+	/**
+	 * Instantiates a new animated image.
+	 *
+	 * @param frames the frames
+	 * @param windowDataHolder the window data holder
+	 * @param fps                 the fps
+	 */
+	public AnimatedImage(Image[] frames, WindowDataHolder windowDataHolder, int fps) {
+		path					= null;
+		this.frames = frames;
+		this.windowDataHolder	= windowDataHolder;
+		this.fps					= fps;
+		update();
+
+	}
+
+	/**
+	 * Instantiates a new animated image.
+	 *
+	 * @param path             the path
 	 * @param windowDataHolder the window data holder
 	 */
 	public AnimatedImage(String path, WindowDataHolder windowDataHolder) {
-		this.path					= path;
+		this.path				= path;
 		this.windowDataHolder	= windowDataHolder;
-		fps							= 7;
+		fps						= 7;
 		scaleF11();
 		update();
 
@@ -112,12 +143,35 @@ public class AnimatedImage {
 	/**
 	 * Inits the.
 	 *
+	 * @param frames the frames
+	 */
+	public void init(Image[] frames) {
+		path		= null;
+		this.frames = frames;
+
+	}
+
+	/**
+	 * Inits the.
+	 *
+	 * @param frames the frames
+	 * @param fps  the fps
+	 */
+	public void init(Image[] frames, int fps) {
+		path		= null;
+		this.frames	= frames;
+		this.fps	= fps;
+
+	}
+
+	/**
+	 * Inits the.
+	 *
 	 * @param path the path
 	 */
 	public void init(String path) {
 		this.path = path;
 		scaleF11();
-		update();
 
 	}
 
@@ -131,7 +185,6 @@ public class AnimatedImage {
 		this.path	= path;
 		this.fps	= fps;
 		scaleF11();
-		update();
 
 	}
 
@@ -160,9 +213,15 @@ public class AnimatedImage {
 	 * Scale F 11.
 	 */
 	public void scaleF11() {
-		frames = ImgUtil.getScaledImages(windowDataHolder, path);
-		if (frameIndex >= frames.length)
-			frameIndex = 0;
+		if (path != null) {
+			frames = ImgUtil.getScaledImages(windowDataHolder, path);
+			if (frameIndex >= frames.length)
+				frameIndex = 0;
+		} else for (int i = 0; i < frames.length; i++) {
+			Image img = frames[i];
+			frames[i] = ImgUtil.resizeImage(img, (int) img.getWidth(), (int) img.getHeight(),
+					(int) (img.getWidth() * windowDataHolder.scalingFactorX()), (int) (img.getHeight() * windowDataHolder.scalingFactorY()));
+		}
 		dirty = true;
 
 	}

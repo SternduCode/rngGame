@@ -1,11 +1,9 @@
 package rngGame.tile;
 
-import java.io.InputStream;
-import java.util.*;
+import java.util.List;
 
-import javafx.scene.image.*;
-import rngGame.ui.ImgUtil;
-import rngGame.visual.GamePanel;
+import javafx.scene.image.Image;
+import rngGame.ui.*;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -41,10 +39,8 @@ public class Tile {
 	public Tile(String name, String path, GamePanel gp) {
 
 		this.name = name;
-		if(!path.isEmpty()) {
-			images = ImgUtil.getScaledImages(gp, path,48,48);
-		}
-		
+		if (!path.isEmpty()) images = ImgUtil.getScaledImages(gp.getWindowDataHolder(), path, 48, 48);
+
 
 
 	}

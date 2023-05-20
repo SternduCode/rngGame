@@ -347,9 +347,9 @@ public class SelectTool {
 	 * Undraw outlines.
 	 */
 	public void undrawOutlines() {
-		if (!gamePanel.getTileManager().getCM().isShowing()
-				|| gamePanel.getTileManager().getCM().getAnchorX() != getLayoutX() + gamePanel.getWindow().getX()
-				|| gamePanel.getTileManager().getCM().getAnchorY() != getLayoutY() + gamePanel.getWindow().getY())
+		if (!gamePanel.getTileManager().isContextMenuShowing()
+				|| gamePanel.getTileManager().getContextMenuAnchorX() != getLayoutX() + gamePanel.getWindow().getX()
+				|| gamePanel.getTileManager().getContextMenuAnchorY() != getLayoutY() + gamePanel.getWindow().getY())
 			setVisible(false);
 	}
 
@@ -358,17 +358,17 @@ public class SelectTool {
 	 */
 	public void update() {
 		boolean moveCm = false;
-		if (gamePanel.getTileManager().getCM().isShowing()
-				&& gamePanel.getTileManager().getCM().getAnchorX() == getLayoutX() + gamePanel.getWindow().getX()
-				&& gamePanel.getTileManager().getCM().getAnchorY() == getLayoutY() + gamePanel.getWindow().getY())
+		if (gamePanel.getTileManager().isContextMenuShowing()
+				&& gamePanel.getTileManager().getContextMenuAnchorX() == getLayoutX() + gamePanel.getWindow().getX()
+				&& gamePanel.getTileManager().getContextMenuAnchorY() == getLayoutY() + gamePanel.getWindow().getY())
 			moveCm = true;
 		double screenX = x - gamePanel.getPlayer().getX() + gamePanel.getPlayer().getScreenX();
 		double screenY = y - gamePanel.getPlayer().getY() + gamePanel.getPlayer().getScreenY();
 		setLayoutX(screenX);
 		setLayoutY(screenY);
 		if (moveCm) {
-			gamePanel.getTileManager().getCM().setAnchorX(screenX + gamePanel.getWindow().getX());
-			gamePanel.getTileManager().getCM().setAnchorY(screenY + gamePanel.getWindow().getY());
+			gamePanel.getTileManager().setContextMenuAnchorX(screenX + gamePanel.getWindow().getX());
+			gamePanel.getTileManager().setContextMenuAnchorY(screenY + gamePanel.getWindow().getY());
 		}
 	}
 }

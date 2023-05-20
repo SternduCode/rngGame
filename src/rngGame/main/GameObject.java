@@ -22,25 +22,25 @@ import javafx.stage.*;
 import javafx.stage.FileChooser.ExtensionFilter;
 import rngGame.entity.Player;
 import rngGame.ui.*;
-import rngGame.visual.GamePanel;
+import rngGame.ui.GamePanel;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class GameObject.
  */
-public class GameObject extends Pane implements JsonValue, Collidable {
+public class GameObject implements JsonValue, Collidable {
 
 	/** The fps. */
 	protected double x = 0d, y = 0d, fps = 7.5;
 
-	/** The images. */
-	protected Map<String, List<Image>> images;
+	/** The layout Y. */
+	private double layoutX, layoutY, width, height;
 
 	/** The collision boxes. */
 	protected Map<String, Polygon> collisionBoxes;
 
-	/** The iv. */
-	protected ImageView iv;
+	/** The visible. */
+	private boolean visible;
 
 	/** The misc boxes. */
 	private final Map<String, Shape> miscBoxes;
@@ -59,6 +59,9 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 
 	/** The current key. */
 	private String currentKey;
+
+	/** The image. */
+	private AnimatedImage image;
 
 	/** The directory. */
 	protected String directory;
@@ -80,9 +83,6 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 
 	/** The texture files. */
 	protected Map<String, String> textureFiles;
-
-	/** The is gif. */
-	protected Map<String, Boolean> isGif;
 
 	/** The orig height. */
 	protected int reqWidth, reqHeight, origWidth, origHeight;
@@ -114,24 +114,29 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 	/** The remove. */
 	private final MenuItem position, fpsI, currentKeyI, directoryI, origDim, reqDim, backgroundI, layerI,
 	reloadTextures,
-	remove;
+	removeMI;
+
+	/** The remove. */
+	private boolean remove;
+
+	/** The border. */
+	private Border border;
 
 	/**
 	 * Instantiates a new game object.
 	 *
 	 * @param gameObject the game object
 	 * @param gameObjects the game objects
-	 * @param cm the cm
 	 * @param requestor the requestor
+	 * @param windowDataHolder the window data holder
 	 */
 	@SuppressWarnings("unchecked")
 	public GameObject(GameObject gameObject, List<? extends GameObject> gameObjects,
-			ContextMenu cm,
-			ObjectProperty<? extends GameObject> requestor) {
+			ObjectProperty<? extends GameObject> requestor, WindowDataHolder windowDataHolder) {
+		visible			= true;
+		remove			= false;
 		removeCallbacks = new ArrayList<>();
 		fixToScreen = false;
-		images = new HashMap<>();
-		isGif = new HashMap<>();
 		textureFiles = new HashMap<>();
 		collisionBoxes = new HashMap<>();
 		miscBoxes = new HashMap<>();
@@ -140,20 +145,8 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 		lastKey = currentKey;
 		collisionBoxes.put(currentKey, new Polygon());
 		collisionBoxViewGroup = new Group(collisionBoxes.get(currentKey));
-		collisionBoxViewGroup.setDisable(true);
-		collisionBoxViewGroup.setVisible(false);
-		iv = new ImageView();
-		iv.setDisable(true);
-		getChildren().addAll(iv, collisionBoxViewGroup);
 
-		setOnContextMenuRequested(e -> {
-			if ("true".equals(System.getProperty("edit"))) {
-				((ObjectProperty<GameObject>) requestor).set(this);
-				cm.getItems().clear();
-				cm.getItems().addAll(getMenus());
-				cm.show(gamepanel.getViewGroups().get(layer), e.getScreenX(), e.getScreenY());
-			}
-		});
+		image = new AnimatedImage(windowDataHolder);
 
 		x = gameObject.x;
 		y = gameObject.y;
@@ -180,7 +173,6 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 			p.setFill(Color.TRANSPARENT);
 			p.setStrokeWidth(2.5);
 			miscBoxes.put(k, p);
-			getChildren().add(p);
 		});
 		gameObject.miscBoxHandler.forEach((k, v) -> {
 			miscBoxHandler.put(k, v);
@@ -190,8 +182,6 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 		directory = gameObject.directory;
 		background = gameObject.background;
 		currentKey = gameObject.currentKey;
-		images = new HashMap<>(gameObject.images);
-		isGif = new HashMap<>(gameObject.isGif);
 		textureFiles = gameObject.textureFiles;
 
 		extraData = gameObject.extraData;
@@ -210,8 +200,8 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 		layerI = new MenuItem();
 		reloadTextures = new MenuItem("Reload Textures");
 		reloadTextures.setStyle("-fx-font-size: 20;");
-		remove = new MenuItem("Remove");
-		remove.setStyle("-fx-font-size: 20;");
+		removeMI = new MenuItem("Remove");
+		removeMI.setStyle("-fx-font-size: 20;");
 		position.setOnAction(this::handleContextMenu);
 		fpsI.setOnAction(this::handleContextMenu);
 		currentKeyI.setOnAction(this::handleContextMenu);
@@ -221,9 +211,9 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 		backgroundI.setOnAction(this::handleContextMenu);
 		layerI.setOnAction(this::handleContextMenu);
 		reloadTextures.setOnAction(this::handleContextMenu);
-		remove.setOnAction(this::handleContextMenu);
+		removeMI.setOnAction(this::handleContextMenu);
 		menu.getItems().addAll(position, fpsI, imagesM, currentKeyI, directoryI, origDim, reqDim, backgroundI, layerI,
-				reloadTextures, remove);
+				reloadTextures, removeMI);
 
 		master = gameObject;
 		slave = true;
@@ -252,7 +242,6 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 			});
 		}
 
-		addToView();
 	}
 
 	/**
@@ -262,18 +251,17 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 	 * @param gp the gp
 	 * @param directory the directory
 	 * @param gameObjects the game objects
-	 * @param cm the cm
 	 * @param requestor the requestor
+	 * @param windowDataHolder the window data holder
 	 */
 	@SuppressWarnings("unchecked")
 	public GameObject(JsonObject gameObject, GamePanel gp, String directory, List<? extends GameObject> gameObjects,
-			ContextMenu cm,
-			ObjectProperty<? extends GameObject> requestor) {
-		gamepanel = gp;
-		this.directory = directory;
-		fixToScreen = false;
-		images = new HashMap<>();
-		isGif = new HashMap<>();
+			ObjectProperty<? extends GameObject> requestor, WindowDataHolder windowDataHolder) {
+		visible			= true;
+		remove			= false;
+		gamepanel		= gp;
+		this.directory	= directory;
+		fixToScreen		= false;
 		textureFiles = new HashMap<>();
 		collisionBoxes = new HashMap<>();
 		miscBoxes = new HashMap<>();
@@ -282,21 +270,10 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 		lastKey = currentKey;
 		collisionBoxes.put(currentKey, new Polygon());
 		collisionBoxViewGroup = new Group(collisionBoxes.get(currentKey));
-		collisionBoxViewGroup.setDisable(true);
-		collisionBoxViewGroup.setVisible(false);
-		iv = new ImageView();
-		iv.setDisable(true);
-		getChildren().addAll(iv, collisionBoxViewGroup);
+
+		image = new AnimatedImage(windowDataHolder);
 
 		removeCallbacks = new ArrayList<>();
-		setOnContextMenuRequested(e -> {
-			if ("true".equals(System.getProperty("edit"))) {
-				((ObjectProperty<GameObject>) requestor).set(this);
-				cm.getItems().clear();
-				cm.getItems().addAll(getMenus());
-				cm.show(gp.getViewGroups().get(layer), e.getScreenX(), e.getScreenY());
-			}
-		});
 
 		if (gameObject != null) {
 			origWidth = ((NumberValue) ((JsonArray) gameObject.get("originalSize")).get(0)).getValue().intValue();
@@ -312,17 +289,16 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 						case "rectangle":
 						{
 							long x, y, width, height;
-							x		= (long) ( ((NumberValue) joBox.get("x")).getValue().longValue() * gp.getScalingFactorX());
-							y		= (long) ( ((NumberValue) joBox.get("y")).getValue().longValue() * gp.getScalingFactorY());
+							x		= (long) ( ((NumberValue) joBox.get("x")).getValue().longValue() * gp.getWindowDataHolder().scalingFactorX());
+							y		= (long) ( ((NumberValue) joBox.get("y")).getValue().longValue() * gp.getWindowDataHolder().scalingFactorY());
 							width = (long) (((NumberValue) joBox.get("width")).getValue().longValue()
-									* gp.getScalingFactorX());
+									* gp.getWindowDataHolder().scalingFactorX());
 							height = (long) (((NumberValue) joBox.get("height")).getValue().longValue()
-									* gp.getScalingFactorY());
+									* gp.getWindowDataHolder().scalingFactorY());
 							Rectangle shape = new Rectangle(x, y, width, height);
 							shape.setStroke(Color.color(1, 1, 0, .75));
 							shape.setFill(Color.TRANSPARENT);
 							shape.setStrokeWidth(2.5);
-							getChildren().add(shape);
 							this.miscBoxes.put(name, shape);
 							miscBoxHandler.put(name, (o, t) -> {});
 						}
@@ -330,17 +306,17 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 						case "circle":
 						{
 							long x, y, radiusX, radiusY, innerRadiusX = 0, innerRadiusY = 0;
-							x		= (long) ( ((NumberValue) joBox.get("x")).getValue().longValue() * gp.getScalingFactorX());
-							y		= (long) ( ((NumberValue) joBox.get("y")).getValue().longValue() * gp.getScalingFactorY());
+							x		= (long) ( ((NumberValue) joBox.get("x")).getValue().longValue() * gp.getWindowDataHolder().scalingFactorX());
+							y		= (long) ( ((NumberValue) joBox.get("y")).getValue().longValue() * gp.getWindowDataHolder().scalingFactorY());
 							radiusX = (long) (((NumberValue) joBox.get("radius")).getValue().longValue()
-									* gp.getScalingFactorX());
+									* gp.getWindowDataHolder().scalingFactorX());
 							radiusY = (long) (((NumberValue) joBox.get("radius")).getValue().longValue()
-									* gp.getScalingFactorY());
+									* gp.getWindowDataHolder().scalingFactorY());
 							if (joBox.containsKey("innerRadius")) {
 								innerRadiusX = (long) (((NumberValue) joBox.get("innerRadius")).getValue().longValue()
-										* gp.getScalingFactorX());
+										* gp.getWindowDataHolder().scalingFactorX());
 								innerRadiusY = (long) (((NumberValue) joBox.get("innerRadius")).getValue().longValue()
-										* gp.getScalingFactorY());
+										* gp.getWindowDataHolder().scalingFactorY());
 							}
 							Shape shape;
 							if (innerRadiusX != 0) shape = Shape.subtract(new Ellipse(x, y, radiusX, radiusY),
@@ -349,7 +325,6 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 							shape.setStroke(Color.color(1, 1, 0, .75));
 							shape.setFill(Color.TRANSPARENT);
 							shape.setStrokeWidth(2.5);
-							getChildren().add(shape);
 							this.miscBoxes.put(name, shape);
 							miscBoxHandler.put(name, (o, t) -> {});
 						}
@@ -371,19 +346,19 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 					for (int i = 1; i < ((JsonArray) gameObject.get("position")).size(); i++) {
 						GameObject b = this
 								.getClass().getDeclaredConstructor(this.getClass(), List.class,
-										ContextMenu.class, ObjectProperty.class)
-								.newInstance(this, gameObjects, cm, requestor);
+										ObjectProperty.class, WindowDataHolder.class)
+								.newInstance(this, gameObjects, requestor, gp.getWindowDataHolder());
 						b.setPosition(
 								(long) (((NumberValue) ((JsonArray) ((JsonArray) gameObject.get("position")).get(i))
 										.get(0))
 										.getValue()
 										.doubleValue()
-										* gp.getScalingFactorX()),
+										* gp.getWindowDataHolder().scalingFactorX()),
 								(long) (((NumberValue) ((JsonArray) ((JsonArray) gameObject.get("position")).get(i))
 										.get(1))
 										.getValue()
 										.doubleValue()
-										* gp.getScalingFactorY()));
+										* gp.getWindowDataHolder().scalingFactorY()));
 						if (!secondMultiPlexer) {
 							b.reqWidth = ((NumberValue) ((JsonArray) gameObject.get("requestedSize")).get(0))
 									.getValue()
@@ -421,7 +396,6 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 							else
 								b.extraData = (JsonObject) gameObject.get("extraData");
 						else b.extraData = new JsonObject();
-						b.images = new HashMap<>();
 						((JsonObject) gameObject.get("textures")).entrySet().parallelStream()
 						.forEach(s -> {
 							try {
@@ -437,10 +411,10 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 				}
 				x = (long) (((NumberValue) ((JsonArray) ((JsonArray) gameObject.get("position")).get(0)).get(0))
 						.getValue()
-						.doubleValue() * gp.getScalingFactorX());
+						.doubleValue() * gp.getWindowDataHolder().scalingFactorX());
 				y = (long) (((NumberValue) ((JsonArray) ((JsonArray) gameObject.get("position")).get(0)).get(1))
 						.getValue()
-						.doubleValue() * gp.getScalingFactorY());
+						.doubleValue() * gp.getWindowDataHolder().scalingFactorY());
 				if (!secondMultiPlexer) {
 					reqWidth = ((NumberValue) ((JsonArray) gameObject.get("requestedSize")).get(0)).getValue()
 							.intValue();
@@ -476,9 +450,9 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 				else extraData = new JsonObject();
 			} else {
 				x = (long) (((NumberValue) ((JsonArray) gameObject.get("position")).get(0)).getValue().doubleValue()
-						* gp.getScalingFactorX());
+						* gp.getWindowDataHolder().scalingFactorX());
 				y = (long) (((NumberValue) ((JsonArray) gameObject.get("position")).get(1)).getValue().doubleValue()
-						* gp.getScalingFactorY());
+						* gp.getWindowDataHolder().scalingFactorY());
 				if (((JsonArray) gameObject.get("requestedSize")).get(0) instanceof NumberValue nv) {
 					reqWidth = nv.getValue().intValue();
 					reqHeight = ((NumberValue) ((JsonArray) gameObject.get("requestedSize")).get(1)).getValue()
@@ -521,7 +495,7 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 					e1.printStackTrace();
 				}
 			});
-			iv.setImage(getFirstImage());
+			image.init(textureFiles.get(currentKey));
 		}
 
 		menu = new Menu("GameObject");
@@ -538,8 +512,8 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 		layerI = new MenuItem();
 		reloadTextures = new MenuItem("Reload Textures");
 		reloadTextures.setStyle("-fx-font-size: 20;");
-		remove = new MenuItem("Remove");
-		remove.setStyle("-fx-font-size: 20;");
+		removeMI = new MenuItem("Remove");
+		removeMI.setStyle("-fx-font-size: 20;");
 		position.setOnAction(this::handleContextMenu);
 		fpsI.setOnAction(this::handleContextMenu);
 		currentKeyI.setOnAction(this::handleContextMenu);
@@ -549,9 +523,9 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 		backgroundI.setOnAction(this::handleContextMenu);
 		layerI.setOnAction(this::handleContextMenu);
 		reloadTextures.setOnAction(this::handleContextMenu);
-		remove.setOnAction(this::handleContextMenu);
+		removeMI.setOnAction(this::handleContextMenu);
 		menu.getItems().addAll(position, fpsI, imagesM, currentKeyI, directoryI, origDim, reqDim, backgroundI, layerI,
-				reloadTextures, remove);
+				reloadTextures, removeMI);
 
 		if (gameObjects != null) {
 			((List<GameObject>) gameObjects).add(this);
@@ -560,7 +534,6 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 			});
 		}
 
-		addToView();
 	}
 
 	/**
@@ -569,33 +542,31 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 	 * @param e the e
 	 */
 	private void handleContextMenu(ActionEvent e) {
-		MenuItem source = (MenuItem) e.getSource();
-		ContextMenu cm = source.getParentMenu().getParentPopup();
+		MenuItem	source	= (MenuItem) e.getSource();
+		ContextMenu	cm		= source.getParentMenu().getParentPopup();
 		if (source == position) {
 			TwoTextInputDialog dialog = new TwoTextInputDialog(x + "", "X", y + "", "Y");
 
 			updateXY = () -> {
-				if (!(x + "").equals(dialog.getTextField1().getText()))
+				if (! (x + "").equals(dialog.getTextField1().getText()))
 					dialog.getTextField1().setText(x + "");
-				if (!(y + "").equals(dialog.getTextField2().getText()))
+				if (! (y + "").equals(dialog.getTextField2().getText()))
 					dialog.getTextField2().setText(y + "");
 			};
 
 			dialog.initModality(Modality.NONE);
 			dialog.setTitle("Position");
-			Input.getInstance().moveGameObject(this);
+			Input.getInstance(null).moveGameObject(this);
 			Optional<List<String>> result = dialog.showAndWait();
 			if (result.isPresent()) {
 				try {
 					x = Double.parseDouble(result.get().get(0));
-				} catch (NumberFormatException e2) {
-				}
+				} catch (NumberFormatException e2) {}
 				try {
 					y = Double.parseDouble(result.get().get(1));
-				} catch (NumberFormatException e2) {
-				}
+				} catch (NumberFormatException e2) {}
 			}
-			Input.getInstance().stopMoveingGameObject(this);
+			Input.getInstance(null).stopMoveingGameObject(this);
 		} else if (source == fpsI) {
 			TextInputDialog dialog = new TextInputDialog("" + fps);
 			dialog.setHeaderText("");
@@ -606,8 +577,7 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 			Optional<String> result = dialog.showAndWait();
 			if (result.isPresent()) try {
 				fps = Double.parseDouble(result.get());
-			} catch (NumberFormatException e2) {
-			}
+			} catch (NumberFormatException e2) {}
 		} else if (source == currentKeyI) {
 			TextInputDialog dialog = new TextInputDialog(currentKey);
 			dialog.setHeaderText("");
@@ -616,7 +586,7 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 			dialog.setContentText("Please enter the new Key:");
 
 			Optional<String> result = dialog.showAndWait();
-			if (result.isPresent()) if (images.containsKey(result.get())) currentKey = result.get();
+			if (result.isPresent()) if (textureFiles.containsKey(result.get())) currentKey = result.get();
 
 		} else if (source == directoryI) {
 			TextInputDialog dialog = new TextInputDialog(directory);
@@ -636,62 +606,58 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 			if (result.isPresent()) {
 				try {
 					origWidth = Integer.parseInt(result.get().get(0));
-				} catch (NumberFormatException e2) {
-				}
+				} catch (NumberFormatException e2) {}
 				try {
 					origHeight = Integer.parseInt(result.get().get(1));
-				} catch (NumberFormatException e2) {
-				}
+				} catch (NumberFormatException e2) {}
 			}
 		} else if (source == reqDim) {
 			TwoTextInputDialog dialog = new TwoTextInputDialog(reqWidth + "", "Width", reqHeight + "", "Height");
 
 			updateReqDim = () -> {
-				if (!(reqWidth + "").equals(dialog.getTextField1().getText()))
+				if (! (reqWidth + "").equals(dialog.getTextField1().getText()))
 					dialog.getTextField1().setText(reqWidth + "");
-				if (!(reqHeight + "").equals(dialog.getTextField2().getText()))
+				if (! (reqHeight + "").equals(dialog.getTextField2().getText()))
 					dialog.getTextField2().setText(reqHeight + "");
 			};
 
 			dialog.setTitle("Requested Dimension");
 			dialog.initModality(Modality.NONE);
-			Input.getInstance().resizeGameObject(this);
+			Input.getInstance(null).resizeGameObject(this);
 			Optional<List<String>> result = dialog.showAndWait();
 			if (result.isPresent()) {
 				try {
 					reqWidth = Integer.parseInt(result.get().get(0));
 					reloadTextures();
-				} catch (NumberFormatException e2) {
-				}
+				} catch (NumberFormatException e2) {}
 				try {
 					reqHeight = Integer.parseInt(result.get().get(1));
 					reloadTextures();
-				} catch (NumberFormatException e2) {
-				}
+				} catch (NumberFormatException e2) {}
 			}
-			Input.getInstance().stopResizeingGameObject(this);
+			Input.getInstance(null).stopResizeingGameObject(this);
 		} else if (source == backgroundI) {
 			Alert alert = new Alert(Alert.AlertType.NONE);
 			alert.setTitle("Background");
 			alert.setContentText("Set the value for Background");
-			ButtonType okButton = new ButtonType("true", ButtonBar.ButtonData.YES);
-			ButtonType noButton = new ButtonType("false", ButtonBar.ButtonData.NO);
-			ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+			ButtonType	okButton		= new ButtonType("true", ButtonBar.ButtonData.YES);
+			ButtonType	noButton		= new ButtonType("false", ButtonBar.ButtonData.NO);
+			ButtonType	cancelButton	= new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 			alert.getButtonTypes().setAll(okButton, noButton, cancelButton);
 			Optional<ButtonType> res = alert.showAndWait();
 			if (res.isPresent()) if (res.get() == okButton) background = true;
 			else if (res.get() == noButton) background = false;
 			System.out.println(background);
 		} else if (source == layerI) {
-			int origLayer = layer;
-			LayerInputDialog lid = new LayerInputDialog(this::getLayer, this::setLayer, gamepanel.getLgp());
+			int					origLayer	= layer;
+			LayerInputDialog	lid			= new LayerInputDialog(this::getLayer, this::setLayer);
 
 			lid.setTitle("Layer");
 			Optional<Boolean> result = lid.showAndWait();
 			if (result.isPresent() && !result.get() || !result.isPresent()) layer = origLayer;
 
 		} else if (source == reloadTextures) reloadTextures();
-		else if (source == remove) remove();
+		else if (source == removeMI) remove();
 		else {
 			cm = source.getParentMenu().getParentMenu().getParentPopup();
 			if ("add Texture".equals(source.getText())) {
@@ -713,15 +679,15 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 				result.ifPresent(name -> {
 
 					try {
-						Path p1 = f.toPath();
-						Path p2 = new File("./res/" + directory + "/" + f.getName()).toPath();
+						Path	p1	= f.toPath();
+						Path	p2	= new File("./res/" + directory + "/" + f.getName()).toPath();
 						if (Files.exists(p2)) {
 							Alert alert = new Alert(Alert.AlertType.NONE);
 							alert.setTitle("The file already exists");
 							alert.setContentText("Do you want to Override it?");
-							ButtonType okButton = new ButtonType("Yes", ButtonBar.ButtonData.YES);
-							ButtonType noButton = new ButtonType("No", ButtonBar.ButtonData.NO);
-							ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+							ButtonType	okButton		= new ButtonType("Yes", ButtonBar.ButtonData.YES);
+							ButtonType	noButton		= new ButtonType("No", ButtonBar.ButtonData.NO);
+							ButtonType	cancelButton	= new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 							alert.getButtonTypes().setAll(okButton, noButton, cancelButton);
 							Optional<ButtonType> res = alert.showAndWait();
 							if (!res.isPresent()) return;
@@ -753,15 +719,15 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 				File f = fc.showOpenDialog(cm.getScene().getWindow());
 				if (f == null || !f.exists()) return;
 				try {
-					Path p1 = f.toPath();
-					Path p2 = new File("./res/" + directory + "/" + f.getName()).toPath();
+					Path	p1	= f.toPath();
+					Path	p2	= new File("./res/" + directory + "/" + f.getName()).toPath();
 					if (Files.exists(p2)) {
 						Alert alert = new Alert(Alert.AlertType.NONE);
 						alert.setTitle("The file already exists");
 						alert.setContentText("Do you want to Override it?");
-						ButtonType okButton = new ButtonType("Yes", ButtonBar.ButtonData.YES);
-						ButtonType noButton = new ButtonType("No", ButtonBar.ButtonData.NO);
-						ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+						ButtonType	okButton		= new ButtonType("Yes", ButtonBar.ButtonData.YES);
+						ButtonType	noButton		= new ButtonType("No", ButtonBar.ButtonData.NO);
+						ButtonType	cancelButton	= new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 						alert.getButtonTypes().setAll(okButton, noButton, cancelButton);
 						Optional<ButtonType> res = alert.showAndWait();
 						if (!res.isPresent()) return;
@@ -786,13 +752,16 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 				}
 			}
 		}
+
 	}
 
 	/**
-	 * Adds the to view.
+	 * Removes the.
 	 */
-	protected void addToView() {
-		gamepanel.getViewGroups().get(layer).getChildren().add(this);
+	private void remove() {
+		remove = true;
+		removeCallbacks.forEach(Runnable::run);
+
 	}
 
 	/**
@@ -806,23 +775,6 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 	protected List<Image> getAnimatedImages(String key, String path) throws FileNotFoundException {
 		List<Image> li = new ArrayList<>();
 		try {
-			Image img = new Image(new FileInputStream("./res/" + directory + "/" + path));
-
-			if (path.toLowerCase().endsWith("gif")) {
-				isGif.put(key, false);
-				Collections.addAll(li, ImgUtil.getScaledImages(gamepanel, "./res/" + directory + "/" + path, reqWidth, reqHeight, flipTextures));
-
-				fps = 10;
-				// li.add(img);
-			} else {
-				isGif.put(key, false);
-				for (int i = 0; i < img.getWidth(); i += origWidth) {
-					WritableImage wi = new WritableImage(img.getPixelReader(), i, 0, origWidth, origHeight);
-					li.add(ImgUtil.resizeImage(wi,
-							(int) wi.getWidth(), (int) wi.getHeight(), (int) (reqWidth * gamepanel.getScalingFactorX()),
-							(int) (reqHeight * gamepanel.getScalingFactorY()), flipTextures));
-				}
-			}
 			String[] sp = path.split("[.]");
 			Polygon collisionBox = collisionBoxes.get(key);
 			if (collisionBox == null) collisionBoxes.put(key, collisionBox = new Polygon());
@@ -837,11 +789,11 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 					boolean s = false;
 					for (int i = 0; i < length; i++) collisionBox.getPoints()
 					.add((double) (long) (raf.readDouble()
-							* ( (s = !s) ? gamepanel.getScalingFactorX() : gamepanel.getScalingFactorY())));
+							* ( (s = !s) ? gamepanel.getWindowDataHolder().scalingFactorX()
+									: gamepanel.getWindowDataHolder().scalingFactorY())));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			images.put(key, li);
 			textureFiles.put(key, path);
 		} catch (ArrayIndexOutOfBoundsException e) {
 		}
@@ -883,11 +835,9 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 			p.setStroke(Color.color(1, 1, 0, .75));
 			p.setFill(Color.TRANSPARENT);
 			p.setStrokeWidth(2.5);
-			slave.getChildren().add(p);
 			slave.getMiscBoxes().put(key, p);
 			slave.getMiscBoxHandler().put(key, handler);
 		}
-		getChildren().add(box);
 	}
 
 	/**
@@ -912,6 +862,12 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 		reloadTextures();
 	}
 
+	/**
+	 * Gets the border.
+	 *
+	 * @return the border
+	 */
+	public Border getBorder() { return border; }
 
 	/**
 	 * Gets the collision box.
@@ -922,6 +878,7 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 	public Polygon getCollisionBox() {
 		return collisionBoxes.get(currentKey);
 	}
+
 	/**
 	 * Gets the current key.
 	 *
@@ -930,18 +887,18 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 	public String getCurrentKey() { return currentKey; }
 
 	/**
-	 * Gets the first image.
+	 * Gets the height.
 	 *
-	 * @return the first image
+	 * @return the height
 	 */
-	public Image getFirstImage() { return images.values().stream().findFirst().get().get(0); }
+	public double getHeight() { return height; }
 
 	/**
-	 * Gets the images.
+	 * Gets the image.
 	 *
-	 * @return the images
+	 * @return the image
 	 */
-	public Map<String, List<Image>> getImages() { return images; }
+	public AnimatedImage getImage() { return image; }
 
 	/**
 	 * Gets the layer.
@@ -949,6 +906,20 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 	 * @return the layer
 	 */
 	public int getLayer() { return layer; }
+
+	/**
+	 * Gets the layout X.
+	 *
+	 * @return the layout X
+	 */
+	public double getLayoutX() { return layoutX; }
+
+	/**
+	 * Gets the layout Y.
+	 *
+	 * @return the layout Y
+	 */
+	public double getLayoutY() { return layoutY; }
 
 	/**
 	 * Gets the menus.
@@ -974,16 +945,9 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 		layerI.setStyle("-fx-font-size: 20;");
 		imagesM.getItems().clear();
 		for (Entry<String, String> en: textureFiles.entrySet()) {
-			ImageView lIV;
-			if (isGif(en.getKey())) {
-				lIV = new ImageView(images.get(getCurrentKey()).get(0));
-				//								lIV.setScaleX(16.0 / lIV.getImage().getWidth());
-				//								lIV.setScaleY(16.0 / lIV.getImage().getHeight());
-				lIV.setFitWidth(48);
-				lIV.setFitHeight(48);
-			} else lIV = new ImageView(ImgUtil.resizeImage(images.get(en.getKey()).get(0),
-					(int) images.get(en.getKey()).get(0).getWidth(),
-					(int) images.get(en.getKey()).get(0).getHeight(), 48, 48));
+			ImageView	lIV	= new ImageView(ImgUtil.resizeImage(image.getFrameAt(image.getFrameIndex()),
+					(int) image.getFrameAt(image.getFrameIndex()).getWidth(),
+					(int) image.getFrameAt(image.getFrameIndex()).getHeight(), 48, 48));
 			MenuItem img = new MenuItem(en.getKey() + " : " + en.getValue(),
 					lIV);
 			img.setStyle("-fx-font-size: 20;");
@@ -999,6 +963,7 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 		return li;
 	}
 
+
 	/**
 	 * Gets the misc boxes.
 	 *
@@ -1007,7 +972,6 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 	public Map<String, Shape> getMiscBoxes() {
 		return miscBoxes;
 	}
-
 	/**
 	 * Gets the orig height.
 	 *
@@ -1028,6 +992,13 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 	 * @return the req height
 	 */
 	public int getReqHeight() { return reqHeight; }
+
+	/**
+	 * Gets the requestor.
+	 *
+	 * @return the requestor
+	 */
+	public ObjectProperty<rngGame.visual.GameObject> getRequestor() { return null; }
 
 	/**
 	 * Gets the req width.
@@ -1051,7 +1022,7 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 	 * @return the texture height
 	 */
 	public double getTextureHeight() {
-		return iv.getImage() != null ? iv.getImage().getHeight() : getHeight();
+		return image.getFrameAt(image.getFrameIndex()) != null ? image.getFrameAt(image.getFrameIndex()).getHeight() : getHeight();
 	}
 
 	/**
@@ -1060,8 +1031,15 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 	 * @return the texture width
 	 */
 	public double getTextureWidth() {
-		return iv.getImage() != null ? iv.getImage().getWidth() : getWidth();
+		return image.getFrameAt(image.getFrameIndex()) != null ? image.getFrameAt(image.getFrameIndex()).getWidth() : getWidth();
 	}
+
+	/**
+	 * Gets the width.
+	 *
+	 * @return the width
+	 */
+	public double getWidth() { return width; }
 
 	/**
 	 * Gets the x.
@@ -1094,16 +1072,6 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 	}
 
 	/**
-	 * Checks if is gif.
-	 *
-	 * @param key the key
-	 * @return true, if is gif
-	 */
-	public boolean isGif(String key) {
-		return isGif.containsKey(key) ? isGif.get(key) : false;
-	}
-
-	/**
 	 * Checks if is master.
 	 *
 	 * @return true, if is master
@@ -1111,11 +1079,25 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 	public boolean isMaster() { return !slave; }
 
 	/**
+	 * Checks if is removes the.
+	 *
+	 * @return true, if is removes the
+	 */
+	public boolean isRemove() { return remove; }
+
+	/**
 	 * Checks if is slave.
 	 *
 	 * @return true, if is slave
 	 */
 	public boolean isSlave() { return slave; }
+
+	/**
+	 * Checks if is visible.
+	 *
+	 * @return true, if is visible
+	 */
+	public boolean isVisible() { return visible; }
 
 	/**
 	 * Reload textures.
@@ -1130,13 +1112,18 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 	}
 
 	/**
-	 * Removes the.
+	 * Reset remove.
 	 */
-	public void remove() {
-		if (gamepanel.getViewGroups().get(layer).getChildren().contains(this))
-			gamepanel.getViewGroups().get(layer).getChildren().remove(this);
-		removeCallbacks.forEach(Runnable::run);
+	public void resetRemove() {
+		remove = false;
 	}
+
+	/**
+	 * Sets the border.
+	 *
+	 * @param border the new border
+	 */
+	public void setBorder(Border border) { this.border = border; }
 
 	/**
 	 * Sets the current key.
@@ -1144,7 +1131,7 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 	 * @param currentKey the new current key
 	 */
 	public void setCurrentKey(String currentKey) {
-		if (images.containsKey(currentKey))
+		if (textureFiles.containsKey(currentKey))
 			this.currentKey = currentKey;
 	}
 
@@ -1158,16 +1145,34 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 	}
 
 	/**
+	 * Sets the height.
+	 *
+	 * @param height the new height
+	 */
+	public void setHeight(double height) { this.height = height; }
+
+	/**
 	 * Sets the layer.
 	 *
 	 * @param layer the new layer
 	 */
 	public void setLayer(int layer) {
-		if (gamepanel.getViewGroups().get(this.layer).getChildren().contains(this))
-			gamepanel.getViewGroups().get(this.layer).getChildren().remove(this);
 		this.layer = layer;
-		addToView();
 	}
+
+	/**
+	 * Sets the layout X.
+	 *
+	 * @param layoutX the new layout X
+	 */
+	public void setLayoutX(double layoutX) { this.layoutX = layoutX; }
+
+	/**
+	 * Sets the layout Y.
+	 *
+	 * @param layoutY the new layout Y
+	 */
+	public void setLayoutY(double layoutY) { this.layoutY = layoutY; }
 
 	/**
 	 * Sets the orig height.
@@ -1217,6 +1222,20 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 	}
 
 	/**
+	 * Sets the visible.
+	 *
+	 * @param visible the new visible
+	 */
+	public void setVisible(boolean visible) { this.visible = visible; }
+
+	/**
+	 * Sets the width.
+	 *
+	 * @param width the new width
+	 */
+	public void setWidth(double width) { this.width = width; }
+
+	/**
 	 * Sets the x.
 	 *
 	 * @param x the new x
@@ -1253,36 +1272,36 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 		originalSize.add(origWidth);
 		originalSize.add(origHeight);
 		jo.put("originalSize", originalSize);
-		JsonArray position = new JsonArray();
-		JsonArray extraDatas = new JsonArray();
-		JsonArray fpss = new JsonArray();
-		JsonArray requestedSize = new JsonArray();
-		JsonArray backgrounds = new JsonArray();
-		JsonArray layers = new JsonArray();
-		JsonArray miscBoxes = new JsonArray();
-		for (Entry<String, Shape> box: this.miscBoxes.entrySet()) {
+		JsonArray	position		= new JsonArray();
+		JsonArray	extraDatas		= new JsonArray();
+		JsonArray	fpss			= new JsonArray();
+		JsonArray	requestedSize	= new JsonArray();
+		JsonArray	backgrounds		= new JsonArray();
+		JsonArray	layers			= new JsonArray();
+		JsonArray	miscBoxes		= new JsonArray();
+		for (Entry<String, Shape> box : this.miscBoxes.entrySet()) {
 			JsonObject jBox = new JsonObject();
 			jBox.put("name", box.getKey());
 			if (box.getValue() instanceof Ellipse circ) {
 				jBox.put("type", "circle");
-				jBox.put("x", (long) circ.getCenterX() / gamepanel.getScalingFactorX());
-				jBox.put("y", (long) circ.getCenterY() / gamepanel.getScalingFactorY());
-				jBox.put("radius", (long) ( (circ.getRadiusX() / gamepanel.getScalingFactorX()
-						+ circ.getRadiusY() / gamepanel.getScalingFactorY()) / 2.0));
+				jBox.put("x", (long) circ.getCenterX() / gamepanel.getWindowDataHolder().scalingFactorX());
+				jBox.put("y", (long) circ.getCenterY() / gamepanel.getWindowDataHolder().scalingFactorY());
+				jBox.put("radius", (long) ( (circ.getRadiusX() / gamepanel.getWindowDataHolder().scalingFactorX()
+						+ circ.getRadiusY() / gamepanel.getWindowDataHolder().scalingFactorY()) / 2.0));
 			} else if (box.getValue() instanceof Rectangle rect) {
 				jBox.put("type", "rectangle");
-				jBox.put("x", (long) rect.getX() / gamepanel.getScalingFactorX());
-				jBox.put("y", (long) rect.getY() / gamepanel.getScalingFactorY());
-				jBox.put("width", (long) rect.getWidth() / gamepanel.getScalingFactorX());
-				jBox.put("height", (long) rect.getHeight() / gamepanel.getScalingFactorY());
+				jBox.put("x", (long) rect.getX() / gamepanel.getWindowDataHolder().scalingFactorX());
+				jBox.put("y", (long) rect.getY() / gamepanel.getWindowDataHolder().scalingFactorY());
+				jBox.put("width", (long) rect.getWidth() / gamepanel.getWindowDataHolder().scalingFactorX());
+				jBox.put("height", (long) rect.getHeight() / gamepanel.getWindowDataHolder().scalingFactorY());
 			} else if (box.getValue() instanceof Polygon poly || box.getValue() instanceof Ring ring) {
 				// TODO
 			} else continue;
 			miscBoxes.add(jBox);
 		}
 		if (slaves == null || slaves.size() == 0) {
-			position.add(x / gamepanel.getScalingFactorX());
-			position.add(y / gamepanel.getScalingFactorY());
+			position.add(x / gamepanel.getWindowDataHolder().scalingFactorX());
+			position.add(y / gamepanel.getWindowDataHolder().scalingFactorY());
 			extraDatas.add(extraData);
 			fpss.add(fps);
 			requestedSize.add(reqWidth);
@@ -1291,8 +1310,8 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 			layers.add(layer);
 		} else {
 			JsonArray pos = new JsonArray();
-			pos.add(x / gamepanel.getScalingFactorX());
-			pos.add(y / gamepanel.getScalingFactorY());
+			pos.add(x / gamepanel.getWindowDataHolder().scalingFactorX());
+			pos.add(y / gamepanel.getWindowDataHolder().scalingFactorY());
 			position.add(pos);
 			extraDatas.add(extraData);
 			fpss.add(fps);
@@ -1302,10 +1321,10 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 			requestedSize.add(reqSize);
 			backgrounds.add(background);
 			layers.add(layer);
-			for (GameObject b: slaves) {
+			for (GameObject b : slaves) {
 				pos = new JsonArray();
-				pos.add(b.x / gamepanel.getScalingFactorX());
-				pos.add(b.y / gamepanel.getScalingFactorY());
+				pos.add(b.x / gamepanel.getWindowDataHolder().scalingFactorX());
+				pos.add(b.y / gamepanel.getWindowDataHolder().scalingFactorY());
 				position.add(pos);
 				extraDatas.add(b.extraData);
 				fpss.add(b.fps);
@@ -1326,18 +1345,18 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 		if (!this.miscBoxes.isEmpty())
 			jo.put("miscBoxes", miscBoxes);
 		return jo;
+
 	}
 
 	/**
 	 * To json value.
 	 *
 	 * @param function the function
+	 *
 	 * @return the json value
 	 */
 	@Override
-	public JsonValue toJsonValue(Function<Object, String> function) {
-		return toJsonValue();
-	}
+	public JsonValue toJsonValue(Function<Object, String> function) { return toJsonValue(); }
 
 	/**
 	 * Update.
@@ -1346,9 +1365,11 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 	 */
 	public void update(long milis) {
 
+		image.update();
+
 		Player p = gamepanel.getPlayer();
 
-		for (Entry<String, Shape> box: miscBoxes.entrySet())
+		for (Entry<String, Shape> box : miscBoxes.entrySet())
 			if (p.collides(() -> box.getValue())) miscBoxHandler.get(box.getKey()).accept(gamepanel, this);
 
 		if ("true".equals(System.getProperty("coll")))
@@ -1357,50 +1378,49 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 			collisionBoxViewGroup.setVisible(false);
 
 		if (!lastKey.equals(currentKey)) {
-			if (animationNum >= images.get(currentKey).size()) animationNum = 0;
-			iv.setImage(images.get(currentKey).get(animationNum));
 			lastKey = currentKey;
+			List<Image> li = new ArrayList<>();
+
+			if (textureFiles.get(currentKey).toLowerCase().endsWith("gif")) {
+				Collections.addAll(li,
+						ImgUtil.getScaledImages(gamepanel.getWindowDataHolder(), "./res/" + directory + "/" + textureFiles.get(currentKey), reqWidth,
+								reqHeight, flipTextures));
+
+				fps = 10;
+				// li.add(img);
+			} else try {
+				Image img = new Image(new FileInputStream("./res/" + directory + "/" + textureFiles.get(currentKey)));
+				for (int i = 0; i < img.getWidth(); i += origWidth) {
+					WritableImage wi = new WritableImage(img.getPixelReader(), i, 0, origWidth, origHeight);
+					li.add(ImgUtil.resizeImage(wi,
+							(int) wi.getWidth(), (int) wi.getHeight(), (int) (reqWidth * gamepanel.getWindowDataHolder().scalingFactorX()),
+							(int) (reqHeight * gamepanel.getWindowDataHolder().scalingFactorY()), flipTextures));
+				}
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			image.init(li.toArray(new Image[0]), (int) fps);
+
 			collisionBoxViewGroup.getChildren().clear();
 			if (getCollisionBox() != null)
 				collisionBoxViewGroup.getChildren().add(getCollisionBox());
 		}
-		if (System.currentTimeMillis() > animationCounter + 1000 / fps) {
-			animationCounter = System.currentTimeMillis();
-			animationNum++;
-
-			try {
-				if (images.get(currentKey) == null) {
-					System.err.println(this);
-					System.err.println("No images here");
-					return;
-				}
-				if (animationNum >= images.get(currentKey).size()) animationNum = 0;
-			} catch (Exception e) {
-				System.out.println(currentKey);
-				e.printStackTrace();
-			}
-
-
-			iv.setImage(images.get(currentKey).get(animationNum));
-		}
-
-
 
 		if ("true".equals(System.getProperty("edit"))) {
 			if (getBorder() == null)
 				setBorder(new Border(
 						new BorderStroke(Color.color(0, 0, 0, .75), BorderStrokeStyle.SOLID, CornerRadii.EMPTY,
 								BorderWidths.DEFAULT)));
-			for (Shape box: miscBoxes.values()) if (!box.isVisible()) box.setVisible(true);
+			for (Shape box : miscBoxes.values()) if (!box.isVisible()) box.setVisible(true);
 		} else {
-			for (Shape box: miscBoxes.values()) if (box.isVisible()) box.setVisible(false);
+			for (Shape box : miscBoxes.values()) if (box.isVisible()) box.setVisible(false);
 			if (getBorder() != null)
 				setBorder(null);
 		}
 
-		if(!fixToScreen) {
-			double screenX = x - p.getX() + p.getScreenX();
-			double screenY = y - p.getY() + p.getScreenY();
+		if (!fixToScreen) {
+			double	screenX	= x - p.getX() + p.getScreenX();
+			double	screenY	= y - p.getY() + p.getScreenY();
 			setLayoutX(screenX);
 			setLayoutY(screenY);
 		}
@@ -1408,7 +1428,7 @@ public class GameObject extends Pane implements JsonValue, Collidable {
 		if (x + getWidth() > p.x - p.getScreenX()
 				&& x < p.x + p.getScreenX() + p.getWidth()
 				&& y + getHeight() > p.y - p.getScreenY()
-				&& y < p.y + p.getScreenY() + p.getHeight()||fixToScreen)
+				&& y < p.y + p.getScreenY() + p.getHeight() || fixToScreen)
 			setVisible(true);
 		else setVisible(false);
 

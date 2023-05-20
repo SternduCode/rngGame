@@ -9,7 +9,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.*;
-import rngGame.main.GamePanel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -29,20 +28,15 @@ public class LayerInputDialog extends Dialog<Boolean> {
 	/** The space 2. */
 	private final Label space = new Label(""), space2 = new Label("");
 
-	/** The gp. */
-	private GamePanel gp;
-
 	/**
 	 * Instantiates a new layer input dialog.
 	 *
 	 * @param supplier the supplier
 	 * @param consumer the consumer
-	 * @param gp the gp
 	 */
-	public LayerInputDialog(Supplier<Integer> supplier, Consumer<Integer> consumer, GamePanel gp) {
+	public LayerInputDialog(Supplier<Integer> supplier, Consumer<Integer> consumer) {
 		final DialogPane dialogPane = getDialogPane();
 
-		this.gp = gp;
 		textField = new TextField(supplier.get() + "");
 		textField.setMaxWidth(Double.MAX_VALUE);
 		GridPane.setHgrow(textField, Priority.ALWAYS);
@@ -58,7 +52,7 @@ public class LayerInputDialog extends Dialog<Boolean> {
 					}
 				});
 
-		up = new Button((char) 708 + "", gp);
+		up = new Button((char) 708 + "");
 		GridPane.setHalignment(up, HPos.CENTER);
 		GridPane.setValignment(up, VPos.CENTER);
 		up.setOnAction(event -> {
@@ -68,7 +62,7 @@ public class LayerInputDialog extends Dialog<Boolean> {
 			}
 		});
 
-		down = new Button((char) 709 + "", gp);
+		down = new Button((char) 709 + "");
 		GridPane.setHalignment(down, HPos.CENTER);
 		GridPane.setValignment(down, VPos.CENTER);
 		down.setOnAction(event -> {
@@ -93,7 +87,7 @@ public class LayerInputDialog extends Dialog<Boolean> {
 
 		setResultConverter(dialogButton -> {
 			ButtonData data = dialogButton == null ? null : dialogButton.getButtonData();
-			return (data == ButtonData.OK_DONE);
+			return data == ButtonData.OK_DONE;
 		});
 	}
 

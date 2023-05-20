@@ -22,6 +22,7 @@ import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 import rngGame.buildings.*;
 import rngGame.entity.*;
+import rngGame.entity.Player;
 import rngGame.tile.*;
 import rngGame.tile.SelectTool;
 import rngGame.tile.TileManager;
@@ -591,28 +592,6 @@ public class GamePanel {
 	}
 
 	/**
-	 * Convert layout point to world point.
-	 *
-	 * @param layoutPoint the layout point
-	 *
-	 * @return the world point
-	 */
-	public Point2D convertLayoutPointToWorldPoint(Point2D layoutPoint) {
-
-	}
-
-	/**
-	 * Convert world point to layout point.
-	 *
-	 * @param worldPoint the world point
-	 *
-	 * @return the layout point
-	 */
-	public Point2D convertWorldPointToLayoutPoint(Point2D worldPoint) {
-
-	}
-
-	/**
 	 * Gets the bubble.
 	 *
 	 * @return the bubble
@@ -850,8 +829,6 @@ public class GamePanel {
 	public void update() {
 
 		long lastFrameTime = frameTimes.size() > 0 ? frameTimes.get(frameTimes.size() - 1) : 0;
-
-		input.update(lastFrameTime);
 
 		try {
 			for (Building b : buildings) b.update(lastFrameTime);

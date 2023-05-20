@@ -3,7 +3,7 @@ package rngGame.visual;
 import java.util.*;
 
 import javafx.scene.Group;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import rngGame.ui.WindowDataHolder;
@@ -76,11 +76,15 @@ public class GamePanel extends Pane {
 
 		gameObjects = new ArrayList<>();
 
-		tileManager = new TileManager(logic.getTileManager(), windowDataHolder);
+		loadingScreen = new LoadingScreen(rngGame.ui.LoadingScreen.getDefaultLoadingScreen(windowDataHolder));
+		loadingScreen.setDisable(true);
+		loadingScreen.setOpacity(0);
+
+		tileManager = new TileManager(logic.getTileManager(), windowDataHolder, this);
 
 		layerGroup = new LayerGroup();
 
-		player = new Player(logic.getPlayer());
+		player = new Player(logic.getPlayer(), windowDataHolder, tileManager.getContextMenu(), this);
 
 		overlay = new AnimatedImage(logic.getOverlay());
 
@@ -98,12 +102,24 @@ public class GamePanel extends Pane {
 
 		fpsLabel = new Label();
 
-		loadingScreen = new LoadingScreen(rngGame.ui.LoadingScreen.getDefaultLoadingScreen(windowDataHolder));
-
 		getChildren().addAll(tileManager, layerGroup, overlay, pointGroup, selectTool, actionButton, speakBubble, speakBubbleText,
 				tabMenu, fpsLabel, loadingScreen);
 
 	}
+
+	/**
+	 * Gets the context menu.
+	 *
+	 * @return the context menu
+	 */
+	public ContextMenu getContextMenu() { return tileManager.getContextMenu(); }
+
+	/**
+	 * Gets the game objects.
+	 *
+	 * @return the game objects
+	 */
+	public List<GameObject> getGameObjects() { return gameObjects; }
 
 	/**
 	 * Gets the layer group.
@@ -111,6 +127,22 @@ public class GamePanel extends Pane {
 	 * @return the layer group
 	 */
 	public LayerGroup getLayerGroup() { return layerGroup; }
+
+	/**
+	 * Gets the logic.
+	 *
+	 * @return the logic
+	 */
+	public rngGame.ui.GamePanel getLogic() { return logic; }
+
+	/**
+	 * Gets the tile at.
+	 *
+	 * @param x the x
+	 * @param y the y
+	 * @return the tile at
+	 */
+	public rngGame.visual.TextureHolder getTileAt(double x, double y) { return tileManager.getTileAt(x, y); }
 
 	/**
 	 * Go into full screen.
@@ -124,6 +156,13 @@ public class GamePanel extends Pane {
 	}
 
 	/**
+	 * Go into loading screen.
+	 */
+	public void goIntoLoadingScreen() {
+		loadingScreen.goIntoLoadingScreen();
+	}
+
+	/**
 	 * Go out of full screen.
 	 */
 	public void goOutOfFullScreen() {
@@ -133,6 +172,13 @@ public class GamePanel extends Pane {
 		windowDataHolder.setGameWidth((int) getScene().getWidth());
 		windowDataHolder.setGameHeight((int) getScene().getHeight());
 
+	}
+
+	/**
+	 * Go out of loading screen.
+	 */
+	public void goOutOfLoadingScreen() {
+		loadingScreen.goOutOfLoadingScreen();
 	}
 
 	/**

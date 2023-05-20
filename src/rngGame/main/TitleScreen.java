@@ -97,12 +97,7 @@ public class TitleScreen extends Pane {
 				settinsVisual.setVisible(false);
 				clousVisual.setVisible(false);
 
-				try {
-					Thread.sleep(2000);
-					loadingScreenVisual.goOutOfLoadingScreen();
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				}
+				loadingScreenVisual.goOutOfLoadingScreen();
 			}).start();
 
 		});

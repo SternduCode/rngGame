@@ -2,8 +2,6 @@ package rngGame.ui;
 
 import java.util.function.Consumer;
 
-import rngGame.main.GamePanel;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class AktionButton.

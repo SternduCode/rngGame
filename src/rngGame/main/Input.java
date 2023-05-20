@@ -7,8 +7,6 @@ import java.util.function.Consumer;
 import javafx.scene.Node;
 import javafx.scene.input.*;
 import javafx.scene.shape.Polygon;
-import rngGame.buildings.Building;
-import rngGame.tile.TextureHolder;
 import rngGame.ui.GamePanel;
 import rngGame.ui.WindowDataHolder;
 
@@ -141,7 +139,7 @@ public class Input {
 	private void newC(Polygon p) {
 		p.getPoints().clear();
 		p.setVisible(false);
-		if (p.getParent() instanceof TextureHolder th) if (th.getTile().poly != null) th.getTile().poly.clear();
+		if (p.getParent() instanceof rngGame.visual.TextureHolder th) if (th.getLogic().getTile().poly != null) th.getLogic().getTile().poly.clear();
 	}
 
 	/**
@@ -305,7 +303,7 @@ public class Input {
 		} else {
 			Node target = gamePanel.getObjectAt(me.getSceneX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX(),
 					me.getSceneY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY());
-			if (!gamePanel.getSelectTool().isDragging() && target instanceof TextureHolder)
+			if (!gamePanel.getSelectTool().isDragging() && target instanceof rngGame.visual.TextureHolder)
 				gamePanel.getSelectTool().startDrag(me);
 			else if (gamePanel.getSelectTool().isDragging()) gamePanel.getSelectTool().doDrag(me);
 		}
@@ -336,33 +334,33 @@ public class Input {
 			if ("true".equals(System.getProperty("teleport"))) gamePanel.getPlayer().setPosition(
 					me.getSceneX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX() - gamePanel.getPlayer().getColliBoxX(),
 					me.getSceneY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY() - gamePanel.getPlayer().getColliBoxY());
-			else if (target instanceof TextureHolder t) {
+			else if (target instanceof rngGame.visual.TextureHolder t) {
 
 				if (gamePanel.getSelectTool().isDragging()) gamePanel.getSelectTool().endDrag();
 				else
 					if ("true".equals(System.getProperty("coll"))) if (!ctrlState || !s && !n) {
-						t.getPoly().getPoints().addAll(me.getX() - t.getLayoutX(), me.getY() - t.getLayoutY());
-						if (t.getTile().poly == null) t.getTile().poly = new ArrayList<>();
-						t.getTile().poly.add(me.getX() - t.getLayoutX());
-						t.getTile().poly.add(me.getY() - t.getLayoutY());
+						t.getLogic().getPoly().getPoints().addAll(me.getX() - t.getLayoutX(), me.getY() - t.getLayoutY());
+						if (t.getLogic().getTile().poly == null) t.getLogic().getTile().poly = new ArrayList<>();
+						t.getLogic().getTile().poly.add(me.getX() - t.getLayoutX());
+						t.getLogic().getTile().poly.add(me.getY() - t.getLayoutY());
 					} else if (ctrlState && s) {
-						String[] sp = t.getTile().name.split("[.]");
-						save(t.getPoly(),
+						String[] sp = t.getLogic().getTile().name.split("[.]");
+						save(t.getLogic().getPoly(),
 								gamePanel.getTileManager().getDir() + "/" + String.join(".", Arrays.copyOf(sp, sp.length - 1))
 								+ ".collisionbox");
-					} else if (ctrlState && n) newC(t.getPoly());
+					} else if (ctrlState && n) newC(t.getLogic().getPoly());
 			} else
-				if (target instanceof Building b
+				if (target instanceof rngGame.visual.GameObject b
 						&& "true".equals(System.getProperty("coll")))
 					if (!ctrlState || !s && !n)
-						b.getCollisionBox().getPoints().addAll((double) Math.round(me.getX() - b.getLayoutX()),
+						b.getLogic().getCollisionBox().getPoints().addAll((double) Math.round(me.getX() - b.getLayoutX()),
 								(double) Math.round(me.getY() - b.getLayoutY()));
 					else if (ctrlState && s) {
-						String[] sp = b.textureFiles.get(b.getCurrentKey()).split("[.]");
-						save(b.getCollisionBox(), b.directory + "/"
+						String[] sp = b.getLogic().textureFiles.get(b.getLogic().getCurrentKey()).split("[.]");
+						save(b.getLogic().getCollisionBox(), b.getLogic().directory + "/"
 								+ String.join(".", Arrays.copyOf(sp, sp.length - 1))
 								+ ".collisionbox");
-					} else if (ctrlState && n) newC(b.getCollisionBox());
+					} else if (ctrlState && n) newC(b.getLogic().getCollisionBox());
 		}
 	}
 
@@ -480,15 +478,6 @@ public class Input {
 	@Override
 	public String toString() {
 		return "Input [s=" + s + ", ctrlState=" + ctrlState + ", n=" + n + "]";
-	}
-
-	/**
-	 * Update.
-	 *
-	 * @param ms the ms
-	 */
-	public void update(long ms) {
-
 	}
 
 }
