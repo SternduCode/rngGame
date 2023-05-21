@@ -25,6 +25,8 @@ public class LoadingScreen extends AnimatedImage {
 		setFitWidth(getImage().getWidth() * logic.getWindowDataHolder().scalingFactorX());
 		setFitHeight(getImage().getHeight() * logic.getWindowDataHolder().scalingFactorY());
 
+		setDisable(true);
+
 		FadeTransition ft = new FadeTransition(Duration.millis(250), this);
 		ft.setFromValue(0);
 		ft.setToValue(1);

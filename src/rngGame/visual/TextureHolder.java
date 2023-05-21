@@ -57,6 +57,11 @@ public class TextureHolder extends Pane {
 	 */
 	public void update() {
 		image.setImage(logic.getTile().images[logic.getTile().spriteNum]);
+		setVisible(logic.isVisible());
+		setLayoutX(logic.getLayoutX());
+		setLayoutY(logic.getLayoutY());
+		setWidth(logic.getWidth());
+		setHeight(logic.getHeight());
 		getChildren().clear();
 		getChildren().addAll(image, logic.getPoly());
 

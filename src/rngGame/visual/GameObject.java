@@ -50,7 +50,7 @@ public class GameObject extends Pane {
 
 		setOnContextMenuRequested(e -> {
 			if ("true".equals(System.getProperty("edit"))) {
-				logic.getRequestor().set(this);
+				logic.getRequestor().set(logic);
 				contextMenu.getItems().clear();
 				contextMenu.getItems().addAll(logic.getMenus());
 				contextMenu.show(gamePanel.getLayerGroup().getLayer(getLayer()), e.getScreenX(), e.getScreenY());

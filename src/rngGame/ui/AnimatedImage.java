@@ -24,6 +24,9 @@ public class AnimatedImage {
 	/** The path. */
 	private String path;
 
+	/** The img requested height. */
+	private int imgRequestedWidth, imgRequestedHeight;
+
 	/** The fps. */
 	private int fps;
 
@@ -33,14 +36,16 @@ public class AnimatedImage {
 	/**
 	 * Instantiates a new animated image.
 	 *
-	 * @param frames the frames
+	 * @param frames           the frames
 	 * @param windowDataHolder the window data holder
 	 */
 	public AnimatedImage(Image[] frames, WindowDataHolder windowDataHolder) {
 		path					= null;
-		this.frames = frames;
+		this.frames				= frames;
 		this.windowDataHolder	= windowDataHolder;
-		fps							= 7;
+		fps						= 7;
+		imgRequestedWidth		= -1;
+		imgRequestedHeight		= -1;
 		update();
 
 	}
@@ -54,9 +59,11 @@ public class AnimatedImage {
 	 */
 	public AnimatedImage(Image[] frames, WindowDataHolder windowDataHolder, int fps) {
 		path					= null;
-		this.frames = frames;
+		this.frames				= frames;
 		this.windowDataHolder	= windowDataHolder;
-		this.fps					= fps;
+		this.fps				= fps;
+		imgRequestedWidth		= -1;
+		imgRequestedHeight		= -1;
 		update();
 
 	}
@@ -71,6 +78,8 @@ public class AnimatedImage {
 		this.path				= path;
 		this.windowDataHolder	= windowDataHolder;
 		fps						= 7;
+		imgRequestedWidth		= -1;
+		imgRequestedHeight		= -1;
 		scaleF11();
 		update();
 
@@ -84,9 +93,11 @@ public class AnimatedImage {
 	 * @param fps                 the fps
 	 */
 	public AnimatedImage(String path, WindowDataHolder windowDataHolder, int fps) {
-		this.path					= path;
+		this.path				= path;
 		this.windowDataHolder	= windowDataHolder;
-		this.fps					= fps;
+		this.fps				= fps;
+		imgRequestedWidth		= -1;
+		imgRequestedHeight		= -1;
 		scaleF11();
 		update();
 
@@ -99,9 +110,19 @@ public class AnimatedImage {
 	 */
 	public AnimatedImage(WindowDataHolder windowDataHolder) {
 		this.windowDataHolder	= windowDataHolder;
-		fps							= 7;
+		fps						= 7;
+		imgRequestedWidth		= -1;
+		imgRequestedHeight		= -1;
+		path					= null;
 
 	}
+
+	/**
+	 * Frame count.
+	 *
+	 * @return the int
+	 */
+	public int frameCount() { return frames.length; }
 
 	/**
 	 * Gets the fps.
@@ -125,6 +146,20 @@ public class AnimatedImage {
 	 * @return the frame index
 	 */
 	public int getFrameIndex() { return frameIndex; }
+
+	/**
+	 * Gets the img requested height.
+	 *
+	 * @return the img requested height
+	 */
+	public int getImgRequestedHeight() { return imgRequestedHeight; }
+
+	/**
+	 * Gets the img requested width.
+	 *
+	 * @return the img requested width
+	 */
+	public int getImgRequestedWidth() { return imgRequestedWidth; }
 
 	/**
 	 * Gets the path.
@@ -214,13 +249,19 @@ public class AnimatedImage {
 	 */
 	public void scaleF11() {
 		if (path != null) {
-			frames = ImgUtil.getScaledImages(windowDataHolder, path);
+			if (imgRequestedWidth != -1 && imgRequestedHeight != -1)
+				frames = ImgUtil.getScaledImages(windowDataHolder, path, imgRequestedWidth, imgRequestedHeight);
+			else frames = ImgUtil.getScaledImages(windowDataHolder, path);
 			if (frameIndex >= frames.length)
 				frameIndex = 0;
 		} else for (int i = 0; i < frames.length; i++) {
 			Image img = frames[i];
-			frames[i] = ImgUtil.resizeImage(img, (int) img.getWidth(), (int) img.getHeight(),
-					(int) (img.getWidth() * windowDataHolder.scalingFactorX()), (int) (img.getHeight() * windowDataHolder.scalingFactorY()));
+			if (imgRequestedWidth != -1 && imgRequestedHeight != -1)
+				frames[i] = ImgUtil.resizeImage(img, (int) img.getWidth(), (int) img.getHeight(),
+						(int) (imgRequestedWidth * windowDataHolder.scalingFactorX()), (int) (imgRequestedHeight * windowDataHolder.scalingFactorY()));
+			else
+				frames[i] = ImgUtil.resizeImage(img, (int) img.getWidth(), (int) img.getHeight(),
+						(int) (img.getWidth() * windowDataHolder.scalingFactorX()), (int) (img.getHeight() * windowDataHolder.scalingFactorY()));
 		}
 		dirty = true;
 
@@ -232,6 +273,20 @@ public class AnimatedImage {
 	 * @param fps the new fps
 	 */
 	public void setFps(int fps) { this.fps = fps; }
+
+	/**
+	 * Sets the img requested height.
+	 *
+	 * @param imgRequestedHeight the new img requested height
+	 */
+	public void setImgRequestedHeight(int imgRequestedHeight) { this.imgRequestedHeight = imgRequestedHeight; }
+
+	/**
+	 * Sets the img requested width.
+	 *
+	 * @param imgRequestedWidth the new img requested width
+	 */
+	public void setImgRequestedWidth(int imgRequestedWidth) { this.imgRequestedWidth = imgRequestedWidth; }
 
 	/**
 	 * Uninit.

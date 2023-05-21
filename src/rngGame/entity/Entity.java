@@ -5,7 +5,6 @@ import java.util.List;
 import com.sterndu.json.JsonObject;
 
 import javafx.beans.property.ObjectProperty;
-import javafx.scene.control.ContextMenu;
 import rngGame.main.GameObject;
 import rngGame.ui.*;
 
@@ -23,13 +22,12 @@ public abstract class Entity extends GameObject {
 	 *
 	 * @param en the en
 	 * @param entities the entities
-	 * @param cm the cm
 	 * @param requestor the requestor
 	 * @param windowDataHolder the window data holder
 	 */
-	public Entity(Entity en, List<? extends Entity> entities, ContextMenu cm,
+	public Entity(Entity en, List<? extends Entity> entities,
 			ObjectProperty<? extends Entity> requestor, WindowDataHolder windowDataHolder) {
-		super(en, entities, cm, requestor, windowDataHolder);
+		super(en, entities, requestor, windowDataHolder);
 		speed = en.speed;
 
 	}

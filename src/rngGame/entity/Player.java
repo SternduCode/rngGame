@@ -355,8 +355,12 @@ public class Player extends Entity {
 		oldX = x;
 		oldY = y;
 
-		screenX	= (int) (gamepanel.getWindowDataHolder().gameWidth() / 2 - getImage().getFrameAt(getImage().getFrameIndex()).getWidth() / 2);
-		screenY	= (int) (gamepanel.getWindowDataHolder().gameHeight() / 2 - getImage().getFrameAt(getImage().getFrameIndex()).getHeight() / 2);
+		int frameIndex = getImage().getFrameIndex();
+
+		if (frameIndex < getImage().frameCount()) {
+			screenX	= (int) (gamepanel.getWindowDataHolder().gameWidth() / 2 - getImage().getFrameAt(frameIndex).getWidth() / 2);
+			screenY	= (int) (gamepanel.getWindowDataHolder().gameHeight() / 2 - getImage().getFrameAt(frameIndex).getHeight() / 2);
+		}
 
 	}
 }

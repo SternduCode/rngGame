@@ -78,6 +78,9 @@ public class GamePanel {
 	/** The npcs. */
 	private final List<NPC> npcs;
 
+	/** The clipboard. */
+	private List<List<TextureHolder>> clipboard;
+
 	/**
 	 * Instantiates a new game panel.
 	 *
@@ -160,7 +163,7 @@ public class GamePanel {
 	 *
 	 * @return the clipboard
 	 */
-	public List<List<TextureHolder>> getClipboard() { return null; }
+	public List<List<TextureHolder>> getClipboard() { return clipboard; }
 
 	/**
 	 * Gets the context menu.
@@ -175,6 +178,8 @@ public class GamePanel {
 	 * @return the difficulty
 	 */
 	public Difficulty getDifficulty() { return difficulty; }
+
+	public int getLayerCount() { return visualGamePanel.getLayerGroup().getChildren().size(); }
 
 	/**
 	 * Gets the npcs.
@@ -264,6 +269,13 @@ public class GamePanel {
 	public double getTps() { return tps; }
 
 	/**
+	 * Gets the visual select tool.
+	 *
+	 * @return the visual select tool
+	 */
+	public rngGame.visual.SelectTool getVisualSelectTool() { return visualGamePanel.getSelectTool(); }
+
+	/**
 	 * Gets the window.
 	 *
 	 * @return the window
@@ -295,6 +307,13 @@ public class GamePanel {
 	public boolean isBlockUserInputs() { return visualGamePanel == null || visualGamePanel.isInLoadingScreen() || blockUserInputs; }
 
 	/**
+	 * Checks if is fps label visible.
+	 *
+	 * @return true, if is fps label visible
+	 */
+	public boolean isFpsLabelVisible() { return fpsLabelVisible; }
+
+	/**
 	 * Checks if is full screen.
 	 *
 	 * @return true, if is full screen
@@ -323,9 +342,9 @@ public class GamePanel {
 	/**
 	 * Sets the clipboard.
 	 *
-	 * @param map the new clipboard
+	 * @param clipboard the new clipboard
 	 */
-	public void setClipboard(List<List<TextureHolder>> map) {}
+	public void setClipboard(List<List<TextureHolder>> clipboard) { this.clipboard = clipboard; }
 
 	/**
 	 * Sets the map.
@@ -337,10 +356,10 @@ public class GamePanel {
 	/**
 	 * Sets the map.
 	 *
-	 * @param string the string
+	 * @param path the path
 	 * @param exitStartingPosition the exit starting position
 	 */
-	public void setMap(String string, double[] exitStartingPosition) {
+	public void setMap(String path, double[] exitStartingPosition) {
 
 		visualGamePanel.goIntoLoadingScreen();
 
@@ -349,6 +368,8 @@ public class GamePanel {
 		SoundHandler.getInstance().endBackgroundMusic();
 
 		getPoints().clear();
+
+		tileManager.setMap(path);
 
 		if (!"".equals(getTileManager().getBackgroundMusic()))
 			SoundHandler.getInstance().setBackgroundMusic(getTileManager().getBackgroundMusic());
@@ -392,7 +413,7 @@ public class GamePanel {
 		lastFrame = System.currentTimeMillis();
 		frameTimes.add(frameTime);
 		tps = frameTimes.stream().mapToLong(l -> l).average().getAsDouble();
-		while (frameTimes.size() > Math.pow(tps * 12, 1.2)) frameTimes.remove(0);
+		while (frameTimes.size() > Math.max(Math.pow(1000 / tps * 12, 1.2), 1)) frameTimes.remove(0);
 
 	}
 

@@ -184,6 +184,8 @@ public class TileManager {
 
 		this.gamePanel = gamePanel;
 
+		backgroundMusic = "";
+
 		mtiles		= new Menu("Tiles");
 		mnpcs		= new Menu("NPCs");
 		mbuildings	= new Menu("Buildings");
@@ -379,7 +381,7 @@ public class TileManager {
 			return 1;
 		});
 		return new Menu[] {
-				mtiles, mnpcs, getMbuildings(), mmobs, mextra
+				mtiles, mnpcs, mbuildings, mmobs, mextra
 		};
 
 	}
@@ -426,7 +428,7 @@ public class TileManager {
 
 		for (int i = 0; i < h; i++) {
 			li.add(new ArrayList<>());
-			for (int j = 0; j < w; j++) li.get(i).add(map.get(ly + i).get(lx + j));
+			for (int j = 0; j < w; j++) li.get(i).add(getTileAt(lx + j, ly + i));
 		}
 		return li;
 
@@ -491,7 +493,7 @@ public class TileManager {
 			return map.get(ty).get(tx);
 		} catch (IndexOutOfBoundsException e) {
 			return new FakeTextureHolder(tx * windowDataHolder.blockSizeX() - gamePanel.getPlayer().getX() + gamePanel.getPlayer().getScreenX(),
-					ty * windowDataHolder.blockSizeY() - gamePanel.getPlayer().getY() + gamePanel.getPlayer().getScreenY());
+					ty * windowDataHolder.blockSizeY() - gamePanel.getPlayer().getY() + gamePanel.getPlayer().getScreenY(), windowDataHolder);
 		}
 
 	}
@@ -1017,7 +1019,6 @@ public class TileManager {
 			getMapTileNum().clear();
 			map.clear();
 
-			group.getChildren().clear();
 			tiles.clear();
 			npcs.clear();
 			mobs.clear();
@@ -1143,20 +1144,18 @@ public class TileManager {
 			mobs			= new ArrayList<>();
 			for (Object building : buildings) {
 				Building b = switch ( ((StringValue) ((JsonObject) building).get("type")).getValue()) {
-					case "House" -> new House((JsonObject) building, gamePanel, this.buildings, cm, requesterB);
-					case "ContractsTable" -> new ContractsTable((JsonObject) building, gamePanel, this.buildings, cm,
-							requesterB);
-					case "TreasureChest" -> new TreasureChest((JsonObject) building, gamePanel, this.buildings, cm, requesterB);
-					default -> new Building((JsonObject) building, gamePanel, this.buildings, cm, requesterB);
+					case "House" -> new House((JsonObject) building, gamePanel, this.buildings, requesterB, windowDataHolder);
+					case "ContractsTable" -> new ContractsTable((JsonObject) building, gamePanel, this.buildings,
+							requesterB, windowDataHolder);
+					case "TreasureChest" -> new TreasureChest((JsonObject) building, gamePanel, this.buildings, requesterB,
+							windowDataHolder);
+					default -> new Building((JsonObject) building, gamePanel, this.buildings, requesterB, windowDataHolder);
 				};
+				b.update(0);
 				ImageView	lIV;
-				if (b.isGif(b.getCurrentKey())) {
-					lIV = new ImageView(b.getImages().get(b.getCurrentKey()).get(0));
-					lIV.setFitWidth(16);
-					lIV.setFitHeight(16);
-				} else lIV = new ImageView(ImgUtil.resizeImage(b.getImages().get(b.getCurrentKey()).get(0),
-						(int) b.getImages().get(b.getCurrentKey()).get(0).getWidth(),
-						(int) b.getImages().get(b.getCurrentKey()).get(0).getHeight(), 48, 48));
+				lIV = new ImageView(ImgUtil.resizeImage(b.getImage().getFrameAt(b.getImage().getFrameIndex()),
+						(int) b.getImage().getFrameAt(b.getImage().getFrameIndex()).getWidth(),
+						(int) b.getImage().getFrameAt(b.getImage().getFrameIndex()).getHeight(), 48, 48));
 				getMbuildings().getItems().add(new MenuItemWBuilding(
 						((StringValue) ((JsonObject) ((JsonObject) building).get("textures")).values().stream()
 								.findFirst().get()).getValue(),
@@ -1165,19 +1164,14 @@ public class TileManager {
 			}
 			for (Object npc : npcs) {
 				Entity n = switch ( ((StringValue) ((JsonObject) npc).get("type")).getValue()) {
-					case "MonsterNPC", "monsternpc", "Demon", "demon" -> new MonsterNPC((JsonObject) npc, gamePanel, this.npcs, cm,
-							requestorN);
-					case "MobRan", "mobran" -> new MobRan((JsonObject) npc, gamePanel, mobs, cm, requestorM);
-					default -> new NPC((JsonObject) npc, gamePanel, this.npcs, cm, requestorN);
+					case "MonsterNPC", "monsternpc", "Demon", "demon" -> new MonsterNPC((JsonObject) npc, gamePanel, this.npcs,
+							requestorN, windowDataHolder);
+					case "MobRan", "mobran" -> new MobRan((JsonObject) npc, gamePanel, mobs, requestorM, windowDataHolder);
+					default -> new NPC((JsonObject) npc, gamePanel, this.npcs, requestorN, windowDataHolder);
 				};
-				ImageView	lIV;
-				if (n.isGif(n.getCurrentKey())) {
-					lIV = new ImageView(n.getImages().get(n.getCurrentKey()).get(0));
-					lIV.setFitWidth(16);
-					lIV.setFitHeight(16);
-				} else lIV = new ImageView(ImgUtil.resizeImage(n.getImages().get(n.getCurrentKey()).get(0),
-						(int) n.getImages().get(n.getCurrentKey()).get(0).getWidth(),
-						(int) n.getImages().get(n.getCurrentKey()).get(0).getHeight(), 48, 48));
+				ImageView	lIV	= new ImageView(ImgUtil.resizeImage(n.getImage().getFrameAt(n.getImage().getFrameIndex()),
+						(int) n.getImage().getFrameAt(n.getImage().getFrameIndex()).getWidth(),
+						(int) n.getImage().getFrameAt(n.getImage().getFrameIndex()).getHeight(), 48, 48));
 				if (n instanceof MobRan mr)
 					mmobs.getItems()
 					.add(new MenuItemWMOB(
@@ -1220,7 +1214,7 @@ public class TileManager {
 	 */
 	public void setOnContextMenuRequested(ContextMenuEvent e) {
 		getRequester().set(new FakeTextureHolder(e.getSceneX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX(),
-				e.getSceneY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY()));
+				e.getSceneY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY(), windowDataHolder));
 
 	}
 
@@ -1328,5 +1322,12 @@ public class TileManager {
 	 * @return the requester
 	 */
 	public ObjectProperty<TextureHolder> getRequester() { return requester; }
+
+	/**
+	 * Gets the mbuildings.
+	 *
+	 * @return the mbuildings
+	 */
+	public Menu getMbuildings() { return mbuildings; }
 
 }

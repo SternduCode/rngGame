@@ -13,7 +13,7 @@ import javafx.scene.shape.Polygon;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import rngGame.main.GameObject;
-import rngGame.visual.GamePanel;
+import rngGame.ui.*;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -38,12 +38,12 @@ public class House extends Building {
 	 *
 	 * @param building the building
 	 * @param buildings the buildings
-	 * @param cm the cm
 	 * @param requestorB the requestor B
+	 * @param windowDataHolder the window data holder
 	 */
-	public House(House building, List<Building> buildings, ContextMenu cm,
-			ObjectProperty<Building> requestorB) {
-		super(building, buildings, cm, requestorB);
+	public House(House building, List<Building> buildings,
+			ObjectProperty<Building> requestorB, WindowDataHolder windowDataHolder) {
+		super(building, buildings, requestorB, windowDataHolder);
 		setCurrentKey("closed");
 		house = new Menu("House");
 		house.setStyle("-fx-font-size: 20;");
@@ -61,12 +61,12 @@ public class House extends Building {
 	 * @param building the building
 	 * @param gp the gp
 	 * @param buildings the buildings
-	 * @param cm the cm
 	 * @param requestorB the requestor B
+	 * @param windowDataHolder the window data holder
 	 */
-	public House(JsonObject building, GamePanel gp, List<Building> buildings, ContextMenu cm,
-			ObjectProperty<Building> requestorB) {
-		super(building, gp, buildings, cm, requestorB);
+	public House(JsonObject building, GamePanel gp, List<Building> buildings,
+			ObjectProperty<Building> requestorB, WindowDataHolder windowDataHolder) {
+		super(building, gp, buildings, requestorB, windowDataHolder);
 		if (building.containsKey("map")) setMap(((StringValue) building.get("map")).getValue());
 		setCurrentKey("closed");
 		house = new Menu("House");
@@ -98,10 +98,10 @@ public class House extends Building {
 			entrance.getPoints().addAll(entranceX, entranceY, entranceX, entranceY + entranceHeight,
 					entranceX + entranceWidth, entranceY + entranceHeight, entranceX + entranceWidth, entranceY);
 			addMiscBox("entrance", entrance, (gpt, self) -> {
-				if ( ((House) self).getMap() != null) gpt.getLgp().setMap("./res/maps/" + ((House) self).getMap());
+				if ( ((House) self).getMap() != null) gpt.setMap("./res/maps/" + ((House) self).getMap());
 			});
 		} else getMiscBoxHandler().put("entrance", (gpt, self) -> {
-			if ( ((House) self).getMap() != null) gpt.getLgp().setMap("./res/maps/" + ((House) self).getMap());
+			if ( ((House) self).getMap() != null) gpt.setMap("./res/maps/" + ((House) self).getMap());
 		});
 	}
 
@@ -117,7 +117,7 @@ public class House extends Building {
 		fc.getExtensionFilters().add(new ExtensionFilter(
 				"A file containing an JSON data", "*.json"));
 		fc.setInitialFileName(map);
-		File f = fc.showOpenDialog(getScene().getWindow());
+		File f = fc.showOpenDialog(gamepanel.getWindow());
 		if (f != null && !f.toPath().startsWith("./res/maps")) {
 			Path to = new File("./res/maps/"+f.getName()).toPath();
 			if (Files.exists(to)) {

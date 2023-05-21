@@ -6,7 +6,6 @@ import java.util.*;
 import com.sterndu.json.*;
 
 import javafx.event.ActionEvent;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -165,7 +164,8 @@ public class SelectTool {
 	 */
 	public void doDrag(MouseEvent me) {
 		if (dragging) {
-			Node node = gamePanel.getTileManager().getTileAt(me.getSceneX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX(),
+			TextureHolder node = gamePanel.getTileManager().getTileAt(
+					me.getSceneX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX(),
 					me.getSceneY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY());
 			if (node instanceof TextureHolder t) {
 				setWidth(t.getLayoutX() + t.getWidth() - getLayoutX());
@@ -201,7 +201,7 @@ public class SelectTool {
 		dragging = false;
 		if (getWidth() <= windowDataHolder.blockSizeX() && getHeight() <= windowDataHolder.blockSizeY()) return;// Make dragging not drag if only
 		// short drag
-		ContextMenu cm = gamePanel.getTileManager().getCM();
+		ContextMenu cm = gamePanel.getContextMenu();
 		cm.getItems().clear();
 		cm.getItems().add(select);
 		cm.getItems().add(copy);
@@ -237,7 +237,7 @@ public class SelectTool {
 			return 1;
 		});
 		if (!gamePanel.isBlockUserInputs())
-			cm.show(this, getLayoutX() + gamePanel.getWindow().getX(),
+			cm.show(gamePanel.getVisualSelectTool(), getLayoutX() + gamePanel.getWindow().getX(),
 					getLayoutY() + gamePanel.getWindow().getY());
 
 	}

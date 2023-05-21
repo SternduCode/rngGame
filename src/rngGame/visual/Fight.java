@@ -5,13 +5,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import rngGame.entity.MobRan;
-import rngGame.stats.Demon;
-<<<<<<< HEAD
-=======
-import rngGame.stats.Element;
-import rngGame.tile.ImgUtil;
->>>>>>> refs/remotes/origin/main
+import rngGame.stats.*;
 import rngGame.ui.*;
+import rngGame.ui.GamePanel;
 
 // TODO: Auto-generated Javadoc
 /**

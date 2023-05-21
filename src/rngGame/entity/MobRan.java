@@ -14,7 +14,8 @@ import javafx.scene.image.Image;
 import javafx.scene.shape.Circle;
 import rngGame.stats.*;
 import rngGame.tile.TextureHolder;
-import rngGame.visual.*;
+import rngGame.ui.*;
+import rngGame.visual.Fight;
 
 
 // TODO: Auto-generated Javadoc
@@ -72,8 +73,8 @@ public class MobRan extends NPC {
 	 * @param requestor the requestor
 	 */
 	public MobRan(JsonObject en, GamePanel gp, List<MobRan> entities,
-			ContextMenu cm, ObjectProperty<MobRan> requestor) {
-		super(en, gp, 3 * 60, entities, cm, requestor);
+			ObjectProperty<MobRan> requestor, WindowDataHolder windowDataHolder) {
+		super(en, gp, 3 * 60, entities, requestor, windowDataHolder);
 		init();
 	}
 
@@ -86,8 +87,8 @@ public class MobRan extends NPC {
 	 * @param requestor the requestor
 	 */
 	public MobRan(MobRan en, List< MobRan> entities, ContextMenu cm,
-			ObjectProperty<MobRan> requestor) {
-		super(en, entities, cm, requestor);
+			ObjectProperty<MobRan> requestor, WindowDataHolder windowDataHolder) {
+		super(en, entities, requestor, windowDataHolder);
 		init();
 	}
 
@@ -193,11 +194,11 @@ public class MobRan extends NPC {
 			originalSize.add(new DoubleValue(img.getHeight()));
 			joB.put("originalSize", originalSize);
 
-			MonsterNPC mnpc = new MonsterNPC(joB, gamepanel, gamepanel.getTileManager().getNPCSFromMap(), gamepanel.getTileManager().getCM(),
-					gamepanel.getTileManager().getRequestorN());
-			gamepanel.getViewGroups().get(mnpc.getLayer()).getChildren().remove(mnpc);
+			MonsterNPC mnpc = new MonsterNPC(joB, gamepanel, gamepanel.getTileManager().getNPCSFromMap(),
+					gamepanel.getTileManager().getRequestorN(), gamepanel.getWindowDataHolder());
+			// TODO gamepanel.getViewGroups().get(mnpc.getLayer()).getChildren().remove(mnpc);
 			mnpc.setFixToScreen(true);
-			gamepanel.getLgp().getNpcs().add(mnpc);
+			gamepanel.getNpcs().add(mnpc);
 
 			return new Demon(wahl, mobName, mnpc);
 		} catch (FileNotFoundException e) {
@@ -237,10 +238,10 @@ public class MobRan extends NPC {
 			MobRan.this.setFixToScreen(true);
 			MobRan.this.setLayoutX(0);
 			MobRan.this.setLayoutY(0);
-			MobRan.this.setLayer(gamepanel.getViewGroups().size());
-			gamepanel.getAktionbutton().setVisible(false);
+			MobRan.this.setLayer(gamepanel.getLayerCount());
+			gamepanel.getActionButton().setVisible(false);
 			f = new Fight(gpt, MobRan.this);
-			getChildren().add(f);
+			// TODO getChildren().add(f);
 
 		});
 		getMiscBoxHandler().put("visible", (gpt,self)->{
@@ -287,8 +288,8 @@ public class MobRan extends NPC {
 		Player	p	= sp.getPlayer();
 		double	x	= p.getX() + p.getColliBoxX(), y = p.getY() + p.getColliBoxY() / 2;
 
-		int	tileX	= (int) Math.round(x / sp.getBlockSizeX());
-		int	tileY	= (int) Math.round(y / sp.getBlockSizeY());
+		int	tileX	= (int) Math.round(x / sp.getWindowDataHolder().blockSizeX());
+		int	tileY	= (int) Math.round(y / sp.getWindowDataHolder().blockSizeY());
 
 		List<List<TextureHolder>> map = sp.getTileManager().getMap();
 		if (map.size() > 0) {
@@ -345,8 +346,8 @@ public class MobRan extends NPC {
 
 			// System.out.println(pels);
 
-			int mobX = (int) Math.round(MobRan.this.x / sp.getBlockSizeX()),
-					mobY = (int) Math.round(MobRan.this.y / sp.getBlockSizeY());
+			int mobX = (int) Math.round(MobRan.this.x / sp.getWindowDataHolder().blockSizeX()),
+					mobY = (int) Math.round(MobRan.this.y / sp.getWindowDataHolder().blockSizeY());
 
 			// System.out.println(mobX + " " + mobY + " "
 			// + mobX * sp.BgX + " " + mobY * sp.BgY);
@@ -357,7 +358,7 @@ public class MobRan extends NPC {
 			if (pel.size() > 0) {
 				PathElement pe = pel.get(0);
 				return new Double[] {
-						(double) pe.x() * sp.getBlockSizeX(), (double) pe.y() * sp.getBlockSizeY()
+						(double) pe.x() * sp.getWindowDataHolder().blockSizeX(), (double) pe.y() * sp.getWindowDataHolder().blockSizeY()
 				};
 			}
 		}

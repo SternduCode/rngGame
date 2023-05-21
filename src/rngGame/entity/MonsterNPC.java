@@ -8,7 +8,7 @@ import com.sterndu.json.*;
 import javafx.beans.property.ObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
-import rngGame.visual.GamePanel;
+import rngGame.ui.*;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -34,9 +34,9 @@ public class MonsterNPC extends NPC {
 	 * @param cm the cm
 	 * @param requestorN the requestor N
 	 */
-	public MonsterNPC(JsonObject npc, GamePanel gp, List<NPC> npcs, ContextMenu cm,
-			ObjectProperty<NPC> requestorN) {
-		super(npc, gp, "demons/" + ((StringValue) npc.get("dir")).getValue(),npcs, cm, requestorN);
+	public MonsterNPC(JsonObject npc, GamePanel gp, List<NPC> npcs,
+			ObjectProperty<NPC> requestorN, WindowDataHolder windowDataHolder) {
+		super(npc, gp, "demons/" + ((StringValue) npc.get("dir")).getValue(), npcs, requestorN, windowDataHolder);
 		dir = ((StringValue) npc.get("dir")).getValue();
 		demon = new Menu("Demon");
 		demon.setStyle("-fx-font-size: 20;");
@@ -53,9 +53,9 @@ public class MonsterNPC extends NPC {
 	 * @param cm the cm
 	 * @param requestorN the requestor N
 	 */
-	public MonsterNPC(MonsterNPC npc, List<NPC> npcs, ContextMenu cm,
-			ObjectProperty<NPC> requestorN) {
-		super(npc, npcs, cm, requestorN);
+	public MonsterNPC(MonsterNPC npc, List<NPC> npcs,
+			ObjectProperty<NPC> requestorN, WindowDataHolder windowDataHolder) {
+		super(npc, npcs, requestorN, windowDataHolder);
 		dir = npc.dir;
 		demon = new Menu("Demon");
 		demon.setStyle("-fx-font-size: 20;");
@@ -112,6 +112,6 @@ public class MonsterNPC extends NPC {
 		return jo;
 	}
 
-	
+
 
 }

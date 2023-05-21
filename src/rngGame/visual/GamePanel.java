@@ -4,7 +4,8 @@ import java.util.*;
 
 import javafx.scene.Group;
 import javafx.scene.control.*;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import rngGame.ui.WindowDataHolder;
 
@@ -58,7 +59,13 @@ public class GamePanel extends Pane {
 	private final Player player;
 
 	/** The fps. */
-	private String fps;
+	private double fps;
+
+	/** The last frame. */
+	private long lastFrame;
+
+	/** The frame times. */
+	private final List<Long> frameTimes;
 
 	/**
 	 * Instantiates a new game panel.
@@ -70,6 +77,8 @@ public class GamePanel extends Pane {
 
 		logic.setVisualGamePanel(this);
 
+		frameTimes = new ArrayList<>();
+
 		this.logic = logic;
 
 		this.windowDataHolder = windowDataHolder;
@@ -79,6 +88,7 @@ public class GamePanel extends Pane {
 		loadingScreen = new LoadingScreen(rngGame.ui.LoadingScreen.getDefaultLoadingScreen(windowDataHolder));
 		loadingScreen.setDisable(true);
 		loadingScreen.setOpacity(0);
+		loadingScreen.update();
 
 		tileManager = new TileManager(logic.getTileManager(), windowDataHolder, this);
 
@@ -101,6 +111,11 @@ public class GamePanel extends Pane {
 		tabMenu = new TabMenu(logic.getTabMenu());
 
 		fpsLabel = new Label();
+		fpsLabel.setBackground(new Background(new BackgroundFill(Color.color(.5, .5, .5, 1), null, null)));
+		fpsLabel.setTextFill(Color.color(.1, .1, .1));
+		fpsLabel.setOpacity(.6);
+		fpsLabel.setDisable(true);
+		fpsLabel.setVisible(false);
 
 		getChildren().addAll(tileManager, layerGroup, overlay, pointGroup, selectTool, actionButton, speakBubble, speakBubbleText,
 				tabMenu, fpsLabel, loadingScreen);
@@ -134,6 +149,13 @@ public class GamePanel extends Pane {
 	 * @return the logic
 	 */
 	public rngGame.ui.GamePanel getLogic() { return logic; }
+
+	/**
+	 * Gets the select tool.
+	 *
+	 * @return the select tool
+	 */
+	public SelectTool getSelectTool() { return selectTool; }
 
 	/**
 	 * Gets the tile at.
@@ -199,6 +221,9 @@ public class GamePanel extends Pane {
 	 * Update.
 	 */
 	public void update() {
+
+		long lastFrameTime = frameTimes.size() > 0 ? frameTimes.get(frameTimes.size() - 1) : 0;
+
 		tileManager.update();
 
 		for (int i = 0; i < layerGroup.getChildren().size(); i++) {
@@ -226,10 +251,17 @@ public class GamePanel extends Pane {
 
 		tabMenu.update();
 
-		fpsLabel.setText("FPS: " + fps + "\nTPS: " + logic.getTps());
+		fpsLabel.setText("FPS: " + String.format("%.2f", 1000 / fps) + "\nTPS: " + String.format("%.2f", 1000 / logic.getTps()));
 		fpsLabel.setLayoutX(windowDataHolder.gameWidth() - fpsLabel.getWidth());
+		fpsLabel.setVisible(logic.isFpsLabelVisible());
 
 		loadingScreen.update();
+
+		long frameTime = System.currentTimeMillis() - lastFrame;
+		lastFrame = System.currentTimeMillis();
+		frameTimes.add(frameTime);
+		fps = frameTimes.stream().mapToLong(l -> l).average().getAsDouble();
+		while (frameTimes.size() > Math.max(Math.pow(1000 / fps * 12, 1.2), 1)) frameTimes.remove(0);
 
 	}
 

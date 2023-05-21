@@ -14,7 +14,7 @@ import javafx.scene.image.*;
 import javafx.scene.shape.*;
 import rngGame.buildings.*;
 import rngGame.ui.ImgUtil;
-import rngGame.visual.GamePanel;
+import rngGame.ui.GamePanel;
 
 
 // TODO: Auto-generated Javadoc
@@ -170,7 +170,7 @@ public class DungeonGen {
 					t.poly = new ArrayList<>();
 					boolean s = false;
 					for (int i = 0; i < length; i++)
-						t.poly.add(raf.readDouble() * ( (s = !s) ? gp.getScalingFactorX() : gp.getScalingFactorY()));
+						t.poly.add(raf.readDouble() * ( (s = !s) ? gp.getWindowDataHolder().scalingFactorX() : gp.getWindowDataHolder().scalingFactorY()));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -192,7 +192,7 @@ public class DungeonGen {
 					t.poly = new ArrayList<>();
 					boolean s = false;
 					for (int i = 0; i < length; i++)
-						t.poly.add(raf.readDouble() * ( (s = !s) ? gp.getScalingFactorX() : gp.getScalingFactorY()));
+						t.poly.add(raf.readDouble() * ( (s = !s) ? gp.getWindowDataHolder().scalingFactorX() : gp.getWindowDataHolder().scalingFactorY()));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -234,7 +234,7 @@ public class DungeonGen {
 						t.poly = new ArrayList<>();
 						boolean s = false;
 						for (int ij = 0; ij < length; ij++)
-							t.poly.add(raf.readDouble() * ( (s = !s) ? gp.getScalingFactorX() : gp.getScalingFactorY()));
+							t.poly.add(raf.readDouble() * ( (s = !s) ? gp.getWindowDataHolder().scalingFactorX() : gp.getWindowDataHolder().scalingFactorY()));
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -338,8 +338,8 @@ public class DungeonGen {
 						originalSize.add(new DoubleValue(img.getHeight()));
 						joB.put("originalSize", originalSize);
 
-						gp.getLgp().getBuildings().add(
-								new Building(joB, gp, gp.getTileManager().getBuildingsFromMap(), gp.getTileManager().getCM(), gp.getTileManager().getRequesterB()));
+						gp.getBuildings().add(
+								new Building(joB, gp, gp.getTileManager().getBuildingsFromMap(), gp.getTileManager().getRequesterB(), gp.getWindowDataHolder()));
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
 					}
@@ -377,8 +377,8 @@ public class DungeonGen {
 					originalSize.add(new DoubleValue(img.getHeight()));
 					joB.put("originalSize", originalSize);
 
-					gp.getLgp().getBuildings().add(
-							new Building(joB, gp, gp.getTileManager().getBuildingsFromMap(), gp.getTileManager().getCM(), gp.getTileManager().getRequesterB()));
+					gp.getBuildings().add(
+							new Building(joB, gp, gp.getTileManager().getBuildingsFromMap(), gp.getTileManager().getRequesterB(), gp.getWindowDataHolder()));
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				}
@@ -417,9 +417,9 @@ public class DungeonGen {
 						originalSize.add(new DoubleValue(img.getWidth()));
 						originalSize.add(new DoubleValue(img.getHeight()));
 						joB.put("originalSize", originalSize);
-						TreasureChest tc = new TreasureChest(joB, gp, gp.getTileManager().getBuildingsFromMap(), gp.getTileManager().getCM(),
-								gp.getTileManager().getRequesterB());
-						gp.getLgp().getBuildings().add(tc);
+						TreasureChest tc = new TreasureChest(joB, gp, gp.getTileManager().getBuildingsFromMap(),
+								gp.getTileManager().getRequesterB(), gp.getWindowDataHolder());
+						gp.getBuildings().add(tc);
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
 					}
@@ -458,9 +458,9 @@ public class DungeonGen {
 						originalSize.add(new DoubleValue(img.getWidth()));
 						originalSize.add(new DoubleValue(img.getHeight()));
 						joB.put("originalSize", originalSize);
-						TreasureChest tc = new TreasureChest(joB, gp, gp.getTileManager().getBuildingsFromMap(), gp.getTileManager().getCM(),
-								gp.getTileManager().getRequesterB());
-						gp.getLgp().getBuildings().add(tc);
+						TreasureChest tc = new TreasureChest(joB, gp, gp.getTileManager().getBuildingsFromMap(),
+								gp.getTileManager().getRequesterB(), gp.getWindowDataHolder());
+						gp.getBuildings().add(tc);
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
 					}
@@ -499,9 +499,9 @@ public class DungeonGen {
 						originalSize.add(new DoubleValue(img.getWidth()));
 						originalSize.add(new DoubleValue(img.getHeight()));
 						joB.put("originalSize", originalSize);
-						TreasureChest tc = new TreasureChest(joB, gp, gp.getTileManager().getBuildingsFromMap(), gp.getTileManager().getCM(),
-								gp.getTileManager().getRequesterB());
-						gp.getLgp().getBuildings().add(tc);
+						TreasureChest tc = new TreasureChest(joB, gp, gp.getTileManager().getBuildingsFromMap(),
+								gp.getTileManager().getRequesterB(), gp.getWindowDataHolder());
+						gp.getBuildings().add(tc);
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
 					}
@@ -948,32 +948,28 @@ public class DungeonGen {
 		List<JsonObject> builds = buildings.entrySet().parallelStream().map(Entry::getValue).flatMap(JsonArray::parallelStream).map(v->(JsonObject)v).collect(Collectors.toList());
 		for (JsonObject building : builds) {
 			Building b = switch ( ((StringValue) building.get("type")).getValue()) {
-				case "House" -> new House(building, gp, gp.getTileManager().getBuildingsFromMap(), gp.getTileManager().getCM(), gp.getTileManager().getRequesterB());
-				case "ContractsTable" -> new ContractsTable(building, gp, gp.getTileManager().getBuildingsFromMap(), gp.getTileManager().getCM(),
-						gp.getTileManager().getRequesterB());
-				case "TreasureChest" -> new TreasureChest(building, gp, gp.getTileManager().getBuildingsFromMap(), gp.getTileManager().getCM(),
-						gp.getTileManager().getRequesterB());
-				default -> new Building(building, gp, gp.getTileManager().getBuildingsFromMap(), gp.getTileManager().getCM(), gp.getTileManager().getRequesterB());
+				case "House" -> new House(building, gp, gp.getTileManager().getBuildingsFromMap(), gp.getTileManager().getRequesterB(), gp.getWindowDataHolder());
+				case "ContractsTable" -> new ContractsTable(building, gp, gp.getTileManager().getBuildingsFromMap(),
+						gp.getTileManager().getRequesterB(), gp.getWindowDataHolder());
+				case "TreasureChest" -> new TreasureChest(building, gp, gp.getTileManager().getBuildingsFromMap(),
+						gp.getTileManager().getRequesterB(), gp.getWindowDataHolder());
+				default -> new Building(building, gp, gp.getTileManager().getBuildingsFromMap(), gp.getTileManager().getRequesterB(), gp.getWindowDataHolder());
 			};
-			gp.getLgp().getBuildings().add(b);
+			gp.getBuildings().add(b);
 			ImageView	lIV = new ImageView();
 			try {
-				if (b.getImages()==null) {
+				if (b.getTextureFiles()==null) {
 					System.err.println(b);
 					System.err.println("No Images");
 					continue;
 				}
-				if (b.isGif(b.getCurrentKey())) {
-					lIV = new ImageView(b.getImages().get(b.getCurrentKey()).get(0));
-					lIV.setFitWidth(16);
-					lIV.setFitHeight(16);
-				} else lIV = new ImageView(ImgUtil.resizeImage(b.getImages().get(b.getCurrentKey()).get(0),
-						(int) b.getImages().get(b.getCurrentKey()).get(0).getWidth(),
-						(int) b.getImages().get(b.getCurrentKey()).get(0).getHeight(), 16, 16));
+				lIV = new ImageView(ImgUtil.resizeImage(b.getImage().getFrameAt(b.getImage().getFrameIndex()),
+						(int) b.getImage().getFrameAt(b.getImage().getFrameIndex()).getWidth(),
+						(int) b.getImage().getFrameAt(b.getImage().getFrameIndex()).getHeight(), 16, 16));
 			} catch (Exception e) {
 				System.out.println(b.getClass());
 				System.out.println(b.getCurrentKey());
-				System.out.println(b.getImages());
+				System.out.println(b.getTextureFiles());
 				System.out.println(b.getTextureFiles());
 				e.printStackTrace();
 			}

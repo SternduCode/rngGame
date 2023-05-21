@@ -9,8 +9,7 @@ import javafx.scene.input.*;
 import javafx.util.Duration;
 import rngGame.buildings.ContractsTable;
 import rngGame.main.*;
-import rngGame.tile.*;
-import rngGame.visual.GamePanel;
+import rngGame.tile.Difficulty;
 
 // TODO: Auto-generated Javadoc
 /**

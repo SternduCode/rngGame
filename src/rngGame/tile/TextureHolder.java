@@ -67,6 +67,7 @@ public class TextureHolder {
 	 */
 	public TextureHolder(Tile tile, GamePanel gp, double layoutX, double layoutY,
 			ObjectProperty<TextureHolder> requestor, double x, double y) {
+
 		menu		= new Menu("Texture Holder");
 		position	= new MenuItem();
 		fpsI		= new MenuItem();

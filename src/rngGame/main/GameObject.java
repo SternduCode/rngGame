@@ -122,6 +122,9 @@ public class GameObject implements JsonValue, Collidable {
 	/** The border. */
 	private Border border;
 
+	/** The requestor. */
+	private ObjectProperty<? extends GameObject> requestor;
+
 	/**
 	 * Instantiates a new game object.
 	 *
@@ -135,6 +138,7 @@ public class GameObject implements JsonValue, Collidable {
 			ObjectProperty<? extends GameObject> requestor, WindowDataHolder windowDataHolder) {
 		visible			= true;
 		remove			= false;
+		this.requestor	= requestor;
 		removeCallbacks = new ArrayList<>();
 		fixToScreen = false;
 		textureFiles = new HashMap<>();
@@ -259,6 +263,7 @@ public class GameObject implements JsonValue, Collidable {
 			ObjectProperty<? extends GameObject> requestor, WindowDataHolder windowDataHolder) {
 		visible			= true;
 		remove			= false;
+		this.requestor	= requestor;
 		gamepanel		= gp;
 		this.directory	= directory;
 		fixToScreen		= false;
@@ -495,7 +500,30 @@ public class GameObject implements JsonValue, Collidable {
 					e1.printStackTrace();
 				}
 			});
-			image.init(textureFiles.get(currentKey));
+
+			List<Image> li = new ArrayList<>();
+
+			if (textureFiles.entrySet().iterator().next().getValue().toLowerCase().endsWith("gif")) {
+				Collections.addAll(li,
+						ImgUtil.getScaledImages(gamepanel.getWindowDataHolder(),
+								"./res/" + directory + "/" + textureFiles.entrySet().iterator().next().getValue(), reqWidth,
+								reqHeight, flipTextures));
+
+				fps = 10;
+				// li.add(img);
+			} else try {
+				Image img = new Image(new FileInputStream("./res/" + directory + "/" + textureFiles.entrySet().iterator().next().getValue()));
+				for (int i = 0; i < img.getWidth(); i += origWidth) {
+					WritableImage wi = new WritableImage(img.getPixelReader(), i, 0, origWidth, origHeight);
+					li.add(ImgUtil.resizeImage(wi,
+							(int) wi.getWidth(), (int) wi.getHeight(), (int) (reqWidth * gamepanel.getWindowDataHolder().scalingFactorX()),
+							(int) (reqHeight * gamepanel.getWindowDataHolder().scalingFactorY()), flipTextures));
+				}
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			image.init(li.toArray(new Image[0]), (int) fps);
+
 		}
 
 		menu = new Menu("GameObject");
@@ -774,29 +802,26 @@ public class GameObject implements JsonValue, Collidable {
 	 */
 	protected List<Image> getAnimatedImages(String key, String path) throws FileNotFoundException {
 		List<Image> li = new ArrayList<>();
-		try {
-			String[] sp = path.split("[.]");
-			Polygon collisionBox = collisionBoxes.get(key);
-			if (collisionBox == null) collisionBoxes.put(key, collisionBox = new Polygon());
-			if (new File("./res/collisions/" + directory + "/" + String.join(".", Arrays.copyOf(sp, sp.length - 1))
-			+ ".collisionbox").exists())
-				try {
-					RandomAccessFile raf = new RandomAccessFile(new File("./res/collisions/" + directory + "/"
-							+ String.join(".", Arrays.copyOf(sp, sp.length - 1))
-							+ ".collisionbox"), "rws");
-					raf.seek(0l);
-					int length = raf.readInt();
-					boolean s = false;
-					for (int i = 0; i < length; i++) collisionBox.getPoints()
-					.add((double) (long) (raf.readDouble()
-							* ( (s = !s) ? gamepanel.getWindowDataHolder().scalingFactorX()
-									: gamepanel.getWindowDataHolder().scalingFactorY())));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			textureFiles.put(key, path);
-		} catch (ArrayIndexOutOfBoundsException e) {
-		}
+		String[]	sp				= path.split("[.]");
+		Polygon		collisionBox	= collisionBoxes.get(key);
+		if (collisionBox == null) collisionBoxes.put(key, collisionBox = new Polygon());
+		if (new File("./res/collisions/" + directory + "/" + String.join(".", Arrays.copyOf(sp, sp.length - 1))
+		+ ".collisionbox").exists())
+			try {
+				RandomAccessFile raf = new RandomAccessFile(new File("./res/collisions/" + directory + "/"
+						+ String.join(".", Arrays.copyOf(sp, sp.length - 1))
+						+ ".collisionbox"), "rws");
+				raf.seek(0l);
+				int	length	= raf.readInt();
+				boolean s	= false;
+				for (int i = 0; i < length; i++) collisionBox.getPoints()
+				.add((double) (long) (raf.readDouble()
+						* ( (s = !s) ? gamepanel.getWindowDataHolder().scalingFactorX()
+								: gamepanel.getWindowDataHolder().scalingFactorY())));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		textureFiles.put(key, path);
 		return li;
 	}
 
@@ -998,7 +1023,8 @@ public class GameObject implements JsonValue, Collidable {
 	 *
 	 * @return the requestor
 	 */
-	public ObjectProperty<rngGame.visual.GameObject> getRequestor() { return null; }
+	@SuppressWarnings("unchecked")
+	public ObjectProperty<GameObject> getRequestor() { return (ObjectProperty<GameObject>) requestor; }
 
 	/**
 	 * Gets the req width.
@@ -1365,8 +1391,6 @@ public class GameObject implements JsonValue, Collidable {
 	 */
 	public void update(long milis) {
 
-		image.update();
-
 		Player p = gamepanel.getPlayer();
 
 		for (Entry<String, Shape> box : miscBoxes.entrySet())
@@ -1431,6 +1455,8 @@ public class GameObject implements JsonValue, Collidable {
 				&& y < p.y + p.getScreenY() + p.getHeight() || fixToScreen)
 			setVisible(true);
 		else setVisible(false);
+
+		image.update();
 
 	}
 

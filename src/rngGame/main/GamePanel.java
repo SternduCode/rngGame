@@ -13,7 +13,6 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.*;
-import javafx.scene.control.Label;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.scene.media.MediaPlayer;
@@ -22,15 +21,9 @@ import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 import rngGame.buildings.*;
 import rngGame.entity.*;
-import rngGame.entity.Player;
 import rngGame.tile.*;
-import rngGame.tile.SelectTool;
-import rngGame.tile.TileManager;
 import rngGame.ui.*;
-import rngGame.ui.ActionButton;
-import rngGame.ui.TabMenu;
 import rngGame.visual.AnimatedImage;
-import rngGame.visual.Button;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -79,14 +72,6 @@ public class GamePanel {
 
 			animatedImages = new ArrayList<>();
 
-			b = new Button(this);
-
-			b.init("./res/fight/Leaf.gif", 10);
-
-			b.setOnPressed(e -> b.init("./res/fight/Stych2.png"));
-
-			b.setOnReleased(e -> b.init("./res/fight/Leaf.gif", 10));
-
 			lgp.setVgp(this);
 
 			this.logic = logic;
@@ -99,13 +84,6 @@ public class GamePanel {
 
 			loadingScreen = new ImageView(new Image(new FileInputStream(new File("./res/gui/Loadingscreen.gif"))));
 			getLoadingScreen().setDisable(true);
-
-			fpsLabel = new Label(fps + "");
-			fpsLabel.setBackground(new Background(new BackgroundFill(Color.color(.5, .5, .5, 1), null, null)));
-			fpsLabel.setTextFill(Color.color(.1, .1, .1));
-			fpsLabel.setOpacity(.6);
-			fpsLabel.setDisable(true);
-			fpsLabel.setVisible(false);
 
 			pointGroup = new Group();
 			getPointGroup().setDisable(true);

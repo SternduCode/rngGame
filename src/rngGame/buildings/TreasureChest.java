@@ -10,7 +10,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.shape.Ellipse;
 import rngGame.main.Input;
 import rngGame.stats.*;
-import rngGame.visual.GamePanel;
+import rngGame.ui.*;
 
 
 // TODO: Auto-generated Javadoc
@@ -35,11 +35,11 @@ public class TreasureChest extends Building {
 	 *
 	 * @param building   the building
 	 * @param buildings  the buildings
-	 * @param cm         the cm
 	 * @param requestorB the requestor B
+	 * @param windowDataHolder the window data holder
 	 */
-	public TreasureChest(Building building, List<Building> buildings, ContextMenu cm, ObjectProperty<Building> requestorB) {
-		super(building, buildings, cm, requestorB);
+	public TreasureChest(Building building, List<Building> buildings, ObjectProperty<Building> requestorB, WindowDataHolder windowDataHolder) {
+		super(building, buildings, requestorB, windowDataHolder);
 		init();
 	}
 
@@ -49,15 +49,16 @@ public class TreasureChest extends Building {
 	 * @param building   the building
 	 * @param gp         the gp
 	 * @param buildings  the buildings
-	 * @param cm         the cm
 	 * @param requestorB the requestor B
+	 * @param windowDataHolder the window data holder
 	 */
-	public TreasureChest(JsonObject building, GamePanel gp, List<Building> buildings, ContextMenu cm, ObjectProperty<Building> requestorB) {
-		super(building, gp, buildings, cm, requestorB);
+	public TreasureChest(JsonObject building, GamePanel gp, List<Building> buildings, ObjectProperty<Building> requestorB,
+			WindowDataHolder windowDataHolder) {
+		super(building, gp, buildings, requestorB, windowDataHolder);
 		init();
 		ifEndchest = false;
 		if(building.containsKey("endChest")) ifEndchest=((BoolValue) building.get("endChest")).getValue();
-		Input.getInstance().setKeyHandler("Items", mod -> {
+		Input.getInstance(null).setKeyHandler("Items", mod -> {
 			TestItem();
 		}, KeyCode.I, false);
 	}
@@ -71,10 +72,11 @@ public class TreasureChest extends Building {
 	 * @param buildings  the buildings
 	 * @param cm         the cm
 	 * @param requestorB the requestor B
+	 * @param windowDataHolder the window data holder
 	 */
 	public TreasureChest(JsonObject building, GamePanel gp, String directory, List<Building> buildings, ContextMenu cm,
-			ObjectProperty<Building> requestorB) {
-		super(building, gp, directory, buildings, cm, requestorB);
+			ObjectProperty<Building> requestorB, WindowDataHolder windowDataHolder) {
+		super(building, gp, directory, buildings, requestorB, windowDataHolder);
 		init();
 		ifEndchest = false;
 		if(building.containsKey("endChest")) ifEndchest=((BoolValue) building.get("endChest")).getValue();
@@ -117,18 +119,18 @@ public class TreasureChest extends Building {
 	public void giveItem() {
 		if(ifEndchest) {
 			Item r1 = createItem();
-			gamepanel.getGamemenu().getInventory().itemToInventory(r1);
+			gamepanel.getTabMenu().getInventory().itemToInventory(r1);
 			Item r2 = createItem();
-			gamepanel.getGamemenu().getInventory().itemToInventory(r2);
+			gamepanel.getTabMenu().getInventory().itemToInventory(r2);
 			Item r3 = createItem();
-			gamepanel.getGamemenu().getInventory().itemToInventory(r3);
+			gamepanel.getTabMenu().getInventory().itemToInventory(r3);
 
 			gamepanel.setMap("./res/maps/lavaMap2.json", new double[] {
 					1464.0, 372.0
 			});
 		} else {
 			Item r1 = createItem();
-			gamepanel.getGamemenu().getInventory().itemToInventory(r1);
+			gamepanel.getTabMenu().getInventory().itemToInventory(r1);
 		}
 	}
 
@@ -137,11 +139,12 @@ public class TreasureChest extends Building {
 	 */
 	public void init() {
 		if (!getMiscBoxHandler().containsKey("action")) addMiscBox("action",
-				new Ellipse(getReqWidth() * gamepanel.getScalingFactorX() / 2, getReqHeight() * gamepanel.getScalingFactorY() / 2,
-						gamepanel.getBlockSizeX() / 2, gamepanel.getBlockSizeY() / 2),
+				new Ellipse(getReqWidth() * gamepanel.getWindowDataHolder().scalingFactorX() / 2,
+						getReqHeight() * gamepanel.getWindowDataHolder().scalingFactorY() / 2,
+						gamepanel.getWindowDataHolder().blockSizeX() / 2, gamepanel.getWindowDataHolder().blockSizeY() / 2),
 				(gpt, self) -> {
 					if (!isOpen)
-						gpt.getAktionbutton().setInteractionbuttonKann(true, gp2 -> {
+						gpt.getActionButton().setIfInteractionButtonCanBePressed(true, gp2 -> {
 							isOpen = true;
 							TreasureChest.this.setCurrentKey("open");
 							giveItem();
@@ -149,7 +152,7 @@ public class TreasureChest extends Building {
 				});
 		else getMiscBoxHandler().put("action", (gpt, self) -> {
 			if (!isOpen)
-				gpt.getAktionbutton().setInteractionbuttonKann(true, gp2 -> {
+				gpt.getActionButton().setIfInteractionButtonCanBePressed(true, gp2 -> {
 					isOpen = true;
 					TreasureChest.this.setCurrentKey("open");
 					giveItem();
@@ -174,7 +177,7 @@ public class TreasureChest extends Building {
 			default ->
 			throw new IllegalArgumentException("Unexpected value: " + r1.getRarity());
 		}
-		gamepanel.getGamemenu().getInventory().itemToInventory(r1);
+		gamepanel.getTabMenu().getInventory().itemToInventory(r1);
 		double sum = (common + uncommon + rare + veryrare + epic + legendary + god + voidi) / 100.0;
 		System.out.printf("Common %.2f%% Uncommon %.2f%% Rare %.2f%% Very Rare %.2f%% Epic %.2f%% Legendary %.2f%% God %.2f%% Void %.2f%% Items %d\n",
 				common / sum, uncommon / sum, rare / sum, veryrare / sum, epic / sum, legendary / sum, god / sum, voidi / sum, (long) (sum * 100));

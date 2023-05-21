@@ -136,7 +136,6 @@ public class TileManager extends Pane {
 			} else {
 				th = new TextureHolder(logic.getMap().get(worldRow).get(worldCol),
 						gamePanel.getContextMenu());
-				th.setVisible(false);
 				if (worldCol < map.get(worldRow).size())
 					map.get(worldRow).set(worldCol, th);
 				else

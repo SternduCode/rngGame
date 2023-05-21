@@ -17,7 +17,7 @@ import rngGame.ui.GamePanel;
 public class TitleScreen extends Pane {
 
 	/** The iv. */
-	private final ImageView iv;
+	private final ImageView background;
 
 	/** The scaling factor holder. */
 	private final WindowDataHolder windowDataHolder;
@@ -58,7 +58,7 @@ public class TitleScreen extends Pane {
 	 * @param windowDataHolder the window data holder
 	 */
 	public TitleScreen(WindowDataHolder windowDataHolder) {
-		iv = new ImageView();
+		background = new ImageView();
 
 		gamePanelPane = new Pane();
 
@@ -92,10 +92,12 @@ public class TitleScreen extends Pane {
 				Input.getInstance(windowDataHolder).setGamePanel(gamePanel); // pass instance of GamePanel to the Instance of Input
 
 				ploy.init("./res/backgrounds/Ploy.png");
-				iv.setVisible(false);
+				background.setVisible(false);
 				ployVisual.setVisible(false);
 				settinsVisual.setVisible(false);
 				clousVisual.setVisible(false);
+
+				gamePanel.setMap("./res/maps/lavaMap2.json");
 
 				loadingScreenVisual.goOutOfLoadingScreen();
 			}).start();
@@ -131,7 +133,7 @@ public class TitleScreen extends Pane {
 
 		});
 
-		getChildren().addAll(iv, ployVisual, settinsVisual, clousVisual, pfailVisual, gamePanelPane, loadingScreenVisual);
+		getChildren().addAll(background, ployVisual, settinsVisual, clousVisual, pfailVisual, gamePanelPane, loadingScreenVisual);
 		new Thread(()->{
 			while (true) {
 				try {
@@ -143,7 +145,7 @@ public class TitleScreen extends Pane {
 					long t = System.currentTimeMillis();
 					if (t - last > 1000 / 30) {
 						Platform.runLater(() -> {
-							iv.setImage(frames[currFrame]);
+							background.setImage(frames[currFrame]);
 						});
 						currFrame++;
 						if (currFrame >= frames.length) currFrame = 0;
@@ -190,7 +192,7 @@ public class TitleScreen extends Pane {
 	public void scaleF11() {
 		frames = ImgUtil.getScaledImages(windowDataHolder, "./res/backgrounds/Main BG.gif");
 		LoadingScreen.getDefaultLoadingScreen(windowDataHolder).scaleF11();
-		iv.setImage(frames[0]);
+		background.setImage(frames[0]);
 	}
 
 	/**

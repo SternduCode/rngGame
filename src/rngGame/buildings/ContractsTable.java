@@ -7,15 +7,14 @@ import com.sterndu.json.JsonObject;
 import javafx.animation.*;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.Group;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.image.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import rngGame.main.*;
-import rngGame.tile.*;
+import rngGame.tile.Difficulty;
 import rngGame.ui.*;
-import rngGame.visual.GamePanel;
+import rngGame.ui.GamePanel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -78,7 +77,7 @@ public class ContractsTable extends Building {
 	private Button ausXb;
 
 	/** The index. */
-	private int index = 0;
+	private final int index = 0;
 
 	/** The iftest. */
 	private boolean iftest;
@@ -91,12 +90,12 @@ public class ContractsTable extends Building {
 	 *
 	 * @param building the building
 	 * @param buildings the buildings
-	 * @param cm the cm
 	 * @param requestorB the requestor B
+	 * @param windowDataHolder the window data holder
 	 */
-	public ContractsTable(Building building, List<Building> buildings, ContextMenu cm,
-			ObjectProperty<Building> requestorB) {
-		super(building, buildings, cm, requestorB);
+	public ContractsTable(Building building, List<Building> buildings,
+			ObjectProperty<Building> requestorB, WindowDataHolder windowDataHolder) {
+		super(building, buildings, requestorB, windowDataHolder);
 		init();
 	}
 
@@ -106,12 +105,12 @@ public class ContractsTable extends Building {
 	 * @param building the building
 	 * @param gp the gp
 	 * @param buildings the buildings
-	 * @param cm the cm
 	 * @param requestorB the requestor B
+	 * @param windowDataHolder the window data holder
 	 */
-	public ContractsTable(JsonObject building, GamePanel gp, List<Building> buildings, ContextMenu cm,
-			ObjectProperty<Building> requestorB) {
-		super(building, gp, buildings, cm, requestorB);
+	public ContractsTable(JsonObject building, GamePanel gp, List<Building> buildings,
+			ObjectProperty<Building> requestorB, WindowDataHolder windowDataHolder) {
+		super(building, gp, buildings, requestorB, windowDataHolder);
 		init();
 	}
 
@@ -122,12 +121,12 @@ public class ContractsTable extends Building {
 	 * @param gp the gp
 	 * @param directory the directory
 	 * @param buildings the buildings
-	 * @param cm the cm
 	 * @param requestorB the requestor B
+	 * @param windowDataHolder the window data holder
 	 */
-	public ContractsTable(JsonObject building, GamePanel gp, String directory, List<Building> buildings, ContextMenu cm,
-			ObjectProperty<Building> requestorB) {
-		super(building, gp, directory, buildings, cm, requestorB);
+	public ContractsTable(JsonObject building, GamePanel gp, String directory, List<Building> buildings,
+			ObjectProperty<Building> requestorB, WindowDataHolder windowDataHolder) {
+		super(building, gp, directory, buildings, requestorB, windowDataHolder);
 		init();
 	}
 
@@ -135,39 +134,39 @@ public class ContractsTable extends Building {
 	 * Inits the.
 	 */
 	private void init() {
-		Image wi = ImgUtil.getScaledImage(gamepanel, "./res/Contractstuff/Mainbackground.png");
+		Image wi = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/Contractstuff/Mainbackground.png");
 
-		hudp = ImgUtil.getScaledImages(gamepanel, "./res/Contractstuff/Ping.gif");
-		Image titlep = ImgUtil.getScaledImage(gamepanel, "./res/Contractstuff/title.png");
+		hudp = ImgUtil.getScaledImages(gamepanel.getWindowDataHolder(), "./res/Contractstuff/Ping.gif");
+		Image	titlep	= ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/Contractstuff/title.png");
 		Image ka = Text.getInstance().convertText("Underwater Caverns", 48);
 		ka = ImgUtil.resizeImage(
 				ka, (int) ka.getWidth(), (int) ka.getHeight(),
-				(int) (ka.getWidth() * gamepanel.getScalingFactorX()),
-				(int) (ka.getHeight() * gamepanel.getScalingFactorY()));
+				(int) (ka.getWidth() * gamepanel.getWindowDataHolder().scalingFactorX()),
+				(int) (ka.getHeight() * gamepanel.getWindowDataHolder().scalingFactorY()));
 
-		Image ausbc = ImgUtil.getScaledImage(gamepanel, "./res/Contractstuff/MapAuswahlBackground.png");
+		Image ausbc = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/Contractstuff/MapAuswahlBackground.png");
 
-		Image lvlb = ImgUtil.getScaledImage(gamepanel, "./res/lvl/richtig/LvLBorder.png");
+		Image lvlb = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/lvl/richtig/LvLBorder.png");
 		lvlb = ImgUtil.resizeImage(
 				lvlb, (int) lvlb.getWidth(), (int) lvlb.getHeight(),
-				(int) (96 * gamepanel.getScalingFactorX()),
-				(int) (96 * gamepanel.getScalingFactorY()));
+				(int) (96 * gamepanel.getWindowDataHolder().scalingFactorX()),
+				(int) (96 * gamepanel.getWindowDataHolder().scalingFactorY()));
 
-		Image buttonRL = ImgUtil.getScaledImage(gamepanel, "./res/Contractstuff/pfeilRLeu.png");
-		Image buttonLL = ImgUtil.getScaledImage(gamepanel, "./res/Contractstuff/pfeilLLeu.png");
+		Image	buttonRL	= ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/Contractstuff/pfeilRLeu.png");
+		Image	buttonLL	= ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/Contractstuff/pfeilLLeu.png");
 
-		Image difE = ImgUtil.getScaledImage(gamepanel, "./res/Contractstuff/difE.png");
-		Image difH = ImgUtil.getScaledImage(gamepanel, "./res/Contractstuff/difH.png");
-		Image difM = ImgUtil.getScaledImage(gamepanel, "./res/Contractstuff/difM.png");
+		Image	difE	= ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/Contractstuff/difE.png");
+		Image	difH	= ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/Contractstuff/difH.png");
+		Image	difM	= ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/Contractstuff/difM.png");
 
 		contractBackground = new ImageView(wi);
 		contractBackground.setTranslateY(-1);
 		// contractBackground.setTranslateX(gamepanel.SpielLaenge / 2 * 3);
 
-		contractSaturn		= new Button("./res/Contractstuff/Saturn.png", gamepanel);
-		contractNebel		= new Button("./res/Contractstuff/Nebel.png", gamepanel);
-		contractGalactus	= new Button("./res/Contractstuff/Galactus.png", gamepanel);
-		contractNova		= new Button("./res/Contractstuff/nova.png", gamepanel);
+		contractSaturn		= new Button("./res/Contractstuff/Saturn.png", gamepanel.getWindowDataHolder());
+		contractNebel		= new Button("./res/Contractstuff/Nebel.png", gamepanel.getWindowDataHolder());
+		contractGalactus	= new Button("./res/Contractstuff/Galactus.png", gamepanel.getWindowDataHolder());
+		contractNova		= new Button("./res/Contractstuff/nova.png", gamepanel.getWindowDataHolder());
 
 		text = new ImageView(ka);
 
@@ -195,10 +194,10 @@ public class ContractsTable extends Building {
 		ausBackground = new ImageView(ausbc);
 		lvlBorder = new ImageView(lvlb);
 
-		ausXb = new Button("./res/Contractstuff/Xbutton.png", gamepanel);
+		ausXb = new Button("./res/Contractstuff/Xbutton.png", gamepanel.getWindowDataHolder());
 
-		button_R	= new Button("./res/Contractstuff/pfeilR.png", gamepanel);
-		button_L	= new Button("./res/Contractstuff/pfeilL.png", gamepanel);
+		button_R	= new Button("./res/Contractstuff/pfeilR.png", gamepanel.getWindowDataHolder());
+		button_L	= new Button("./res/Contractstuff/pfeilL.png", gamepanel.getWindowDataHolder());
 
 		Image brl = buttonRL;
 		Image bll = buttonLL;
@@ -211,7 +210,7 @@ public class ContractsTable extends Building {
 		ugSachen4	= new LevelSelectionScrollPaneElement(gamepanel, this, " Untergrund", index * 25 + 15, "Icon_Untergrund", Difficulty.MIDDLE);
 		ugSachen5	= new LevelSelectionScrollPaneElement(gamepanel, this, " Zentrum", index * 25 + 20, "Icon_Zentrum", Difficulty.HARD);
 
-		button_R.setOnAction(me -> {
+		button_R.setOnReleased(me -> {
 			button_R.setImage(brl);
 			TranslateTransition tt = new TranslateTransition(Duration.millis(1000), p1);
 			TranslateTransition tth = new TranslateTransition(Duration.millis(1000), contractBackground);

@@ -22,6 +22,8 @@ public class ActionButton extends Button {
 	/** The handler. */
 	private Consumer<GamePanel> handler = null;
 
+	private boolean visible;
+
 	/**
 	 * Instantiates a new aktion button.
 	 *
@@ -30,6 +32,11 @@ public class ActionButton extends Button {
 	 */
 	public ActionButton(GamePanel gamePanel, WindowDataHolder windowDataHolder) {
 		super("./res/gui/always/InteractionNichts.png", windowDataHolder);
+
+		visible = true;
+
+		setImgRequestedWidth(150);
+		setImgRequestedHeight(150);
 
 		f11Scale();
 
@@ -72,6 +79,8 @@ public class ActionButton extends Button {
 			this.handler = null;
 		}
 	}
+
+	public void setVisible(boolean visible) { this.visible = visible; }
 
 	/**
 	 * Update.

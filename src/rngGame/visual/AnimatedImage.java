@@ -24,7 +24,7 @@ public class AnimatedImage extends ImageView {
 	 */
 	public void update() {
 		if (logic.isInitiated() || logic.isDirty()) {
-			setImage(logic.getFrameAt(logic.getFrameIndex()));
+			if (logic.getFrameIndex() < logic.frameCount()) setImage(logic.getFrameAt(logic.getFrameIndex()));
 			if (logic.isDirty()) logic.resetDirty();
 		}
 
