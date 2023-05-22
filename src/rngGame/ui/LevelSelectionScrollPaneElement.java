@@ -81,10 +81,10 @@ public class LevelSelectionScrollPaneElement extends ScrollPaneElement {
 		difficul.setVisible(false);
 
 		vlvl = new ImageView(ImgUtil.resizeImage(lvls[lvlneu / 5], (int) lvls[lvlneu / 5].getWidth(), (int) lvls[lvlneu / 5].getHeight(),
-				(int) (48 * gamepanel.getScalingFactorX()), (int) (48 * gamepanel.getScalingFactorY())));
+				(int) (48 * gamepanel.getWindowDataHolder().scalingFactorX()), (int) (48 * gamepanel.getWindowDataHolder().scalingFactorY())));
 		vlvl.setVisible(false);
-		vlvl.setLayoutX(24 * gamepanel.getScalingFactorX());
-		vlvl.setLayoutY(30 * gamepanel.getScalingFactorY());
+		vlvl.setLayoutX(24 * gamepanel.getWindowDataHolder().scalingFactorX());
+		vlvl.setLayoutY(30 * gamepanel.getWindowDataHolder().scalingFactorY());
 
 		picture = new ImageView(ImgUtil.getScaledImage(gamepanel, "./res/Contractstuff/" + pic + ".png", 64, 64));
 		picture.setDisable(true);
@@ -98,17 +98,17 @@ public class LevelSelectionScrollPaneElement extends ScrollPaneElement {
 		// Start Button
 		String	sButton		= "./res/Contractstuff/Startbutton.png";
 		String	sButton2	= "./res/Contractstuff/Startbutton2.png";
-		System.out.println(gamepanel + " " + gamepanel.getLgp());
-		startButton = new Button(sButton, gamepanel);
-		startButton.setLayoutX(383 * gamepanel.getScalingFactorX());
-		startButton.setLayoutY(4 * gamepanel.getScalingFactorY());
+		System.out.println(gamepanel + " " + gamepanel);
+		startButton = new Button(sButton, gamepanel.getWindowDataHolder());
+		startButton.setLayoutX(383 * gamepanel.getWindowDataHolder().scalingFactorX());
+		startButton.setLayoutY(4 * gamepanel.getWindowDataHolder().scalingFactorY());
 		startButton.setOnPressed(me -> {
 			startButton.init(sButton2);
 		});
 		startButton.setOnReleased(me -> {
 			startButton.init(sButton);
 			Input.getInstance().keyPressed(new KeyEvent(null, "", "", KeyCode.ENTER, false, false, false, false));
-			gamepanel.getLgp().setMap("./res/maps/Dungeon.json");
+			gamepanel.getWindowDataHolder().setMap("./res/maps/Dungeon.json");
 			ct.removeEnterAbbility();
 		});
 
@@ -131,7 +131,7 @@ public class LevelSelectionScrollPaneElement extends ScrollPaneElement {
 			if(dif == Difficulty.HARD) difficul.setImage(difH);
 			if(dif == Difficulty.EASY) difficul.setImage(difE);
 
-			gamepanel.getLgp().setDifficulty(dif);
+			gamepanel.getWindowDataHolder().setDifficulty(dif);
 			difficul.setVisible(true);
 
 		});
@@ -140,13 +140,13 @@ public class LevelSelectionScrollPaneElement extends ScrollPaneElement {
 
 		getChildren().addAll(startButton, floor1, picture);
 
-		floor1.setLayoutX(54 * gamepanel.getScalingFactorX());
-		floor1.setLayoutY(5 * gamepanel.getScalingFactorY());
-		picture.setLayoutX(7 * gamepanel.getScalingFactorX());
-		picture.setLayoutY(7 * gamepanel.getScalingFactorY());
+		floor1.setLayoutX(54 * gamepanel.getWindowDataHolder().scalingFactorX());
+		floor1.setLayoutY(5 * gamepanel.getWindowDataHolder().scalingFactorY());
+		picture.setLayoutX(7 * gamepanel.getWindowDataHolder().scalingFactorX());
+		picture.setLayoutY(7 * gamepanel.getWindowDataHolder().scalingFactorY());
 
-		difficul.setLayoutX(360 * gamepanel.getScalingFactorX());
-		difficul.setLayoutY(65 * gamepanel.getScalingFactorY());
+		difficul.setLayoutX(360 * gamepanel.getWindowDataHolder().scalingFactorX());
+		difficul.setLayoutY(65 * gamepanel.getWindowDataHolder().scalingFactorY());
 	}
 
 	/**
@@ -189,8 +189,8 @@ public class LevelSelectionScrollPaneElement extends ScrollPaneElement {
 		Image floor1 = Text.getInstance().convertText(floor, 64);
 		floor1 = ImgUtil.resizeImage(
 				floor1, (int) floor1.getWidth(), (int) floor1.getHeight(),
-				(int) (floor1.getWidth() * gamepanel.getScalingFactorX()),
-				(int) (floor1.getHeight() * gamepanel.getScalingFactorY()));
+				(int) (floor1.getWidth() * gamepanel.getWindowDataHolder().scalingFactorX()),
+				(int) (floor1.getHeight() * gamepanel.getWindowDataHolder().scalingFactorY()));
 		this.floor1.setImage(floor1);
 	}
 

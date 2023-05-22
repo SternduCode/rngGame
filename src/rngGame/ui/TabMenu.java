@@ -95,30 +95,30 @@ public class TabMenu {
 	 * @throws FileNotFoundException the file not found exception
 	 */
 	public TabMenu(GamePanel gamepanel) throws FileNotFoundException {
-		gamemenu = new ImageView(ImgUtil.getScaledImage(gamepanel, "./res/gui/gamemenubackround.png"));
+		gamemenu = new ImageView(ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/gamemenubackround.png"));
 
-		blank = new ImageView(ImgUtil.getScaledImage(gamepanel, "./res/gui/blackTransparent.png"));
+		blank = new ImageView(ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/blackTransparent.png"));
 
-		invB1 = ImgUtil.getScaledImage(gamepanel, "./res/gui/invAbutton1.png");
-		invB2 = ImgUtil.getScaledImage(gamepanel, "./res/gui/invAbutton2.png");
+		invB1 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/invAbutton1.png");
+		invB2 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/invAbutton2.png");
 		invB = new ImageView(invB1);
 
-		queB1 = ImgUtil.getScaledImage(gamepanel, "./res/gui/queAbutton1.png");
-		queB2 = ImgUtil.getScaledImage(gamepanel, "./res/gui/queAbutton2.png");
+		queB1 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/queAbutton1.png");
+		queB2 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/queAbutton2.png");
 		queB = new ImageView(queB1);
 
-		leavB1 = ImgUtil.getScaledImage(gamepanel, "./res/gui/LeavAbutton1.png");
-		leavB2 = ImgUtil.getScaledImage(gamepanel, "./res/gui/LeavAbutton2.png");
+		leavB1 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/LeavAbutton1.png");
+		leavB2 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/LeavAbutton2.png");
 		leavB = new ImageView(leavB1);
 
-		surebackround = new ImageView(ImgUtil.getScaledImage(gamepanel, "./res/gui/Sure.png"));
+		surebackround = new ImageView(ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/Sure.png"));
 
-		sureY1 = ImgUtil.getScaledImage(gamepanel, "./res/gui/SureY.png");
-		sureY2 = ImgUtil.getScaledImage(gamepanel, "./res/gui/SureY2.png");
+		sureY1 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/SureY.png");
+		sureY2 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/SureY2.png");
 		sureY = new ImageView(sureY1);
 
-		sureN1 = ImgUtil.getScaledImage(gamepanel, "./res/gui/SureN.png");
-		sureN2 = ImgUtil.getScaledImage(gamepanel, "./res/gui/SureN2.png");
+		sureN1 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/SureN.png");
+		sureN2 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/SureN2.png");
 		sureN = new ImageView(sureN1);
 
 
@@ -234,7 +234,7 @@ public class TabMenu {
 	 */
 	public void closeTabm(boolean toggleState) {
 		if(toggleState) ab.getAndSet(!ab.get());
-		gamepanel.getVgp().setBlockUserInputs(false);
+		gamepanel.setBlockUserInputs(false);
 
 		Inventory.setDisable(true);
 
@@ -255,28 +255,28 @@ public class TabMenu {
 	 * F 11 scale.
 	 */
 	public void f11Scale() {
-		gamemenu.setImage(ImgUtil.getScaledImage(gamepanel, "./res/gui/gamemenubackround.png"));
-		blank.setImage(ImgUtil.getScaledImage(gamepanel, "./res/gui/blackTransparent.png"));
+		gamemenu.setImage(ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/gamemenubackround.png"));
+		blank.setImage(ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/blackTransparent.png"));
 
-		invB1 = ImgUtil.getScaledImage(gamepanel, "./res/gui/invAbutton1.png");
-		invB2 = ImgUtil.getScaledImage(gamepanel, "./res/gui/invAbutton2.png");
+		invB1 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/invAbutton1.png");
+		invB2 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/invAbutton2.png");
 		invB.setImage(invB1);
 
-		queB1 = ImgUtil.getScaledImage(gamepanel, "./res/gui/queAbutton1.png");
-		queB2 = ImgUtil.getScaledImage(gamepanel, "./res/gui/queAbutton2.png");
+		queB1 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/queAbutton1.png");
+		queB2 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/queAbutton2.png");
 		queB.setImage(queB1);
 
-		leavB1 = ImgUtil.getScaledImage(gamepanel, "./res/gui/LeavAbutton1.png");
-		leavB2 = ImgUtil.getScaledImage(gamepanel, "./res/gui/LeavAbutton2.png");
+		leavB1 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/LeavAbutton1.png");
+		leavB2 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/LeavAbutton2.png");
 		leavB.setImage(leavB1);
 
-		surebackround.setImage(ImgUtil.getScaledImage(gamepanel, "./res/gui/Sure.png"));
-		sureY1 = ImgUtil.getScaledImage(gamepanel, "./res/gui/SureY.png");
-		sureY2 = ImgUtil.getScaledImage(gamepanel, "./res/gui/SureY2.png");
+		surebackround.setImage(ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/Sure.png"));
+		sureY1 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/SureY.png");
+		sureY2 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/SureY2.png");
 		sureY.setImage(sureY1);
 
-		sureN1 = ImgUtil.getScaledImage(gamepanel, "./res/gui/SureN.png");
-		sureN2 = ImgUtil.getScaledImage(gamepanel, "./res/gui/SureN2.png");
+		sureN1 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/SureN.png");
+		sureN2 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/SureN2.png");
 		sureN.setImage(sureN1);
 
 		Inventory.scaleF11();
