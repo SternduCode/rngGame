@@ -113,7 +113,7 @@ public class Demon {
 	 *
 	 * @return the currenthp
 	 */
-	public int getCurrentHp() {
+	public int getCurrenthp() {
 		return currenthp;
 	}
 

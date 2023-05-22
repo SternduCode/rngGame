@@ -21,10 +21,10 @@ import rngGame.ui.*;
 public class ContractsTable extends Building {
 
 	/** The animation counter pin. */
-	private long animationCounterPin = 0;
+	private final long animationCounterPin = 0;
 
 	/** The animation num pin. */
-	private int animationNumPin = 0;
+	private final int animationNumPin = 0;
 
 	/** The p 1. */
 	private final Pane p1 = new Pane();
@@ -211,11 +211,11 @@ public class ContractsTable extends Building {
 			TranslateTransition tth = new TranslateTransition(Duration.millis(1000), contractBackground);
 
 			// tt.setFromX(gamepanel.SpielLaenge*-index);
-			tt.setToX(-gamepanel.getGameWidth() - gamepanel.getGameWidth() * index);
+			tt.setToX(-gamepanel.getWindowDataHolder().gameWidth() - gamepanel.getWindowDataHolder().gameWidth() * index);
 
 			// tth.setFromX(gamepanel.SpielLaenge / 2 * -index + gamepanel.SpielLaenge);
-			tth.setToX(gamepanel.getGameWidth() / 2 * - (index + 1) + gamepanel.getGameWidth()
-			+ gamepanel.getScalingFactorX() * 24);
+			tth.setToX(gamepanel.getWindowDataHolder().gameWidth() / 2 * - (index + 1) + gamepanel.getWindowDataHolder().gameWidth()
+					+ gamepanel.getWindowDataHolder().scalingFactorX() * 24);
 
 			new Thread(() -> {
 				try {
@@ -277,16 +277,16 @@ public class ContractsTable extends Building {
 			button_L.setVisible(true);
 			if (index >= 4) button_R.setVisible(false);
 		});
-		button_L.setOnAction(me -> {
+		button_L.setOnReleased(me -> {
 			button_L.setImage(bll);
 			TranslateTransition tt = new TranslateTransition(Duration.millis(1000), p1);
 			TranslateTransition tth = new TranslateTransition(Duration.millis(1000), contractBackground);
 
 			// tt.setFromX(gamepanel.SpielLaenge*-index);
-			tt.setToX(gamepanel.getGameWidth() + gamepanel.getGameWidth() * -index);
+			tt.setToX(gamepanel.getWindowDataHolder().gameWidth() + gamepanel.getWindowDataHolder().gameWidth() * -index);
 
 			// tth.setFromX(gamepanel.SpielLaenge / 2 * -index + gamepanel.SpielLaenge);
-			tth.setToX(gamepanel.getGameWidth() / 2 * - (index - 1) + gamepanel.getGameWidth());
+			tth.setToX(gamepanel.getWindowDataHolder().gameWidth() / 2 * - (index - 1) + gamepanel.getWindowDataHolder().gameWidth());
 
 			new Thread(() -> {
 				try {
@@ -349,13 +349,13 @@ public class ContractsTable extends Building {
 		});
 
 		///////////////////////
-		contractSaturn.setOnAction(me -> {
+		contractSaturn.setOnReleased(me -> {
 			TranslateTransition tt = new TranslateTransition(Duration.millis(750), p1);
 			TranslateTransition tth = new TranslateTransition(Duration.millis(750), contractBackground);
 
-			tt.setToX(-gamepanel.getGameWidth() / 4 - gamepanel.getGameWidth() * index);
-			tth.setToX(gamepanel.getGameWidth() / 2 * - (index + 1) + gamepanel.getGameWidth() / 1.5
-					+ gamepanel.getScalingFactorX() * 24);
+			tt.setToX(-gamepanel.getWindowDataHolder().gameWidth() / 4 - gamepanel.getWindowDataHolder().gameWidth() * index);
+			tth.setToX(gamepanel.getWindowDataHolder().gameWidth() / 2 * - (index + 1) + gamepanel.getWindowDataHolder().gameWidth() / 1.5
+					+ gamepanel.getWindowDataHolder().scalingFactorX() * 24);
 
 			ugSachen1.setBackgroundImageToDefaullt();
 			ugSachen2.setBackgroundImageToDefaullt();
@@ -388,77 +388,77 @@ public class ContractsTable extends Building {
 
 		});
 		///////////////////////
-		contractNebel.setOnAction(me -> {
-			TranslateTransition tt = new TranslateTransition(Duration.millis(750), p1);
-			TranslateTransition tth = new TranslateTransition(Duration.millis(750), contractBackground);
-
-			tt.setToX(-gamepanel.getGameWidth() / 4 - gamepanel.getGameWidth() * index);
-			tth.setToX(gamepanel.getGameWidth() / 2 * - (index + 1) + gamepanel.getGameWidth() / 1.5
-					+ gamepanel.getScalingFactorX() * 24);
-
-			FadeTransition ft5 = new FadeTransition(Duration.millis(350), allPanes);
-			ft5.setFromValue(0);
-			ft5.setToValue(1);
-			ft5.play();
-
-			allPanes.setVisible(true);
-			button_R.setVisible(false);
-			button_L.setVisible(false);
-			tt.play();
-			tth.play();
-
-		});
+		//		contractNebel.setOnReleased(me -> {
+		//			TranslateTransition tt = new TranslateTransition(Duration.millis(750), p1);
+		//			TranslateTransition tth = new TranslateTransition(Duration.millis(750), contractBackground);
+		//
+		//			tt.setToX(-gamepanel.getWindowDataHolder().gameWidth() / 4 - gamepanel.getWindowDataHolder().gameWidth() * index);
+		//			tth.setToX(gamepanel.getWindowDataHolder().gameWidth() / 2 * - (index + 1) + gamepanel.getWindowDataHolder().gameWidth() / 1.5
+		//					+ gamepanel.getWindowDataHolder().scalingFactorX() * 24);
+		//
+		//			FadeTransition ft5 = new FadeTransition(Duration.millis(350), allPanes);
+		//			ft5.setFromValue(0);
+		//			ft5.setToValue(1);
+		//			ft5.play();
+		//
+		//			allPanes.setVisible(true);
+		//			button_R.setVisible(false);
+		//			button_L.setVisible(false);
+		//			tt.play();
+		//			tth.play();
+		//
+		//		});
+		//		///////////////////////
+		//		contractGalactus.setOnReleased(me -> {
+		//			TranslateTransition tt = new TranslateTransition(Duration.millis(750), p1);
+		//			TranslateTransition tth = new TranslateTransition(Duration.millis(750), contractBackground);
+		//
+		//			tt.setToX(-gamepanel.getWindowDataHolder().gameWidth() / 4 - gamepanel.getWindowDataHolder().gameWidth() * index);
+		//			tth.setToX(gamepanel.getWindowDataHolder().gameWidth() / 2 * - (index + 1) + gamepanel.getWindowDataHolder().gameWidth() / 1.5
+		//					+ gamepanel.getWindowDataHolder().scalingFactorX() * 24);
+		//
+		//			FadeTransition ft5 = new FadeTransition(Duration.millis(350), allPanes);
+		//			ft5.setFromValue(0);
+		//			ft5.setToValue(1);
+		//			ft5.play();
+		//
+		//			allPanes.setVisible(true);
+		//			button_R.setVisible(false);
+		//			button_L.setVisible(false);
+		//
+		//			tt.play();
+		//			tth.play();
+		//
+		//		});
+		//		///////////////////////
+		//		contractNova.setOnReleased(me -> {
+		//			TranslateTransition tt = new TranslateTransition(Duration.millis(750), p1);
+		//			TranslateTransition tth = new TranslateTransition(Duration.millis(750), contractBackground);
+		//
+		//			tt.setToX(-gamepanel.getWindowDataHolder().gameWidth() / 4 - gamepanel.getWindowDataHolder().gameWidth() * index);
+		//			tth.setToX(gamepanel.getWindowDataHolder().gameWidth() / 2 * - (index + 1) + gamepanel.getWindowDataHolder().gameWidth() / 1.5
+		//					+ gamepanel.getWindowDataHolder().scalingFactorX() * 24);
+		//
+		//			FadeTransition ft5 = new FadeTransition(Duration.millis(350), allPanes);
+		//			ft5.setFromValue(0);
+		//			ft5.setToValue(1);
+		//			ft5.play();
+		//
+		//			allPanes.setVisible(true);
+		//			button_R.setVisible(false);
+		//			button_L.setVisible(false);
+		//			tt.play();
+		//			tth.play();
+		//
+		//		});
 		///////////////////////
-		contractGalactus.setOnAction(me -> {
-			TranslateTransition tt = new TranslateTransition(Duration.millis(750), p1);
-			TranslateTransition tth = new TranslateTransition(Duration.millis(750), contractBackground);
-
-			tt.setToX(-gamepanel.getGameWidth() / 4 - gamepanel.getGameWidth() * index);
-			tth.setToX(gamepanel.getGameWidth() / 2 * - (index + 1) + gamepanel.getGameWidth() / 1.5
-					+ gamepanel.getScalingFactorX() * 24);
-
-			FadeTransition ft5 = new FadeTransition(Duration.millis(350), allPanes);
-			ft5.setFromValue(0);
-			ft5.setToValue(1);
-			ft5.play();
-
-			allPanes.setVisible(true);
-			button_R.setVisible(false);
-			button_L.setVisible(false);
-
-			tt.play();
-			tth.play();
-
-		});
-		///////////////////////
-		contractNova.setOnAction(me -> {
-			TranslateTransition tt = new TranslateTransition(Duration.millis(750), p1);
-			TranslateTransition tth = new TranslateTransition(Duration.millis(750), contractBackground);
-
-			tt.setToX(-gamepanel.getGameWidth() / 4 - gamepanel.getGameWidth() * index);
-			tth.setToX(gamepanel.getGameWidth() / 2 * - (index + 1) + gamepanel.getGameWidth() / 1.5
-					+ gamepanel.getScalingFactorX() * 24);
-
-			FadeTransition ft5 = new FadeTransition(Duration.millis(350), allPanes);
-			ft5.setFromValue(0);
-			ft5.setToValue(1);
-			ft5.play();
-
-			allPanes.setVisible(true);
-			button_R.setVisible(false);
-			button_L.setVisible(false);
-			tt.play();
-			tth.play();
-
-		});
-		///////////////////////
-		ausXb.setOnMousePressed(me -> {
+		ausXb.setOnPressed(me -> {
 			ausXb.init("./res/Contractstuff/XbuttonC.png");
 		});
 
 
 
-		ausXb.setOnMouseReleased(me -> {
+		ausXb.setOnReleased(me -> {
 			ugSachen1.setBackgroundImageToDefaullt();
 			ugSachen2.setBackgroundImageToDefaullt();
 			ugSachen3.setBackgroundImageToDefaullt();
@@ -467,8 +467,8 @@ public class ContractsTable extends Building {
 			TranslateTransition tt = new TranslateTransition(Duration.millis(750), p1);
 			TranslateTransition tth = new TranslateTransition(Duration.millis(750), contractBackground);
 
-			tt.setToX(gamepanel.getGameWidth() + gamepanel.getGameWidth() * (-index - 1));
-			tth.setToX(gamepanel.getGameWidth() / 2 * -index + gamepanel.getGameWidth());
+			tt.setToX(gamepanel.getWindowDataHolder().gameWidth() + gamepanel.getWindowDataHolder().gameWidth() * (-index - 1));
+			tth.setToX(gamepanel.getWindowDataHolder().gameWidth() / 2 * -index + gamepanel.getWindowDataHolder().gameWidth());
 
 			FadeTransition UG = new FadeTransition(Duration.millis(200), allPanes);
 			UG.setFromValue(1);
@@ -564,25 +564,25 @@ public class ContractsTable extends Building {
 		// contractNebel.setY(gamepanel.getPlayer().getScreenY() -
 		// contractNebel.getImage().getHeight() / 2 + 32);
 
-		contractNebel.setLayoutX(gamepanel.getGameWidth());
-		contractGalactus.setLayoutX(gamepanel.getGameWidth() * 2);
-		contractNova.setLayoutX(gamepanel.getGameWidth() * 3);
+		contractNebel.setLayoutX(gamepanel.getWindowDataHolder().gameWidth());
+		contractGalactus.setLayoutX(gamepanel.getWindowDataHolder().gameWidth() * 2);
+		contractNova.setLayoutX(gamepanel.getWindowDataHolder().gameWidth() * 3);
 
-		titlebanner2.setLayoutX(gamepanel.getGameWidth());
-		titlebanner3.setLayoutX(gamepanel.getGameWidth() * 2);
-		titlebanner4.setLayoutX(gamepanel.getGameWidth() * 3);
+		titlebanner2.setLayoutX(gamepanel.getWindowDataHolder().gameWidth());
+		titlebanner3.setLayoutX(gamepanel.getWindowDataHolder().gameWidth() * 2);
+		titlebanner4.setLayoutX(gamepanel.getWindowDataHolder().gameWidth() * 3);
 
-		hud2.setLayoutX(gamepanel.getGameWidth());
-		hud3.setLayoutX(gamepanel.getGameWidth() * 2);
-		hud4.setLayoutX(gamepanel.getGameWidth() * 3);
+		hud2.setLayoutX(gamepanel.getWindowDataHolder().gameWidth());
+		hud3.setLayoutX(gamepanel.getWindowDataHolder().gameWidth() * 2);
+		hud4.setLayoutX(gamepanel.getWindowDataHolder().gameWidth() * 3);
 
 		// add
 		p1.setVisible(false);
 		p1.getChildren().addAll(contractSaturn, contractNebel, contractGalactus, contractNova, hud, hud2, hud3, hud4,
 				titlebanner, titlebanner2, titlebanner3, titlebanner4, text,ausXb2);
 
-		text.setX(gamepanel.getGameWidth() / 2 - 164 * gamepanel.getScalingFactorX());
-		text.setY(gamepanel.getGameHeight() / 4 + gamepanel.getGameHeight() / 2 + 20 * gamepanel.getScalingFactorY());
+		text.setX(gamepanel.getWindowDataHolder().gameWidth() / 2 - 164 * gamepanel.getWindowDataHolder().scalingFactorX());
+		text.setY(gamepanel.getWindowDataHolder().gameHeight() / 4 + gamepanel.getWindowDataHolder().gameHeight() / 2 + 20 * gamepanel.getWindowDataHolder().scalingFactorY());
 
 		text.setVisible(false);
 
@@ -594,7 +594,7 @@ public class ContractsTable extends Building {
 		p2.getChildren().addAll(ugSachen1,ugSachen2,ugSachen3,ugSachen4,ugSachen5);
 
 		// Infos
-		infos.setLayoutX(gamepanel.getGameWidth() / 2 + 11 * gamepanel.getScalingFactorX());
+		infos.setLayoutX(gamepanel.getWindowDataHolder().gameWidth() / 2 + 11 * gamepanel.getWindowDataHolder().scalingFactorX());
 		infos.getChildren().add(lvlBorder);
 		infos.getChildren().add(ugSachen1.getVlvl());
 		infos.getChildren().add(ugSachen2.getVlvl());
@@ -616,7 +616,7 @@ public class ContractsTable extends Building {
 
 			gamepanel.getAktionbutton().setInteractionbuttonKann(true, mod -> {
 
-				contractBackground.setTranslateX(gamepanel.getGameWidth());
+				contractBackground.setTranslateX(gamepanel.getWindowDataHolder().gameWidth());
 				gamepanel.setBlockUserInputs(true);
 				contractBackground.setVisible(true);
 				p1.setVisible(true);
@@ -646,14 +646,13 @@ public class ContractsTable extends Building {
 				ft4.setFromValue(0);
 				ft4.setToValue(1);
 				ft4.play();
-
-
 			});
 
-			gamepanel.getLgp().getBuildings().parallelStream().filter(b -> b.getTextureFiles().containsValue("CTischCircle.png"))
+			gamepanel.getBuildings().parallelStream().filter(b -> b.getTextureFiles().containsValue("CTischCircle.png"))
 			.forEach(b -> {
 				b.setCurrentKey("open");
 			});
+
 		});
 	}
 
@@ -704,7 +703,8 @@ public class ContractsTable extends Building {
 		gamepanel.setBlockUserInputs(false);
 		index = 0;
 		p1.setTranslateX(0);
-		contractBackground.setTranslateX(gamepanel.getGameWidth());
+		contractBackground.setTranslateX(gamepanel.getWindowDataHolder().gameWidth());
+
 	}
 
 	/**
@@ -714,30 +714,30 @@ public class ContractsTable extends Building {
 	 */
 	@Override
 	public void update(long milis) {
-		gamepanel.getAktionbutton().setInteractionbuttonKann(false, null);
+		gamepanel.getActionButton().setIfInteractionButtonCanBePressed(false, null);
 
 		inkreis = false;
 
 		super.update(milis);
 		if (!inkreis) {
-			gamepanel.getLgp().getBuildings().parallelStream().filter(b -> b.getTextureFiles().containsValue("CTischCircle.png"))
+			gamepanel.getBuildings().parallelStream().filter(b -> b.getTextureFiles().containsValue("CTischCircle.png"))
 			.forEach(b -> {
 				b.setCurrentKey("default");
 			});
 			contractBackground.setVisible(false);
-			gamepanel.getChildren().remove(contractBackground);
-			gamepanel.getChildren().remove(p1);
-			gamepanel.getChildren().remove(allPanes);
-			gamepanel.getChildren().remove(button_R);
-			gamepanel.getChildren().remove(button_L);
+			//			gamepanel.getChildren().remove(contractBackground);
+			//			gamepanel.getChildren().remove(p1);
+			//			gamepanel.getChildren().remove(allPanes);
+			//			gamepanel.getChildren().remove(button_R);
+			//			gamepanel.getChildren().remove(button_L);
 
 		} else {
 			contractBackground.setY(gamepanel.getPlayer().getScreenY() - contractBackground.getImage().getHeight() / 2
 					+ gamepanel.getPlayer().getHeight() / 2);
-			if (!gamepanel.getChildren().contains(contractBackground))
-				gamepanel.getChildren().add(contractBackground);
+			//			if (!gamepanel.getChildren().contains(contractBackground))
+			//				gamepanel.getChildren().add(contractBackground);
 
-			p1.setLayoutX(gamepanel.getPlayer().getScreenX() - gamepanel.getGameWidth() / 2
+			p1.setLayoutX(gamepanel.getPlayer().getScreenX() - gamepanel.getWindowDataHolder().gameWidth() / 2
 					+ gamepanel.getPlayer().getWidth() / 2);
 			//			p1.setLayoutY(
 			//					gamepanel.getPlayer().getScreenY() - p1.getHeight() / 2 + gamepanel.getPlayer().getHeight() / 2);
@@ -747,16 +747,16 @@ public class ContractsTable extends Building {
 			if (!gamepanel.getChildren().contains(allPanes))
 				gamepanel.getChildren().add(allPanes);
 
-			p2.setLayoutX(gamepanel.getGameWidth() / 2 + 11 * gamepanel.getScalingFactorX());
-			p2.setLayoutY(108 * gamepanel.getScalingFactorY());
+			p2.setLayoutX(gamepanel.getWindowDataHolder().gameWidth() / 2 + 11 * gamepanel.getWindowDataHolder().scalingFactorX());
+			p2.setLayoutY(108 * gamepanel.getWindowDataHolder().scalingFactorY());
 
-			ugSachen2.setLayoutY(82 * gamepanel.getScalingFactorY());
-			ugSachen3.setLayoutY(82 * 2 * gamepanel.getScalingFactorY());
-			ugSachen4.setLayoutY(82 * 3 * gamepanel.getScalingFactorY());
-			ugSachen5.setLayoutY(82 * 4 * gamepanel.getScalingFactorY());
+			ugSachen2.setLayoutY(82 * gamepanel.getWindowDataHolder().scalingFactorY());
+			ugSachen3.setLayoutY(82 * 2 * gamepanel.getWindowDataHolder().scalingFactorY());
+			ugSachen4.setLayoutY(82 * 3 * gamepanel.getWindowDataHolder().scalingFactorY());
+			ugSachen5.setLayoutY(82 * 4 * gamepanel.getWindowDataHolder().scalingFactorY());
 
 			//////////////////////////////////////////////
-			button_R.setLayoutX(gamepanel.getGameWidth() - button_R.getImage().getWidth());
+			button_R.setLayoutX(gamepanel.getWindowDataHolder().gameWidth() - button_R.getImage().getWidth());
 			button_R.setLayoutY(gamepanel.getPlayer().getScreenY() - button_R.getImage().getHeight() / 2
 					+ gamepanel.getPlayer().getHeight() / 2);
 			if (!gamepanel.getChildren().contains(button_R))
