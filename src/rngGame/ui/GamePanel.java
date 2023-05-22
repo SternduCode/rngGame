@@ -81,6 +81,10 @@ public class GamePanel {
 	/** The clipboard. */
 	private List<List<TextureHolder>> clipboard;
 
+	private String backgroundPath;
+
+	private boolean backgroundPathDirty;
+
 	/**
 	 * Instantiates a new game panel.
 	 *
@@ -101,6 +105,9 @@ public class GamePanel {
 		fpsLabelVisible = false;
 
 		blockUserInputs = false;
+
+		backgroundPath		= null;
+		backgroundPathDirty	= false;
 
 		tps = 0;
 
@@ -150,6 +157,8 @@ public class GamePanel {
 	 * @return the action button
 	 */
 	public ActionButton getActionButton() { return actionButton; }
+
+	public String getBackgroundPath() { return backgroundPath; }
 
 	/**
 	 * Gets the buildings.
@@ -299,6 +308,10 @@ public class GamePanel {
 	 */
 	public void goOutOfFullScreen() { visualGamePanel.goOutOfFullScreen(); }
 
+	public boolean isBackgroundPathDirty() {
+		return backgroundPathDirty;
+	}
+
 	/**
 	 * Checks if is block user inputs.
 	 *
@@ -324,6 +337,10 @@ public class GamePanel {
 	 * Reload.
 	 */
 	public void reload() {}
+
+	public void resetBackgroundPathDirty() {
+		backgroundPathDirty = false;
+	}
 
 	/**
 	 * Save map.
@@ -370,6 +387,12 @@ public class GamePanel {
 		getPoints().clear();
 
 		tileManager.setMap(path);
+
+		backgroundPath		= tileManager.getBackgroundPath();
+		backgroundPathDirty	= true;
+
+		if (!"".equals(tileManager.getOverlay())) overlay.init(tileManager.getOverlay());
+		else overlay.uninit();
 
 		if (!"".equals(getTileManager().getBackgroundMusic()))
 			SoundHandler.getInstance().setBackgroundMusic(getTileManager().getBackgroundMusic());

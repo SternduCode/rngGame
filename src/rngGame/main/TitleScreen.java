@@ -89,6 +89,12 @@ public class TitleScreen extends Pane {
 
 				Platform.runLater(() -> gamePanelPane.getChildren().add(gamePanelVisual = new rngGame.visual.GamePanel(gamePanel, windowDataHolder)));
 
+				while (gamePanelVisual == null) try {
+					Thread.sleep(1);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+
 				Input.getInstance(windowDataHolder).setGamePanel(gamePanel); // pass instance of GamePanel to the Instance of Input
 
 				ploy.init("./res/backgrounds/Ploy.png");

@@ -1,9 +1,11 @@
 package rngGame.visual;
 
+import java.io.*;
 import java.util.*;
 
 import javafx.scene.Group;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -223,6 +225,17 @@ public class GamePanel extends Pane {
 	public void update() {
 
 		long lastFrameTime = frameTimes.size() > 0 ? frameTimes.get(frameTimes.size() - 1) : 0;
+
+		if (logic.isBackgroundPathDirty()) if (logic.getBackgroundPath() != null) try {
+			setBackground(new Background(
+					new BackgroundImage(new Image(new FileInputStream("./res/" + logic.getBackgroundPath())),
+							BackgroundRepeat.NO_REPEAT,
+							BackgroundRepeat.NO_REPEAT, null,
+							new BackgroundSize(windowDataHolder.gameWidth(), windowDataHolder.gameHeight(), false, false, false, false))));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		else setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
 		tileManager.update();
 

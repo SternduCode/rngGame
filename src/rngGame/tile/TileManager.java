@@ -1152,8 +1152,7 @@ public class TileManager {
 					default -> new Building((JsonObject) building, gamePanel, this.buildings, requesterB, windowDataHolder);
 				};
 				b.update(0);
-				ImageView	lIV;
-				lIV = new ImageView(ImgUtil.resizeImage(b.getImage().getFrameAt(b.getImage().getFrameIndex()),
+				ImageView lIV = new ImageView(ImgUtil.resizeImage(b.getImage().getFrameAt(b.getImage().getFrameIndex()),
 						(int) b.getImage().getFrameAt(b.getImage().getFrameIndex()).getWidth(),
 						(int) b.getImage().getFrameAt(b.getImage().getFrameIndex()).getHeight(), 48, 48));
 				getMbuildings().getItems().add(new MenuItemWBuilding(
