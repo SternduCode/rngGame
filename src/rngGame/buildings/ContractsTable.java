@@ -8,13 +8,11 @@ import javafx.animation.*;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.Group;
 import javafx.scene.image.*;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
-import rngGame.main.*;
+import rngGame.main.Text;
 import rngGame.tile.Difficulty;
 import rngGame.ui.*;
-import rngGame.ui.GamePanel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -74,15 +72,11 @@ public class ContractsTable extends Building {
 	private ImageView lvlBorder;
 
 	/** The aus xb. */
-	private Button ausXb;
+	private Button ausXb,ausXb2;
 
 	/** The index. */
 	private final int index = 0;
 
-	/** The iftest. */
-	private boolean iftest;
-
-	/** The inkreis. */
 	private boolean inkreis;
 
 	/**
@@ -195,6 +189,7 @@ public class ContractsTable extends Building {
 		lvlBorder = new ImageView(lvlb);
 
 		ausXb = new Button("./res/Contractstuff/Xbutton.png", gamepanel.getWindowDataHolder());
+		ausXb2	= new Button("./res/Contractstuff/Xbutton.png", gamepanel.getWindowDataHolder());
 
 		button_R	= new Button("./res/Contractstuff/pfeilR.png", gamepanel.getWindowDataHolder());
 		button_L	= new Button("./res/Contractstuff/pfeilL.png", gamepanel.getWindowDataHolder());
@@ -546,6 +541,13 @@ public class ContractsTable extends Building {
 			tt.play();
 			tth.play();
 		});
+		ausXb2.setOnMousePressed(me -> {
+			ausXb2.init("./res/Contractstuff/XbuttonC.png");
+		});
+		ausXb2.setOnMouseReleased(me -> {
+			removeStuffs();
+		});
+
 		/////////////////////
 		// Hintergrund
 		contractBackground
@@ -577,7 +579,7 @@ public class ContractsTable extends Building {
 		// add
 		p1.setVisible(false);
 		p1.getChildren().addAll(contractSaturn, contractNebel, contractGalactus, contractNova, hud, hud2, hud3, hud4,
-				titlebanner, titlebanner2, titlebanner3, titlebanner4, text);
+				titlebanner, titlebanner2, titlebanner3, titlebanner4, text,ausXb2);
 
 		text.setX(gamepanel.getGameWidth() / 2 - 164 * gamepanel.getScalingFactorX());
 		text.setY(gamepanel.getGameHeight() / 4 + gamepanel.getGameHeight() / 2 + 20 * gamepanel.getScalingFactorY());
@@ -608,9 +610,12 @@ public class ContractsTable extends Building {
 		allPanes.setVisible(false);
 		allPanes.getChildren().addAll(ausGroup,infos,p2,ausXb);
 
-		Input.getInstance().setKeyHandler("contractBackground", mod -> {
+		getMiscBoxHandler().put("table", (gpt, self) -> {
 
-			if (inkreis) if (iftest = !iftest) {
+			inkreis = true;
+
+			gamepanel.getAktionbutton().setInteractionbuttonKann(true, mod -> {
+
 				contractBackground.setTranslateX(gamepanel.getGameWidth());
 				gamepanel.setBlockUserInputs(true);
 				contractBackground.setVisible(true);
@@ -642,22 +647,9 @@ public class ContractsTable extends Building {
 				ft4.setToValue(1);
 				ft4.play();
 
-			} else {
-				contractBackground.setVisible(false);
-				p1.setVisible(false);
-				text.setVisible(false);
-				button_R.setVisible(false);
-				button_L.setVisible(false);
-				allPanes.setVisible(false);
-				gamepanel.setBlockUserInputs(false);
-				index = 0;
-				p1.setTranslateX(0);
-				contractBackground.setTranslateX(gamepanel.getGameWidth());
-			}
-		}, KeyCode.ENTER, false);
 
-		getMiscBoxHandler().put("table", (gpt, self) -> {
-			inkreis = true;
+			});
+
 			gamepanel.getLgp().getBuildings().parallelStream().filter(b -> b.getTextureFiles().containsValue("CTischCircle.png"))
 			.forEach(b -> {
 				b.setCurrentKey("open");
@@ -702,21 +694,18 @@ public class ContractsTable extends Building {
 		ugSachen5.setLvlfalse();
 	}
 
-	/**
-	 * Removes the enter abbility.
-	 */
-	public void removeEnterAbbility() {
-		Input.getInstance().removeKeyHandler("contractBackground");
+	public void removeStuffs() {
+		contractBackground.setVisible(false);
+		p1.setVisible(false);
+		text.setVisible(false);
+		button_R.setVisible(false);
+		button_L.setVisible(false);
+		allPanes.setVisible(false);
+		gamepanel.setBlockUserInputs(false);
+		index = 0;
+		p1.setTranslateX(0);
+		contractBackground.setTranslateX(gamepanel.getGameWidth());
 	}
-
-	/**
-	 * Sets the ms.
-	 *
-	 * @param milis the milis
-	 */
-
-
-
 
 	/**
 	 * Update.
@@ -725,10 +714,12 @@ public class ContractsTable extends Building {
 	 */
 	@Override
 	public void update(long milis) {
+		gamepanel.getAktionbutton().setInteractionbuttonKann(false, null);
+
 		inkreis = false;
+
 		super.update(milis);
 		if (!inkreis) {
-			iftest = false;
 			gamepanel.getLgp().getBuildings().parallelStream().filter(b -> b.getTextureFiles().containsValue("CTischCircle.png"))
 			.forEach(b -> {
 				b.setCurrentKey("default");

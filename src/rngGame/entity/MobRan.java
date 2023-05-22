@@ -9,7 +9,6 @@ import java.util.stream.*;
 import com.sterndu.json.*;
 
 import javafx.beans.property.ObjectProperty;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.image.Image;
 import javafx.scene.shape.Circle;
 import rngGame.stats.*;
@@ -63,6 +62,8 @@ public class MobRan extends NPC {
 	/** The f. */
 	private Fight f;
 
+	private AnimatedImage intro;
+
 	/**
 	 * Instantiates a new mob ran.
 	 *
@@ -86,10 +87,60 @@ public class MobRan extends NPC {
 	 * @param cm the cm
 	 * @param requestor the requestor
 	 */
-	public MobRan(MobRan en, List< MobRan> entities, ContextMenu cm,
+	public MobRan(MobRan en, List<MobRan> entities,
 			ObjectProperty<MobRan> requestor, WindowDataHolder windowDataHolder) {
 		super(en, entities, requestor, windowDataHolder);
 		init();
+	}
+
+	public static Demon makeMob(GamePanel gamepanel, Element wahl , String mobName) {
+		try {
+			String pnG;
+			if (new File("./res/demons/"+wahl+"/"+mobName+".png").exists())
+				pnG = "./res/demons/"+wahl+"/"+mobName+".png";
+			else
+				pnG = "./res/demons/"+wahl+"/"+mobName+".gif";
+
+			Path p2	= new File(pnG).toPath();
+			Image img = new Image(new FileInputStream(p2.toFile()));
+
+			JsonArray reqSize = new JsonArray();
+			JsonArray position = new JsonArray();
+			JsonObject joB = new JsonObject();
+			reqSize.add(new IntegerValue(64));
+			reqSize.add(new IntegerValue(64));
+			joB.put("requestedSize", reqSize);
+			JsonObject textures = new JsonObject();
+			if (new File("./res/demons/"+wahl+"/"+mobName+".png").exists())
+				textures.put("default", new StringValue(mobName + ".png"));
+			else
+				textures.put("default", new StringValue(mobName + ".gif"));
+			joB.put("textures", textures);
+			JsonObject buildingData = new JsonObject();
+			joB.put("buildingData", buildingData);
+			joB.put("type", new StringValue("Building"));
+			joB.put("dir", new StringValue(wahl.toString()));
+			position.add(new DoubleValue(1730));
+			position.add(new DoubleValue(1113));
+
+			joB.put("position", position);
+			JsonArray originalSize = new JsonArray();
+			originalSize.add(new DoubleValue(img.getHeight()));
+			originalSize.add(new DoubleValue(img.getHeight()));
+			joB.put("originalSize", originalSize);
+
+			MonsterNPC mnpc = new MonsterNPC(joB, gamepanel, gamepanel.getTileManager().getNPCSFromMap(),
+					gamepanel.getTileManager().getRequestorN(), gamepanel.getWindowDataHolder());
+			// TODO gamepanel.getViewGroups().get(mnpc.getLayer()).getChildren().remove(mnpc);
+			mnpc.setFixToScreen(true);
+			gamepanel.getNpcs().add(mnpc);
+
+			return new Demon(wahl, mobName, mnpc);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+
 	}
 
 	/**
@@ -131,10 +182,7 @@ public class MobRan extends NPC {
 		}
 
 
-		if (new File("./res/demons/"+wahl+"/"+mobName+".png").exists())
-			pnG = "./res/demons/"+wahl+"/"+mobName+".png";
-		else
-			pnG = "./res/demons/"+wahl+"/"+mobName+".gif";
+
 
 		switch (wahl) {
 			case Fire -> fire++;
@@ -164,47 +212,7 @@ public class MobRan extends NPC {
 
 		System.out.printf(demons.keySet().stream().collect(Collectors.joining(" %.2f%% ")) + " %.2f%% Items %d\n",
 				data);
-
-		try {
-			Path p2	= new File(pnG).toPath();
-			Image img = new Image(new FileInputStream(p2.toFile()));
-
-			JsonArray reqSize = new JsonArray();
-			JsonArray position = new JsonArray();
-			JsonObject joB = new JsonObject();
-			reqSize.add(new IntegerValue(64));
-			reqSize.add(new IntegerValue(64));
-			joB.put("requestedSize", reqSize);
-			JsonObject textures = new JsonObject();
-			if (new File("./res/demons/"+wahl+"/"+mobName+".png").exists())
-				textures.put("default", new StringValue(mobName + ".png"));
-			else
-				textures.put("default", new StringValue(mobName + ".gif"));
-			joB.put("textures", textures);
-			JsonObject buildingData = new JsonObject();
-			joB.put("buildingData", buildingData);
-			joB.put("type", new StringValue("Building"));
-			joB.put("dir", new StringValue(wahl.toString()));
-			position.add(new DoubleValue(1730));
-			position.add(new DoubleValue(1113));
-
-			joB.put("position", position);
-			JsonArray originalSize = new JsonArray();
-			originalSize.add(new DoubleValue(img.getHeight()));
-			originalSize.add(new DoubleValue(img.getHeight()));
-			joB.put("originalSize", originalSize);
-
-			MonsterNPC mnpc = new MonsterNPC(joB, gamepanel, gamepanel.getTileManager().getNPCSFromMap(),
-					gamepanel.getTileManager().getRequestorN(), gamepanel.getWindowDataHolder());
-			// TODO gamepanel.getViewGroups().get(mnpc.getLayer()).getChildren().remove(mnpc);
-			mnpc.setFixToScreen(true);
-			gamepanel.getNpcs().add(mnpc);
-
-			return new Demon(wahl, mobName, mnpc);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		}
+		return makeMob(gamepanel, wahl, mobName);
 	}
 
 	/**
@@ -221,40 +229,6 @@ public class MobRan extends NPC {
 		//		System.out.println(pe);
 		//		System.out.println("diffX: "+diffX + " diffY: "+ diffY);
 		return (diffX == 1 || diffY == 1) && diffX != diffY && diffX <= 1 && diffY <= 1;
-	}
-
-	/**
-	 * Inits the.
-	 */
-	@Override
-	public void init() {
-		if (!getMiscBoxes().containsKey("fight"))
-			getMiscBoxes().put("fight", new Circle(getReqWidth() / 2, getReqHeight() / 2, 32));
-		if (!getMiscBoxes().containsKey("visible"))
-			getMiscBoxes().put("visible", new Circle(getReqWidth() / 2, getReqHeight() / 2, 528));
-		super.init();
-		getMiscBoxHandler().put("fight", (gpt,self)->{
-			gpt.setBlockUserInputs(true);
-			MobRan.this.setFixToScreen(true);
-			MobRan.this.setLayoutX(0);
-			MobRan.this.setLayoutY(0);
-			MobRan.this.setLayer(gamepanel.getLayerCount());
-			gamepanel.getActionButton().setVisible(false);
-			f = new Fight(gpt, MobRan.this);
-			// TODO getChildren().add(f);
-
-		});
-		getMiscBoxHandler().put("visible", (gpt,self)->{
-			if (step == 0) {
-				Double[] pos = pathfinding(gpt);
-				if (pos != null) {
-					diff[0]	= pos[0] - x;
-					diff[1]	= pos[1] - y;
-					//					x	= pos[0];
-					//					y	= pos[1];
-				}
-			}
-		});
 	}
 
 	//Durchlaufen lassen bis void LOL OMG 360
@@ -277,6 +251,56 @@ public class MobRan extends NPC {
 	//		}
 	//		System.out.println(wahl + " " + i + " " + plantc);
 	//		}
+
+	/**
+	 * Inits the.
+	 */
+	@Override
+	public void init() {
+		Thread thread = new Thread(() -> {
+			try {
+				// TODO intro.setVisible(true);
+				Thread.sleep(2800);
+				// TODO Platform.runLater(() -> getChildren().add(getChildren().size()-1,f));
+				Thread.sleep(800);
+				// TODO intro.setVisible(false);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		});
+
+
+		if (!getMiscBoxes().containsKey("fight"))
+			getMiscBoxes().put("fight", new Circle(getReqWidth() / 2, getReqHeight() / 2, 32));
+		if (!getMiscBoxes().containsKey("visible"))
+			getMiscBoxes().put("visible", new Circle(getReqWidth() / 2, getReqHeight() / 2, 528));
+		super.init();
+		getMiscBoxHandler().put("fight", (gpt,self)->{
+			gpt.setBlockUserInputs(true);
+			MobRan.this.setFixToScreen(true);
+			MobRan.this.setLayoutX(0);
+			MobRan.this.setLayoutY(0);
+			MobRan.this.setLayer(gamepanel.getLayerCount());
+			gamepanel.getActionButton().setVisible(false);
+			SoundHandler.getInstance().makeSound("battleintro.wav");
+			intro	= new AnimatedImage("./res/gui/BattleIntro.gif", gamepanel.getWindowDataHolder(), 10);
+			f = new Fight(gamepanel, MobRan.this);
+			// TODO getChildren().add(intro);
+			thread.start();
+
+		});
+		getMiscBoxHandler().put("visible", (gpt,self)->{
+			if (step == 0) {
+				Double[] pos = pathfinding(gpt);
+				if (pos != null) {
+					diff[0]	= pos[0] - x;
+					diff[1]	= pos[1] - y;
+					//					x	= pos[0];
+					//					y	= pos[1];
+				}
+			}
+		});
+	}
 
 	/**
 	 * Pathfinding.
@@ -364,7 +388,6 @@ public class MobRan extends NPC {
 		}
 		return null;
 	}
-
 	/**
 	 * Update.
 	 *
@@ -390,7 +413,6 @@ public class MobRan extends NPC {
 			}
 		}
 	}
-
 
 
 

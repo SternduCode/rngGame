@@ -22,6 +22,10 @@ public class TitleScreen extends Pane {
 	/** The scaling factor holder. */
 	private final WindowDataHolder windowDataHolder;
 
+	private final AnimatedImage storyView;
+
+	private final rngGame.visual.AnimatedImage storyViewVisual;
+
 	/** The last. */
 	private long last = 0l;
 
@@ -31,8 +35,16 @@ public class TitleScreen extends Pane {
 	/** The curr frame. */
 	private int currFrame = 0;
 
+	private int index = 0;
+
 	/** The pfail. */
-	private Button ploy = null, settins = null, clous = null, pfail = null;
+	private Button ploy = null;
+
+	private Button settins = null;
+
+	private Button clous = null;
+
+	private Button pfail = null;
 
 	/** The game panel pane. */
 	private final Pane gamePanelPane;
@@ -47,7 +59,13 @@ public class TitleScreen extends Pane {
 	private rngGame.visual.GamePanel gamePanelVisual;
 
 	/** The pfail visual. */
-	private rngGame.visual.Button ployVisual = null, settinsVisual = null, clousVisual = null, pfailVisual = null;
+	private rngGame.visual.Button ployVisual = null;
+
+	private rngGame.visual.Button settinsVisual = null;
+
+	private rngGame.visual.Button clousVisual = null;
+
+	private rngGame.visual.Button pfailVisual = null;
 
 	/** The loading screen visual. */
 	private final rngGame.visual.LoadingScreen loadingScreenVisual;
@@ -69,6 +87,17 @@ public class TitleScreen extends Pane {
 		loadingScreenVisual.setOpacity(0);
 
 		clous = new Button("./res/backgrounds/Clous.png", windowDataHolder);
+		storyView	= new AnimatedImage("./res/story/Story0.gif", windowDataHolder, 7);
+
+		storyViewVisual = new rngGame.visual.AnimatedImage(storyView);
+
+		storyViewVisual.setOnMouseReleased(me -> {
+			if(index < 6) {
+				index++;
+				storyView.init("./res/story/Story"+ index +".gif");
+			} else storyViewVisual.setVisible(false);
+		});
+
 		clous.setOnPressed(e -> clous.init("./res/backgrounds/Clous2.png"));
 		clous.setOnReleased(e -> {
 			clous.init("./res/backgrounds/Clous.png");
@@ -139,10 +168,12 @@ public class TitleScreen extends Pane {
 
 		});
 
-		getChildren().addAll(background, ployVisual, settinsVisual, clousVisual, pfailVisual, gamePanelPane, loadingScreenVisual);
+		getChildren().addAll(background, ployVisual, settinsVisual, clousVisual, pfailVisual, gamePanelPane, loadingScreenVisual, storyViewVisual);
+
 		new Thread(()->{
 			while (true) {
 				try {
+					storyView.update();
 					Thread.sleep(20);
 				} catch (InterruptedException e) {
 					e.printStackTrace();

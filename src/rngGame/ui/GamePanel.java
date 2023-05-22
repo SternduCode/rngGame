@@ -303,10 +303,18 @@ public class GamePanel {
 	 */
 	public void goIntoFullScreen() { visualGamePanel.goIntoFullScreen(); }
 
+	public void goIntoLoadingScreen() {
+		visualGamePanel.goIntoLoadingScreen();
+	}
+
 	/**
 	 * Go out of full screen.
 	 */
 	public void goOutOfFullScreen() { visualGamePanel.goOutOfFullScreen(); }
+
+	public void goOutOfLoadingScreen() {
+		visualGamePanel.goOutOfLoadingScreen();
+	}
 
 	public boolean isBackgroundPathDirty() {
 		return backgroundPathDirty;

@@ -2,6 +2,7 @@ package rngGame.ui;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.Random;
 
 import javafx.scene.image.*;
 import javafx.scene.input.KeyCode;
@@ -273,6 +274,7 @@ public class Inventory extends Pane {
 	 * @param idx the idx
 	 */
 	public void giveItem2Monster(int idx) {
+		int oldhp = getCurrentDemon().getMaxHp();
 		Gear g = gearArray[idx];
 		if (gearArray[idx] instanceof Helmet) {
 			gearArray[idx]											= getCurrentDemon().getItem4List()[0];
@@ -286,6 +288,12 @@ public class Inventory extends Pane {
 		} else if (gearArray[idx] instanceof Sword) {
 			gearArray[idx]											= getCurrentDemon().getItem4List()[3];
 			getCurrentDemon().getItem4List()[3]	= g;
+		}
+		System.out.println(getCurrentDemon().getCurrenthp()+" "+oldhp);
+		if(getCurrentDemon().getCurrenthp() == oldhp) {
+			getCurrentDemon().changeCurrenthp(g.getHp());
+		} else {
+			getCurrentDemon().changeCurrenthp(0);
 		}
 
 		int i = findFirstNull(gearArray);
@@ -327,27 +335,9 @@ public class Inventory extends Pane {
 		comingView 			= new ImageView(ImgUtil.getScaledImage(gamepanel, "./res/gui/InvComingsoon.png"));
 
 		/////////////
-
-		Sword g1 = new Sword(Rarity.VOID);
-		Harnish g2 = new Harnish(Rarity.VOID);
-		Pants g3 = new Pants(Rarity.VOID);
-		Helmet g4 = new Helmet(Rarity.VOID);
-
-		//for(int i = 1;i<100;i++) {
-		Potion p1 = new Potion(Rarity.VOID);
-		itemToInventory(p1);
-		//}
-		// giveItem2Monster(g1);
-		// giveItem2Monster(g2);
-		// giveItem2Monster(g3);
-		// giveItem2Monster(g4);
-		itemToInventory(g1);
-		itemToInventory(g2);
-		itemToInventory(g3);
-		itemToInventory(g4);
-
-
+		
 		/////////////
+	
 
 		String ctt = "./res/gui/Temp.png";
 		ctb1	= new Button(gamepanel.getVgp());
@@ -364,44 +354,17 @@ public class Inventory extends Pane {
 		ctb6.setImage(ImgUtil.getScaledImage(gamepanel, ctt));
 		ctov = new ImageView(ImgUtil.getScaledImage(gamepanel, "./res/gui/tempOV.png"));
 
-		Demon m1 = MobRan.MobGen(gamepanel.getVgp());
-		m1.setLvl(140);
-		m1.changeCurrenthp(-10);
-		m1.setCurrentExp(m1.getMaxExp() - 1);
+		
+		Demon m1 = null;
+		Random r = new Random();
+		int zuz = r.nextInt(2)+1;
+		switch (zuz) {
+		case 1: {m1 = MobRan.makeMob(gamepanel.getVgp(), Element.Fire, "Booky");}
+		case 2: {m1 = MobRan.makeMob(gamepanel.getVgp(), Element.Water, "Booky");}
+		case 3: {m1 = MobRan.makeMob(gamepanel.getVgp(), Element.Plant, "Booky");}
+		}
+		
 		addDemon2current(m1);
-
-		Demon m2 = MobRan.MobGen(gamepanel.getVgp());
-		m2.setLvl(140);
-		m2.setCurrentExp(m2.getMaxExp() - 1);
-		addDemon2current(m2);
-
-		Demon m3 = MobRan.MobGen(gamepanel.getVgp());
-		m3.setLvl(140);
-		m3.setCurrentExp(m3.getMaxExp() - 1);
-		addDemon2current(m3);
-
-		Demon m4 = MobRan.MobGen(gamepanel.getVgp());
-		m4.setLvl(140);
-		m4.setCurrentExp(m4.getMaxExp() - 1);
-		addDemon2current(m4);
-
-		Demon m5 = MobRan.MobGen(gamepanel.getVgp());
-		m5.setLvl(140);
-		m5.setCurrentExp(m5.getMaxExp() - 1);
-		addDemon2current(m5);
-
-		Demon m6 = MobRan.MobGen(gamepanel.getVgp());
-		m6.setLvl(140);
-		m6.setCurrentExp(m6.getMaxExp() - 1);
-		addDemon2current(m6);
-
-		Demon m7 = MobRan.MobGen(gamepanel.getVgp());
-		m7.setLvl(140);
-		m7.setCurrentExp(m7.getMaxExp() - 1);
-		addDemon2current(m7);
-
-
-
 
 		// Xbutton
 		String	ausX	= "./res/Contractstuff/Xbutton.png";
@@ -1068,6 +1031,7 @@ public class Inventory extends Pane {
 					if(z != -1) {
 						gearArray[z] = getCurrentDemon().getItem4List()[_i];
 						getCurrentDemon().getItem4List()[_i] = null;
+						getCurrentDemon().changeCurrenthp(0);
 						moveFromArrayToView();
 						statsImages(currentDemonIndex);
 					}
@@ -1263,39 +1227,50 @@ public class Inventory extends Pane {
 			statsImages(0);
 		});
 
+		
 		ctb2.setOnReleased(me -> {
+			if(currentDemonArray[1]!=null) {
 			ctov.setLayoutX(ctb2.getLayoutX());
 			ctov.setLayoutY(ctb2.getLayoutY());
 			ctcomp.setImage(stage2);
 			statsImages(1);
+			}
 		});
 
 		ctb3.setOnReleased(me -> {
+			if(currentDemonArray[2]!=null) {
 			ctov.setLayoutX(ctb3.getLayoutX());
 			ctov.setLayoutY(ctb3.getLayoutY());
 			ctcomp.setImage(stage3);
 			statsImages(2);
+			}
 		});
 
 		ctb4.setOnReleased(me -> {
+			if(currentDemonArray[3]!=null) {
 			ctov.setLayoutX(ctb4.getLayoutX());
 			ctov.setLayoutY(ctb4.getLayoutY());
 			ctcomp.setImage(stage4);
 			statsImages(3);
+			}
 		});
 
 		ctb5.setOnReleased(me -> {
+			if(currentDemonArray[4]!=null) {
 			ctov.setLayoutX(ctb5.getLayoutX());
 			ctov.setLayoutY(ctb5.getLayoutY());
 			ctcomp.setImage(stage5);
 			statsImages(4);
+			}
 		});
 
 		ctb6.setOnReleased(me -> {
+			if(currentDemonArray[5]!=null) {
 			ctov.setLayoutX(ctb6.getLayoutX());
 			ctov.setLayoutY(ctb6.getLayoutY());
 			ctcomp.setImage(stage6);
 			statsImages(5);
+			}
 		});
 
 	}
@@ -1544,8 +1519,11 @@ public class Inventory extends Pane {
 				ctb1, ctb2, ctb3, ctb4, ctb5, ctb6
 		};
 
-		for (int i = 0; i < ctbs.length; i++)
-			ctbs[i].setImage(getIconM(currentDemonArray[i].getMobName(), currentDemonArray[i].getElement()));
-
+		for (int i = 0; i < ctbs.length; i++) {
+			if(currentDemonArray[i] != null) {
+				ctbs[i].setImage(getIconM(currentDemonArray[i].getMobName(), currentDemonArray[i].getElement()));
+			}
+		}
 	}
 }
+	
