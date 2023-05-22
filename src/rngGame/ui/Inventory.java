@@ -459,32 +459,32 @@ public class Inventory extends Pane {
 		Pane	p2			= new Pane();
 		Pane	itemStuff	= new Pane();
 
-		p.setLayoutX(8 * gamepanel.getVgp().getScalingFactorX());
-		p.setLayoutY(268 * gamepanel.getVgp().getScalingFactorY());
+		p.setLayoutX(8 * gamepanel.getWindowDataHolder().scalingFactorX());
+		p.setLayoutY(268 * gamepanel.getWindowDataHolder().scalingFactorY());
 		for (int i = 0; i < 620; i += 62)
 			for (int j = 0; j < 247; j += 62) {
 				ImageView iv = new ImageView();
-				iv.setLayoutX(i * gamepanel.getVgp().getScalingFactorX());
-				iv.setLayoutY(j * gamepanel.getVgp().getScalingFactorY());
+				iv.setLayoutX(i * gamepanel.getWindowDataHolder().scalingFactorX());
+				iv.setLayoutY(j * gamepanel.getWindowDataHolder().scalingFactorY());
 				invSlots[i / 62][j / 62] = iv;
 				int _i = i;
 				int _j = j;
 
 				iv.setOnMousePressed(me -> {
-					itemOverlay.setLayoutX( (_i + 8) * gamepanel.getVgp().getScalingFactorX());
-					itemOverlay.setLayoutY( (_j + 268) * gamepanel.getVgp().getScalingFactorY());
+					itemOverlay.setLayoutX( (_i + 8) * gamepanel.getWindowDataHolder().scalingFactorX());
+					itemOverlay.setLayoutY( (_j + 268) * gamepanel.getWindowDataHolder().scalingFactorY());
 					itemOverlay.setVisible(true);
 				});
 
 				iv.setOnMouseReleased(me -> {
 					ImageView itemShowcase = new ImageView(iv.getImage());
 
-					itemShowcase.setLayoutX(329 * gamepanel.getVgp().getScalingFactorX());
-					itemShowcase.setLayoutY(45 * gamepanel.getVgp().getScalingFactorY());
-					backButton.setLayoutX(302 * gamepanel.getVgp().getScalingFactorX());
-					backButton.setLayoutY( (125 + 64) * gamepanel.getVgp().getScalingFactorY());
-					applyButton.setLayoutX(302 * gamepanel.getVgp().getScalingFactorX());
-					applyButton.setLayoutY(125 * gamepanel.getVgp().getScalingFactorY());
+					itemShowcase.setLayoutX(329 * gamepanel.getWindowDataHolder().scalingFactorX());
+					itemShowcase.setLayoutY(45 * gamepanel.getWindowDataHolder().scalingFactorY());
+					backButton.setLayoutX(302 * gamepanel.getWindowDataHolder().scalingFactorX());
+					backButton.setLayoutY( (125 + 64) * gamepanel.getWindowDataHolder().scalingFactorY());
+					applyButton.setLayoutX(302 * gamepanel.getWindowDataHolder().scalingFactorX());
+					applyButton.setLayoutY(125 * gamepanel.getWindowDataHolder().scalingFactorY());
 
 					itemStuff.getChildren().clear();
 					itemStuff.getChildren().add(itemShowcase);

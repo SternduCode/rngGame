@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import com.sterndu.json.*;
 
 import javafx.geometry.Point2D;
-import rngGame.visual.GamePanel;
+import rngGame.ui.GamePanel;
 
 // TODO: Auto-generated Javadoc
 /**

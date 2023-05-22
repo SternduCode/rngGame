@@ -3,6 +3,7 @@ package rngGame.stats;
 import javafx.scene.image.Image;
 import rngGame.main.GamePanel;
 import rngGame.ui.ImgUtil;
+import rngGame.ui.WindowDataHolder;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -35,7 +36,7 @@ public class Item {
 	 * @param gp the gp
 	 * @return the t1
 	 */
-	public Image getImage(GamePanel gp) { return ImgUtil.getScaledImage(gp, path); }
+	public Image getImage(WindowDataHolder wd) { return ImgUtil.getScaledImage(wd, path); }
 
 	/**
 	 * Gets the rarity.

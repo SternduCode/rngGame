@@ -327,10 +327,10 @@ public class DungeonGen {
 						joB.put("type", new StringValue("Building"));
 						JsonArray position = new JsonArray();
 						position.add(new DoubleValue(
-								j * (gp.getBlockSizeX() / gp.getScalingFactorX())
+								j * (gp.getWindowDataHolder().blockSizeX() / gp.getWindowDataHolder().scalingFactorX())
 								+ ((NumberValue) object.getValue().getValue().get(0)).getValue().intValue()));
 						position.add(new DoubleValue(
-								i * (gp.getBlockSizeY() / gp.getScalingFactorY())
+								i * (gp.getWindowDataHolder().blockSizeY() / gp.getWindowDataHolder().scalingFactorY())
 								+ ((NumberValue) object.getValue().getValue().get(1)).getValue().intValue()));
 						joB.put("position", position);
 						JsonArray originalSize = new JsonArray();
@@ -363,10 +363,10 @@ public class DungeonGen {
 					joB.put("type", new StringValue("Building"));
 					JsonArray position = new JsonArray();
 					position.add(new DoubleValue(
-							j * (gp.getBlockSizeX() / gp.getScalingFactorX())
+							j * (gp.getWindowDataHolder().blockSizeX() / gp.getWindowDataHolder().scalingFactorX())
 							+ ((NumberValue) object.getValue().getValue().get(0)).getValue().intValue()));
 					position.add(new DoubleValue(
-							i * (gp.getBlockSizeY() / gp.getScalingFactorY())
+							i * (gp.getWindowDataHolder().blockSizeY() / gp.getWindowDataHolder().scalingFactorY())
 							+ ((NumberValue) object.getValue().getValue().get(1)).getValue().intValue()));
 					joB.put("position", position);
 					JsonArray originalSize = new JsonArray();
@@ -406,9 +406,9 @@ public class DungeonGen {
 						joB.put("type", new StringValue("Building"));
 						JsonArray position = new JsonArray();
 						position.add(new DoubleValue(
-								en.getKey() * (gp.getBlockSizeX() / gp.getScalingFactorX())));
+								en.getKey() * (gp.getWindowDataHolder().blockSizeX() / gp.getWindowDataHolder().scalingFactorX())));
 						position.add(new DoubleValue(
-								en.getValue() * (gp.getBlockSizeY() / gp.getScalingFactorY())));
+								en.getValue() * (gp.getWindowDataHolder().blockSizeY() / gp.getWindowDataHolder().scalingFactorY())));
 						joB.put("position", position);
 						JsonArray	originalSize	= new JsonArray();
 						JsonArray	background		= new JsonArray();
@@ -447,9 +447,9 @@ public class DungeonGen {
 						joB.put("type", new StringValue("Building"));
 						JsonArray position = new JsonArray();
 						position.add(new DoubleValue(
-								en.getKey() * gp.getBlockSizeX()));
+								en.getKey() * gp.getWindowDataHolder().blockSizeX()));
 						position.add(new DoubleValue(
-								en.getValue() * gp.getBlockSizeY()));
+								en.getValue() * gp.getWindowDataHolder().blockSizeY()));
 						joB.put("position", position);
 						JsonArray	originalSize	= new JsonArray();
 						JsonArray	background		= new JsonArray();
@@ -488,9 +488,9 @@ public class DungeonGen {
 						joB.put("type", new StringValue("Building"));
 						JsonArray position = new JsonArray();
 						position.add(new DoubleValue(
-								en.getKey() * gp.getBlockSizeX()));
+								en.getKey() * gp.getWindowDataHolder().blockSizeX()));
 						position.add(new DoubleValue(
-								en.getValue() * gp.getBlockSizeY()));
+								en.getValue() * gp.getWindowDataHolder().blockSizeY()));
 						joB.put("position", position);
 						JsonArray	originalSize	= new JsonArray();
 						JsonArray	background		= new JsonArray();
@@ -941,8 +941,8 @@ public class DungeonGen {
 			Point2D p = mapPositions.get(en.getKey());
 			for (Object building : en.getValue()) {
 				JsonArray position = (JsonArray) ((JsonObject) building).get("position");
-				position.set(0, new DoubleValue(((NumberValue) position.get(0)).getValue().doubleValue()+p.getX()*gp.getBlockSizeX()));
-				position.set(1, new DoubleValue(((NumberValue) position.get(1)).getValue().doubleValue()+p.getY()*gp.getBlockSizeY()));
+				position.set(0, new DoubleValue(((NumberValue) position.get(0)).getValue().doubleValue()+p.getX()*gp.getWindowDataHolder().blockSizeX()));
+				position.set(1, new DoubleValue(((NumberValue) position.get(1)).getValue().doubleValue()+p.getY()*gp.getWindowDataHolder().blockSizeY()));
 			}
 		});
 		List<JsonObject> builds = buildings.entrySet().parallelStream().map(Entry::getValue).flatMap(JsonArray::parallelStream).map(v->(JsonObject)v).collect(Collectors.toList());
@@ -1052,7 +1052,7 @@ public class DungeonGen {
 				boolean s = false;
 				for (int ij = 0; ij < length; ij++)
 					gp.getTileManager().getTiles().get(gp.getTileManager().getTiles().size() - 2).poly
-					.add(raf.readDouble() * ( (s = !s) ? gp.getScalingFactorX() : gp.getScalingFactorY()));
+					.add(raf.readDouble() * ( (s = !s) ? gp.getWindowDataHolder().scalingFactorX() : gp.getWindowDataHolder().scalingFactorY()));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -1069,7 +1069,7 @@ public class DungeonGen {
 				boolean s = false;
 				for (int ij = 0; ij < length; ij++)
 					gp.getTileManager().getTiles().get(gp.getTileManager().getTiles().size() - 1).poly
-					.add(raf.readDouble() * ( (s = !s) ? gp.getScalingFactorX() : gp.getScalingFactorY()));
+					.add(raf.readDouble() * ( (s = !s) ? gp.getWindowDataHolder().scalingFactorX() : gp.getWindowDataHolder().scalingFactorY()));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -1101,7 +1101,7 @@ public class DungeonGen {
 						tile.poly = new ArrayList<>();
 						boolean s = false;
 						for (int ij = 0; ij < length; ij++)
-							tile.poly.add(raf.readDouble() * ( (s = !s) ? gp.getScalingFactorX() : gp.getScalingFactorY()));
+							tile.poly.add(raf.readDouble() * ( (s = !s) ? gp.getWindowDataHolder().scalingFactorX() : gp.getWindowDataHolder().scalingFactorY()));
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -1124,7 +1124,7 @@ public class DungeonGen {
 						tile.poly = new ArrayList<>();
 						boolean s = false;
 						for (int ij = 0; ij < length; ij++)
-							tile.poly.add(raf.readDouble() * ( (s = !s) ? gp.getScalingFactorX() : gp.getScalingFactorY()));
+							tile.poly.add(raf.readDouble() * ( (s = !s) ? gp.getWindowDataHolder().scalingFactorX() : gp.getWindowDataHolder().scalingFactorY()));
 					} catch (IOException e) {
 						e.printStackTrace();
 					}

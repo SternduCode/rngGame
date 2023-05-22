@@ -699,9 +699,9 @@ public class TileManager {
 				int	blockPosY	= (int) fth.getLayoutY() / windowDataHolder.blockSizeY() - (fth.getLayoutY() < 0 ? 1 : 0);
 				System.out.println(blockPosY);
 				if (blockPosY < 0) for (int j = blockPosY; j < 0; j++) {
-					logic.getMapTileNum()().add(0, new ArrayList<>());
-					List<Integer> li = logic.getMapTileNum().get(0);
-					for (int i = 0; i < logic.getMapTileNum().get(1).size(); i++) li.add(0);
+					getMapTileNum()().add(0, new ArrayList<>());
+					List<Integer> li = getMapTileNum().get(0);
+					for (int i = 0; i < getMapTileNum().get(1).size(); i++) li.add(0);
 
 					map.add(0, new ArrayList<>());
 
@@ -719,7 +719,7 @@ public class TileManager {
 					startingPosition[1] = startingPosition[1] + windowDataHolder.blockSize();
 				}
 				if (blockPosX < 0) for (int i = blockPosX; i < 0; i++) {
-					for (List<Integer> row : logic.getMapTileNum()) row.add(0, 0);
+					for (List<Integer> row : getMapTileNum()) row.add(0, 0);
 
 					for (List<TextureHolder> row : map) row.add(0, null);
 
@@ -736,25 +736,25 @@ public class TileManager {
 
 					startingPosition[0] = startingPosition[0] + windowDataHolder.blockSize();
 				}
-				if (blockPosY >= logic.getMapTileNum().size()) for(int j = blockPosY - logic.getMapTileNum().size(); j >= 0; j--) {
+				if (blockPosY >= getMapTileNum().size()) for(int j = blockPosY - getMapTileNum().size(); j >= 0; j--) {
 
 					List<Integer> li = new ArrayList<>();
 
-					for (int i = 0; i < logic.getMapTileNum().get(logic.getMapTileNum().size() - 1).size(); i++) li.add(0);
+					for (int i = 0; i < getMapTileNum().get(getMapTileNum().size() - 1).size(); i++) li.add(0);
 
-					logic.getMapTileNum().add(li);
+					getMapTileNum().add(li);
 
 					map.add(new ArrayList<>());
 				}
 				if (blockPosY < 0) blockPosY = 0;
 				if (blockPosX < 0) blockPosX = 0;
-				if (blockPosX >= logic.getMapTileNum().get(blockPosY).size()) for (int i = blockPosX - logic.getMapTileNum().get(blockPosY).size(); i >= 0; i--) {
-					for (List<Integer> row : logic.getMapTileNum()) row.add(0, 0);
+				if (blockPosX >= getMapTileNum().get(blockPosY).size()) for (int i = blockPosX - getMapTileNum().get(blockPosY).size(); i >= 0; i--) {
+					for (List<Integer> row : getMapTileNum()) row.add(0, 0);
 
 					for (List<TextureHolder> row : map) row.add(0, null);
 				}
 
-				logic.getMapTileNum().get(blockPosY).set(blockPosX, tiles.indexOf(miw.getTile()));
+				getMapTileNum().get(blockPosY).set(blockPosX, tiles.indexOf(miw.getTile()));
 
 				System.out.println("Yo " + blockPosX + " " + blockPosY);
 			}
