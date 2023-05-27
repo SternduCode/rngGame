@@ -14,7 +14,6 @@ import javafx.scene.shape.Circle;
 import rngGame.stats.*;
 import rngGame.tile.TextureHolder;
 import rngGame.ui.*;
-import rngGame.visual.Fight;
 
 
 // TODO: Auto-generated Javadoc
@@ -58,11 +57,6 @@ public class MobRan extends NPC {
 
 	/** The steps. */
 	private final int steps = 40;
-
-	/** The f. */
-	private Fight f;
-
-	private AnimatedImage intro;
 
 	/**
 	 * Instantiates a new mob ran.
@@ -151,7 +145,7 @@ public class MobRan extends NPC {
 	 */
 	public static Demon MobGen(GamePanel gamepanel) {
 		Random gen = new Random();
-		String pnG, mobName;
+		String	mobName;
 		Element wahl;
 
 		int r = gen.nextInt(101)+1;
@@ -257,18 +251,6 @@ public class MobRan extends NPC {
 	 */
 	@Override
 	public void init() {
-		Thread thread = new Thread(() -> {
-			try {
-				// TODO intro.setVisible(true);
-				Thread.sleep(2800);
-				// TODO Platform.runLater(() -> getChildren().add(getChildren().size()-1,f));
-				Thread.sleep(800);
-				// TODO intro.setVisible(false);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		});
-
 
 		if (!getMiscBoxes().containsKey("fight"))
 			getMiscBoxes().put("fight", new Circle(getReqWidth() / 2, getReqHeight() / 2, 32));
@@ -277,16 +259,7 @@ public class MobRan extends NPC {
 		super.init();
 		getMiscBoxHandler().put("fight", (gpt,self)->{
 			gpt.setBlockUserInputs(true);
-			MobRan.this.setFixToScreen(true);
-			MobRan.this.setLayoutX(0);
-			MobRan.this.setLayoutY(0);
-			MobRan.this.setLayer(gamepanel.getLayerCount());
-			gamepanel.getActionButton().setVisible(false);
-			SoundHandler.getInstance().makeSound("battleintro.wav");
-			intro	= new AnimatedImage("./res/gui/BattleIntro.gif", gamepanel.getWindowDataHolder(), 10);
-			f = new Fight(gamepanel, MobRan.this);
-			// TODO getChildren().add(intro);
-			thread.start();
+			gamepanel.showFightingScreen(MobRan.this);
 
 		});
 		getMiscBoxHandler().put("visible", (gpt,self)->{
@@ -396,8 +369,6 @@ public class MobRan extends NPC {
 	@Override
 	public void update(long milis) {
 		// TODO make speed like with player
-		if(f!=null) f.update();
-		else {
 			super.update(milis);
 			if (diff[0] > 0 || diff[1] > 0)
 				step++;
@@ -411,7 +382,6 @@ public class MobRan extends NPC {
 				diff[0]	= 0;
 				diff[1]	= 0;
 			}
-		}
 	}
 
 

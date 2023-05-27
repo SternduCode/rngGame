@@ -109,10 +109,17 @@ public class TitleScreen extends Pane {
 		ploy.setOnPressed(e -> ploy.init("./res/backgrounds/Ploy2.png"));
 		ploy.setOnReleased(e -> {
 
+			loadingScreenVisual.goIntoLoadingScreen();
+
 			gamePanelPane.getChildren().clear();
 
 			new Thread(() -> {
-				loadingScreenVisual.goIntoLoadingScreen();
+
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
 
 				gamePanel = new GamePanel(windowDataHolder);
 
@@ -236,6 +243,7 @@ public class TitleScreen extends Pane {
 	 * Update.
 	 */
 	public void update() {
+		storyViewVisual.update();
 		ployVisual.update();
 		settinsVisual.update();
 		pfailVisual.update();

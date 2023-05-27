@@ -1,8 +1,7 @@
 package rngGame.ui;
 
 import java.io.FileNotFoundException;
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 
 import javafx.scene.image.*;
 import javafx.scene.input.KeyCode;
@@ -16,7 +15,7 @@ import rngGame.stats.*;
 /**
  * The Class Inventory.
  */
-public class Inventory extends Pane {
+public class Inventory {
 
 	/**
 	 * The Enum Tab.
@@ -36,7 +35,7 @@ public class Inventory extends Pane {
 	}
 
 	/** The Constant currentDemonIndex. */
-	private int currentDemonIndex = 0;
+	private final int currentDemonIndex = 0;
 
 	/** The potion array. */
 	private final Potion[] potionArray = new Potion[40];
@@ -57,7 +56,7 @@ public class Inventory extends Pane {
 	private final Demon[] currentDemonArray = new Demon[6];
 
 	/** The current tab. */
-	private Tab currentTab = Tab.POTION;
+	private final Tab currentTab = Tab.POTION;
 
 	/** The name pane. */
 	private Pane namePane;
@@ -119,7 +118,7 @@ public class Inventory extends Pane {
 	 *
 	 * @throws FileNotFoundException the file not found exception
 	 */
-	public Inventory(GamePanel gamepanel, TabMenu tabm) throws FileNotFoundException {
+	public Inventory(GamePanel gamepanel, TabMenu tabm) {
 		this.gamepanel	= gamepanel;
 		this.tabm		= tabm;
 		Input.getInstance().setKeyHandler("Demons", mod -> {
@@ -290,11 +289,8 @@ public class Inventory extends Pane {
 			getCurrentDemon().getItem4List()[3]	= g;
 		}
 		System.out.println(getCurrentDemon().getCurrenthp()+" "+oldhp);
-		if(getCurrentDemon().getCurrenthp() == oldhp) {
-			getCurrentDemon().changeCurrenthp(g.getHp());
-		} else {
-			getCurrentDemon().changeCurrenthp(0);
-		}
+		if(getCurrentDemon().getCurrenthp() == oldhp) getCurrentDemon().changeCurrenthp(g.getHp());
+		else getCurrentDemon().changeCurrenthp(0);
 
 		int i = findFirstNull(gearArray);
 
@@ -335,9 +331,9 @@ public class Inventory extends Pane {
 		comingView 			= new ImageView(ImgUtil.getScaledImage(gamepanel, "./res/gui/InvComingsoon.png"));
 
 		/////////////
-		
+
 		/////////////
-	
+
 
 		String ctt = "./res/gui/Temp.png";
 		ctb1	= new Button(gamepanel.getVgp());
@@ -354,16 +350,16 @@ public class Inventory extends Pane {
 		ctb6.setImage(ImgUtil.getScaledImage(gamepanel, ctt));
 		ctov = new ImageView(ImgUtil.getScaledImage(gamepanel, "./res/gui/tempOV.png"));
 
-		
+
 		Demon m1 = null;
 		Random r = new Random();
 		int zuz = r.nextInt(2)+1;
 		switch (zuz) {
-		case 1: {m1 = MobRan.makeMob(gamepanel.getVgp(), Element.Fire, "Booky");}
-		case 2: {m1 = MobRan.makeMob(gamepanel.getVgp(), Element.Water, "Booky");}
-		case 3: {m1 = MobRan.makeMob(gamepanel.getVgp(), Element.Plant, "Booky");}
+			case 1: {m1 = MobRan.makeMob(gamepanel.getVgp(), Element.Fire, "Booky");}
+			case 2: {m1 = MobRan.makeMob(gamepanel.getVgp(), Element.Water, "Booky");}
+			case 3: {m1 = MobRan.makeMob(gamepanel.getVgp(), Element.Plant, "Booky");}
 		}
-		
+
 		addDemon2current(m1);
 
 		// Xbutton
@@ -444,14 +440,14 @@ public class Inventory extends Pane {
 
 					itemShowcase.setLayoutX(329 * gamepanel.getWindowDataHolder().scalingFactorX());
 					itemShowcase.setLayoutY(45 * gamepanel.getWindowDataHolder().scalingFactorY());
-					backButton.setLayoutX(302 * gamepanel.getWindowDataHolder().scalingFactorX());
-					backButton.setLayoutY( (125 + 64) * gamepanel.getWindowDataHolder().scalingFactorY());
-					applyButton.setLayoutX(302 * gamepanel.getWindowDataHolder().scalingFactorX());
-					applyButton.setLayoutY(125 * gamepanel.getWindowDataHolder().scalingFactorY());
+					//TODO					backButton.setLayoutX(302 * gamepanel.getWindowDataHolder().scalingFactorX());
+					//TODO					backButton.setLayoutY( (125 + 64) * gamepanel.getWindowDataHolder().scalingFactorY());
+					//TODO					applyButton.setLayoutX(302 * gamepanel.getWindowDataHolder().scalingFactorX());
+					//TODO					applyButton.setLayoutY(125 * gamepanel.getWindowDataHolder().scalingFactorY());
 
 					itemStuff.getChildren().clear();
 					itemStuff.getChildren().add(itemShowcase);
-					itemStuff.getChildren().addAll(backButton, applyButton);
+					//TODO itemStuff.getChildren().addAll(backButton, applyButton);
 					transp.setVisible(true);
 					itemSureBackround.setVisible(true);
 					itemStuff.setVisible(true);
@@ -495,129 +491,129 @@ public class Inventory extends Pane {
 							ctbi4 = new Button(gamepanel.getWindowDataHolder());
 							ctbi5 = new Button(gamepanel.getWindowDataHolder());
 							ctbi6 = new Button(gamepanel.getWindowDataHolder());
-							ctbi1.setImage(getIconM(currentDemonArray[0].getMobName(), currentDemonArray[0].getElement()));
-							ctbi2.setImage(getIconM(currentDemonArray[1].getMobName(), currentDemonArray[1].getElement()));
-							ctbi3.setImage(getIconM(currentDemonArray[2].getMobName(), currentDemonArray[2].getElement()));
-							ctbi4.setImage(getIconM(currentDemonArray[3].getMobName(), currentDemonArray[3].getElement()));
-							ctbi5.setImage(getIconM(currentDemonArray[4].getMobName(), currentDemonArray[4].getElement()));
-							ctbi6.setImage(getIconM(currentDemonArray[5].getMobName(), currentDemonArray[5].getElement()));
-							ctbi1.setLayoutX(254);
-							ctbi1.setLayoutY(319);
-							ctbi2.setLayoutX(324);
-							ctbi2.setLayoutY(319);
-							ctbi3.setLayoutX(394);
-							ctbi3.setLayoutY(319);
-							ctbi4.setLayoutX(503);
-							ctbi4.setLayoutY(319);
-							ctbi5.setLayoutX(573);
-							ctbi5.setLayoutY(319);
-							ctbi6.setLayoutX(643);
-							ctbi6.setLayoutY(319);
+							//							TODO ctbi1.setImage(getIconM(currentDemonArray[0].getMobName(), currentDemonArray[0].getElement()));
+							//							TODO ctbi2.setImage(getIconM(currentDemonArray[1].getMobName(), currentDemonArray[1].getElement()));
+							//							TODO ctbi3.setImage(getIconM(currentDemonArray[2].getMobName(), currentDemonArray[2].getElement()));
+							//							TODO ctbi4.setImage(getIconM(currentDemonArray[3].getMobName(), currentDemonArray[3].getElement()));
+							//							TODO ctbi5.setImage(getIconM(currentDemonArray[4].getMobName(), currentDemonArray[4].getElement()));
+							//							TODO ctbi6.setImage(getIconM(currentDemonArray[5].getMobName(), currentDemonArray[5].getElement()));
+							//							TODO ctbi1.setLayoutX(254);
+							//							TODO ctbi1.setLayoutY(319);
+							//							TODO ctbi2.setLayoutX(324);
+							//							TODO ctbi2.setLayoutY(319);
+							//							TODO ctbi3.setLayoutX(394);
+							//							TODO ctbi3.setLayoutY(319);
+							//							TODO ctbi4.setLayoutX(503);
+							//							TODO ctbi4.setLayoutY(319);
+							//							TODO ctbi5.setLayoutX(573);
+							//							TODO ctbi5.setLayoutY(319);
+							//							TODO ctbi6.setLayoutX(643);
+							//							TODO ctbi6.setLayoutY(319);
 
-							getChildren().addAll(ctbi1,ctbi2,ctbi3,ctbi4,ctbi5,ctbi6);
+							//TODO getChildren().addAll(ctbi1,ctbi2,ctbi3,ctbi4,ctbi5,ctbi6);
 
 
-							ctbi1.setOnReleased(mee -> {
-								transp.setVisible(false);
-								currentDemonArray[0].changeCurrenthp(pp.getHp());
-								potionArray[_j / 62 * 10 + _i / 62] = null;
-								moveFromArrayToView();
-								itemSureBackround.setVisible(false);
-								itemSureBackroundm2.setVisible(false);
-								ctbi1.setVisible(false);
-								ctbi2.setVisible(false);
-								ctbi3.setVisible(false);
-								ctbi4.setVisible(false);
-								ctbi5.setVisible(false);
-								ctbi6.setVisible(false);
-								itemStuff.setVisible(false);
-								statsImages(currentDemonIndex);
-							});
-							ctbi2.setOnReleased(mee -> {
-								transp.setVisible(false);
-								currentDemonArray[1].changeCurrenthp(pp.getHp());
-								potionArray[_j / 62 * 10 + _i / 62] = null;
-								moveFromArrayToView();
-								itemSureBackround.setVisible(false);
-								itemSureBackroundm2.setVisible(false);
-								ctbi1.setVisible(false);
-								ctbi2.setVisible(false);
-								ctbi3.setVisible(false);
-								ctbi4.setVisible(false);
-								ctbi5.setVisible(false);
-								ctbi6.setVisible(false);
-								itemStuff.setVisible(false);
-								statsImages(currentDemonIndex);
-
-							});
-							ctbi3.setOnReleased(mee -> {
-								transp.setVisible(false);
-								currentDemonArray[2].changeCurrenthp(pp.getHp());
-								potionArray[_j / 62 * 10 + _i / 62] = null;
-								moveFromArrayToView();
-								itemSureBackround.setVisible(false);
-								itemSureBackroundm2.setVisible(false);
-								ctbi1.setVisible(false);
-								ctbi2.setVisible(false);
-								ctbi3.setVisible(false);
-								ctbi4.setVisible(false);
-								ctbi5.setVisible(false);
-								ctbi6.setVisible(false);
-								itemStuff.setVisible(false);
-								statsImages(currentDemonIndex);
-							});
-							ctbi4.setOnReleased(mee -> {
-								transp.setVisible(false);
-								currentDemonArray[3].changeCurrenthp(pp.getHp());
-								potionArray[_j / 62 * 10 + _i / 62] = null;
-								moveFromArrayToView();
-								itemSureBackround.setVisible(false);
-								itemSureBackroundm2.setVisible(false);
-								ctbi1.setVisible(false);
-								ctbi2.setVisible(false);
-								ctbi3.setVisible(false);
-								ctbi4.setVisible(false);
-								ctbi5.setVisible(false);
-								ctbi6.setVisible(false);
-								itemStuff.setVisible(false);
-								statsImages(currentDemonIndex);
-							});
-							ctbi5.setOnReleased(mee -> {
-								transp.setVisible(false);
-								currentDemonArray[4].changeCurrenthp(pp.getHp());
-								potionArray[_j / 62 * 10 + _i / 62] = null;
-								moveFromArrayToView();
-								itemSureBackround.setVisible(false);
-								itemSureBackroundm2.setVisible(false);
-								ctbi1.setVisible(false);
-								ctbi2.setVisible(false);
-								ctbi3.setVisible(false);
-								ctbi4.setVisible(false);
-								ctbi5.setVisible(false);
-								ctbi6.setVisible(false);
-								itemStuff.setVisible(false);
-								statsImages(currentDemonIndex);
-							});
-							ctbi6.setOnReleased(mee -> {
-								transp.setVisible(false);
-								currentDemonArray[5].changeCurrenthp(pp.getHp());
-								potionArray[_j / 62 * 10 + _i / 62] = null;
-								moveFromArrayToView();
-								itemSureBackround.setVisible(false);
-								itemSureBackroundm2.setVisible(false);
-								ctbi1.setVisible(false);
-								ctbi2.setVisible(false);
-								ctbi3.setVisible(false);
-								ctbi4.setVisible(false);
-								ctbi5.setVisible(false);
-								ctbi6.setVisible(false);
-								itemStuff.setVisible(false);
-								statsImages(currentDemonIndex);
-
-							});
-							applyButton.setVisible(false);
-							backButton.setVisible(false);
-							itemSureBackroundm2.setVisible(true);
+							//					TODO		ctbi1.setOnReleased(mee -> {
+							//								transp.setVisible(false);
+							//								currentDemonArray[0].changeCurrentHp(pp.getHp());
+							//								potionArray[_j / 62 * 10 + _i / 62] = null;
+							//								moveFromArrayToView();
+							//								itemSureBackround.setVisible(false);
+							//								itemSureBackroundm2.setVisible(false);
+							//								ctbi1.setVisible(false);
+							//								ctbi2.setVisible(false);
+							//								ctbi3.setVisible(false);
+							//								ctbi4.setVisible(false);
+							//								ctbi5.setVisible(false);
+							//								ctbi6.setVisible(false);
+							//								itemStuff.setVisible(false);
+							//								statsImages(currentDemonIndex);
+							//							});
+							//							ctbi2.setOnReleased(mee -> {
+							//								transp.setVisible(false);
+							//								currentDemonArray[1].changeCurrentHp(pp.getHp());
+							//								potionArray[_j / 62 * 10 + _i / 62] = null;
+							//								moveFromArrayToView();
+							//								itemSureBackround.setVisible(false);
+							//								itemSureBackroundm2.setVisible(false);
+							//								ctbi1.setVisible(false);
+							//								ctbi2.setVisible(false);
+							//								ctbi3.setVisible(false);
+							//								ctbi4.setVisible(false);
+							//								ctbi5.setVisible(false);
+							//								ctbi6.setVisible(false);
+							//								itemStuff.setVisible(false);
+							//								statsImages(currentDemonIndex);
+							//
+							//							});
+							//							ctbi3.setOnReleased(mee -> {
+							//								transp.setVisible(false);
+							//								currentDemonArray[2].changeCurrentHp(pp.getHp());
+							//								potionArray[_j / 62 * 10 + _i / 62] = null;
+							//								moveFromArrayToView();
+							//								itemSureBackround.setVisible(false);
+							//								itemSureBackroundm2.setVisible(false);
+							//								ctbi1.setVisible(false);
+							//								ctbi2.setVisible(false);
+							//								ctbi3.setVisible(false);
+							//								ctbi4.setVisible(false);
+							//								ctbi5.setVisible(false);
+							//								ctbi6.setVisible(false);
+							//								itemStuff.setVisible(false);
+							//								statsImages(currentDemonIndex);
+							//							});
+							//							ctbi4.setOnReleased(mee -> {
+							//								transp.setVisible(false);
+							//								currentDemonArray[3].changeCurrentHp(pp.getHp());
+							//								potionArray[_j / 62 * 10 + _i / 62] = null;
+							//								moveFromArrayToView();
+							//								itemSureBackround.setVisible(false);
+							//								itemSureBackroundm2.setVisible(false);
+							//								ctbi1.setVisible(false);
+							//								ctbi2.setVisible(false);
+							//								ctbi3.setVisible(false);
+							//								ctbi4.setVisible(false);
+							//								ctbi5.setVisible(false);
+							//								ctbi6.setVisible(false);
+							//								itemStuff.setVisible(false);
+							//								statsImages(currentDemonIndex);
+							//							});
+							//							ctbi5.setOnReleased(mee -> {
+							//								transp.setVisible(false);
+							//								currentDemonArray[4].changeCurrentHp(pp.getHp());
+							//								potionArray[_j / 62 * 10 + _i / 62] = null;
+							//								moveFromArrayToView();
+							//								itemSureBackround.setVisible(false);
+							//								itemSureBackroundm2.setVisible(false);
+							//								ctbi1.setVisible(false);
+							//								ctbi2.setVisible(false);
+							//								ctbi3.setVisible(false);
+							//								ctbi4.setVisible(false);
+							//								ctbi5.setVisible(false);
+							//								ctbi6.setVisible(false);
+							//								itemStuff.setVisible(false);
+							//								statsImages(currentDemonIndex);
+							//							});
+							//							ctbi6.setOnReleased(mee -> {
+							//								transp.setVisible(false);
+							//								currentDemonArray[5].changeCurrentHp(pp.getHp());
+							//								potionArray[_j / 62 * 10 + _i / 62] = null;
+							//								moveFromArrayToView();
+							//								itemSureBackround.setVisible(false);
+							//								itemSureBackroundm2.setVisible(false);
+							//								ctbi1.setVisible(false);
+							//								ctbi2.setVisible(false);
+							//								ctbi3.setVisible(false);
+							//								ctbi4.setVisible(false);
+							//								ctbi5.setVisible(false);
+							//								ctbi6.setVisible(false);
+							//								itemStuff.setVisible(false);
+							//								statsImages(currentDemonIndex);
+							//
+							//							});
+							//							applyButton.setVisible(false);
+							//							backButton.setVisible(false);
+							// TODO bis hier itemSureBackroundm2.setVisible(true);
 						});
 
 
@@ -629,8 +625,8 @@ public class Inventory extends Pane {
 
 						itemStuff.getChildren().addAll(hpView2, rarityView2);
 
-						applyButton.setVisible(true);
-						backButton.setVisible(true);
+						// TODO applyButton.setVisible(true);
+						// TODO backButton.setVisible(true);
 
 					} else if (itemTestArray[_j / 62 * 10 + _i / 62] instanceof Gear g) {
 						ImageView hpView2, atkView2, resView2, dgcView2, rarityView2;
@@ -697,10 +693,10 @@ public class Inventory extends Pane {
 
 						itemStuff.getChildren().addAll(hpView2, atkView2, resView2, dgcView2, rarityView2);
 
-						applyButton.setVisible(true);
-						backButton.setVisible(true);
+						// TODO applyButton.setVisible(true);
+						// TODO backButton.setVisible(true);
 
-					} else if (itemTestArray[_j / 62 * 10 + _i / 62] instanceof Demon d){
+					} else if (itemTestArray[_j / 62 * 10 + _i / 62] instanceof Demon d) {
 
 						ImageView hpView3, atkView3, resView3, dgcView3, elementView3, nameView;
 						//Demon d			= (Demon) itemTestArray[_j / 62 * 10 + _i / 62];
@@ -767,8 +763,8 @@ public class Inventory extends Pane {
 
 						itemStuff.getChildren().addAll(hpView3, atkView3, resView3, dgcView3, elementView3, nameView);
 
-						applyButton.setVisible(true);
-						backButton.setVisible(true);
+						// TODO applyButton.setVisible(true);
+						// TODO backButton.setVisible(true);
 
 						applyButton.setOnReleased(me2 -> {
 							applyButton.init(apply1);
@@ -787,115 +783,115 @@ public class Inventory extends Pane {
 							ctbi4 = new Button(gamepanel.getWindowDataHolder());
 							ctbi5 = new Button(gamepanel.getWindowDataHolder());
 							ctbi6 = new Button(gamepanel.getWindowDataHolder());
-							ctbi1.setImage(getIconM(currentDemonArray[0].getMobName(), currentDemonArray[0].getElement()));
-							ctbi2.setImage(getIconM(currentDemonArray[1].getMobName(), currentDemonArray[1].getElement()));
-							ctbi3.setImage(getIconM(currentDemonArray[2].getMobName(), currentDemonArray[2].getElement()));
-							ctbi4.setImage(getIconM(currentDemonArray[3].getMobName(), currentDemonArray[3].getElement()));
-							ctbi5.setImage(getIconM(currentDemonArray[4].getMobName(), currentDemonArray[4].getElement()));
-							ctbi6.setImage(getIconM(currentDemonArray[5].getMobName(), currentDemonArray[5].getElement()));
-							ctbi1.setLayoutX(254);
-							ctbi1.setLayoutY(319);
-							ctbi2.setLayoutX(324);
-							ctbi2.setLayoutY(319);
-							ctbi3.setLayoutX(394);
-							ctbi3.setLayoutY(319);
-							ctbi4.setLayoutX(503);
-							ctbi4.setLayoutY(319);
-							ctbi5.setLayoutX(573);
-							ctbi5.setLayoutY(319);
-							ctbi6.setLayoutX(643);
-							ctbi6.setLayoutY(319);
+							// TODO ctbi1.setImage(getIconM(currentDemonArray[0].getMobName(), currentDemonArray[0].getElement()));
+							// TODO ctbi2.setImage(getIconM(currentDemonArray[1].getMobName(), currentDemonArray[1].getElement()));
+							// TODO ctbi3.setImage(getIconM(currentDemonArray[2].getMobName(), currentDemonArray[2].getElement()));
+							// TODO ctbi4.setImage(getIconM(currentDemonArray[3].getMobName(), currentDemonArray[3].getElement()));
+							// TODO ctbi5.setImage(getIconM(currentDemonArray[4].getMobName(), currentDemonArray[4].getElement()));
+							// TODO ctbi6.setImage(getIconM(currentDemonArray[5].getMobName(), currentDemonArray[5].getElement()));
+							// TODO ctbi1.setLayoutX(254);
+							// TODO ctbi1.setLayoutY(319);
+							// TODO ctbi2.setLayoutX(324);
+							// TODO ctbi2.setLayoutY(319);
+							// TODO ctbi3.setLayoutX(394);
+							// TODO ctbi3.setLayoutY(319);
+							// TODO ctbi4.setLayoutX(503);
+							// TODO ctbi4.setLayoutY(319);
+							// TODO ctbi5.setLayoutX(573);
+							// TODO ctbi5.setLayoutY(319);
+							// TODO ctbi6.setLayoutX(643);
+							// TODO ctbi6.setLayoutY(319);
 
-							getChildren().addAll(ctbi1,ctbi2,ctbi3,ctbi4,ctbi5,ctbi6);
+							// TODO getChildren().addAll(ctbi1,ctbi2,ctbi3,ctbi4,ctbi5,ctbi6);
 
 
-							ctbi1.setOnReleased(mee -> {
-								changeDemon(d,0,_j,_i);
-								transp.setVisible(false);
-								itemSureBackround.setVisible(false);
-								itemSureBackroundm1.setVisible(false);
-								ctbi1.setVisible(false);
-								ctbi2.setVisible(false);
-								ctbi3.setVisible(false);
-								ctbi4.setVisible(false);
-								ctbi5.setVisible(false);
-								ctbi6.setVisible(false);
-								itemStuff.setVisible(false);
-								statsImages(currentDemonIndex);
-							});
-							ctbi2.setOnReleased(mee -> {
-								changeDemon(d,1,_j,_i);
-								transp.setVisible(false);
-								itemSureBackround.setVisible(false);
-								itemSureBackroundm1.setVisible(false);
-								ctbi1.setVisible(false);
-								ctbi2.setVisible(false);
-								ctbi3.setVisible(false);
-								ctbi4.setVisible(false);
-								ctbi5.setVisible(false);
-								ctbi6.setVisible(false);
-								itemStuff.setVisible(false);
-								statsImages(currentDemonIndex);
-							});
-							ctbi3.setOnReleased(mee -> {
-								changeDemon(d,2,_j,_i);
-								transp.setVisible(false);
-								itemSureBackround.setVisible(false);
-								itemSureBackroundm1.setVisible(false);
-								ctbi1.setVisible(false);
-								ctbi2.setVisible(false);
-								ctbi3.setVisible(false);
-								ctbi4.setVisible(false);
-								ctbi5.setVisible(false);
-								ctbi6.setVisible(false);
-								itemStuff.setVisible(false);
-								statsImages(currentDemonIndex);
-							});
-							ctbi4.setOnReleased(mee -> {
-								changeDemon(d,3,_j,_i);
-								transp.setVisible(false);
-								itemSureBackround.setVisible(false);
-								itemSureBackroundm1.setVisible(false);
-								ctbi1.setVisible(false);
-								ctbi2.setVisible(false);
-								ctbi3.setVisible(false);
-								ctbi4.setVisible(false);
-								ctbi5.setVisible(false);
-								ctbi6.setVisible(false);
-								itemStuff.setVisible(false);
-								statsImages(currentDemonIndex);
-							});
-							ctbi5.setOnReleased(mee -> {
-								changeDemon(d,4,_j,_i);
-								transp.setVisible(false);
-								itemSureBackround.setVisible(false);
-								itemSureBackroundm1.setVisible(false);
-								ctbi1.setVisible(false);
-								ctbi2.setVisible(false);
-								ctbi3.setVisible(false);
-								ctbi4.setVisible(false);
-								ctbi5.setVisible(false);
-								ctbi6.setVisible(false);
-								itemStuff.setVisible(false);
-								statsImages(currentDemonIndex);
-							});
-							ctbi6.setOnReleased(mee -> {
-								changeDemon(d,5,_j,_i);
-								transp.setVisible(false);
-								itemSureBackround.setVisible(false);
-								itemSureBackroundm1.setVisible(false);
-								ctbi1.setVisible(false);
-								ctbi2.setVisible(false);
-								ctbi3.setVisible(false);
-								ctbi4.setVisible(false);
-								ctbi5.setVisible(false);
-								ctbi6.setVisible(false);
-								itemStuff.setVisible(false);
-								statsImages(currentDemonIndex);
-
-							});
-							applyButton.setVisible(false);
-							backButton.setVisible(false);
+							//			TODO				ctbi1.setOnReleased(mee -> {
+							//								changeDemon(d,0,_j,_i);
+							//								transp.setVisible(false);
+							//								itemSureBackround.setVisible(false);
+							//								itemSureBackroundm1.setVisible(false);
+							//								ctbi1.setVisible(false);
+							//								ctbi2.setVisible(false);
+							//								ctbi3.setVisible(false);
+							//								ctbi4.setVisible(false);
+							//								ctbi5.setVisible(false);
+							//								ctbi6.setVisible(false);
+							//								itemStuff.setVisible(false);
+							//								statsImages(currentDemonIndex);
+							//							});
+							//							ctbi2.setOnReleased(mee -> {
+							//								changeDemon(d,1,_j,_i);
+							//								transp.setVisible(false);
+							//								itemSureBackround.setVisible(false);
+							//								itemSureBackroundm1.setVisible(false);
+							//								ctbi1.setVisible(false);
+							//								ctbi2.setVisible(false);
+							//								ctbi3.setVisible(false);
+							//								ctbi4.setVisible(false);
+							//								ctbi5.setVisible(false);
+							//								ctbi6.setVisible(false);
+							//								itemStuff.setVisible(false);
+							//								statsImages(currentDemonIndex);
+							//							});
+							//							ctbi3.setOnReleased(mee -> {
+							//								changeDemon(d,2,_j,_i);
+							//								transp.setVisible(false);
+							//								itemSureBackround.setVisible(false);
+							//								itemSureBackroundm1.setVisible(false);
+							//								ctbi1.setVisible(false);
+							//								ctbi2.setVisible(false);
+							//								ctbi3.setVisible(false);
+							//								ctbi4.setVisible(false);
+							//								ctbi5.setVisible(false);
+							//								ctbi6.setVisible(false);
+							//								itemStuff.setVisible(false);
+							//								statsImages(currentDemonIndex);
+							//							});
+							//							ctbi4.setOnReleased(mee -> {
+							//								changeDemon(d,3,_j,_i);
+							//								transp.setVisible(false);
+							//								itemSureBackround.setVisible(false);
+							//								itemSureBackroundm1.setVisible(false);
+							//								ctbi1.setVisible(false);
+							//								ctbi2.setVisible(false);
+							//								ctbi3.setVisible(false);
+							//								ctbi4.setVisible(false);
+							//								ctbi5.setVisible(false);
+							//								ctbi6.setVisible(false);
+							//								itemStuff.setVisible(false);
+							//								statsImages(currentDemonIndex);
+							//							});
+							//							ctbi5.setOnReleased(mee -> {
+							//								changeDemon(d,4,_j,_i);
+							//								transp.setVisible(false);
+							//								itemSureBackround.setVisible(false);
+							//								itemSureBackroundm1.setVisible(false);
+							//								ctbi1.setVisible(false);
+							//								ctbi2.setVisible(false);
+							//								ctbi3.setVisible(false);
+							//								ctbi4.setVisible(false);
+							//								ctbi5.setVisible(false);
+							//								ctbi6.setVisible(false);
+							//								itemStuff.setVisible(false);
+							//								statsImages(currentDemonIndex);
+							//							});
+							//							ctbi6.setOnReleased(mee -> {
+							//								changeDemon(d,5,_j,_i);
+							//								transp.setVisible(false);
+							//								itemSureBackround.setVisible(false);
+							//								itemSureBackroundm1.setVisible(false);
+							//								ctbi1.setVisible(false);
+							//								ctbi2.setVisible(false);
+							//								ctbi3.setVisible(false);
+							//								ctbi4.setVisible(false);
+							//								ctbi5.setVisible(false);
+							//								ctbi6.setVisible(false);
+							//								itemStuff.setVisible(false);
+							//								statsImages(currentDemonIndex);
+							//
+							//							});
+							//							applyButton.setVisible(false);
+							//		TODO bis hier					backButton.setVisible(false);
 							itemSureBackroundm1.setVisible(true);
 						});
 
@@ -1227,49 +1223,49 @@ public class Inventory extends Pane {
 			statsImages(0);
 		});
 
-		
+
 		ctb2.setOnReleased(me -> {
 			if(currentDemonArray[1]!=null) {
-			ctov.setLayoutX(ctb2.getLayoutX());
-			ctov.setLayoutY(ctb2.getLayoutY());
-			ctcomp.setImage(stage2);
-			statsImages(1);
+				ctov.setLayoutX(ctb2.getLayoutX());
+				ctov.setLayoutY(ctb2.getLayoutY());
+				ctcomp.setImage(stage2);
+				statsImages(1);
 			}
 		});
 
 		ctb3.setOnReleased(me -> {
 			if(currentDemonArray[2]!=null) {
-			ctov.setLayoutX(ctb3.getLayoutX());
-			ctov.setLayoutY(ctb3.getLayoutY());
-			ctcomp.setImage(stage3);
-			statsImages(2);
+				ctov.setLayoutX(ctb3.getLayoutX());
+				ctov.setLayoutY(ctb3.getLayoutY());
+				ctcomp.setImage(stage3);
+				statsImages(2);
 			}
 		});
 
 		ctb4.setOnReleased(me -> {
 			if(currentDemonArray[3]!=null) {
-			ctov.setLayoutX(ctb4.getLayoutX());
-			ctov.setLayoutY(ctb4.getLayoutY());
-			ctcomp.setImage(stage4);
-			statsImages(3);
+				ctov.setLayoutX(ctb4.getLayoutX());
+				ctov.setLayoutY(ctb4.getLayoutY());
+				ctcomp.setImage(stage4);
+				statsImages(3);
 			}
 		});
 
 		ctb5.setOnReleased(me -> {
 			if(currentDemonArray[4]!=null) {
-			ctov.setLayoutX(ctb5.getLayoutX());
-			ctov.setLayoutY(ctb5.getLayoutY());
-			ctcomp.setImage(stage5);
-			statsImages(4);
+				ctov.setLayoutX(ctb5.getLayoutX());
+				ctov.setLayoutY(ctb5.getLayoutY());
+				ctcomp.setImage(stage5);
+				statsImages(4);
 			}
 		});
 
 		ctb6.setOnReleased(me -> {
 			if(currentDemonArray[5]!=null) {
-			ctov.setLayoutX(ctb6.getLayoutX());
-			ctov.setLayoutY(ctb6.getLayoutY());
-			ctcomp.setImage(stage6);
-			statsImages(5);
+				ctov.setLayoutX(ctb6.getLayoutX());
+				ctov.setLayoutY(ctb6.getLayoutY());
+				ctcomp.setImage(stage6);
+				statsImages(5);
 			}
 		});
 
@@ -1519,11 +1515,7 @@ public class Inventory extends Pane {
 				ctb1, ctb2, ctb3, ctb4, ctb5, ctb6
 		};
 
-		for (int i = 0; i < ctbs.length; i++) {
-			if(currentDemonArray[i] != null) {
-				ctbs[i].setImage(getIconM(currentDemonArray[i].getMobName(), currentDemonArray[i].getElement()));
-			}
-		}
+		for (int i = 0; i < ctbs.length; i++) if(currentDemonArray[i] != null) ctbs[i].setImage(getIconM(currentDemonArray[i].getMobName(), currentDemonArray[i].getElement()));
 	}
 }
-	
+

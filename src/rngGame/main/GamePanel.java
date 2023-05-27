@@ -462,9 +462,6 @@ public class GamePanel {
 
 			long lastFrameTime = frameTimes.size() > 0 ? frameTimes.get(frameTimes.size() - 1) : 0;
 
-			fpsLabel.setText(String.format("%.2f", 1000 / fps));
-			fpsLabel.setLayoutX(gameWidth - fpsLabel.getWidth());
-
 			try {
 				player.update(lastFrameTime);
 			} catch (ConcurrentModificationException e) {}

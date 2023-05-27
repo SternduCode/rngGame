@@ -57,15 +57,6 @@ public class GameObject extends Pane {
 			}
 		});
 
-		addToView();
-
-	}
-
-	/**
-	 * Adds the to view.
-	 */
-	protected void addToView() {
-		gamePanel.getGameObjects().add(this);
 	}
 
 	/**
@@ -96,6 +87,9 @@ public class GameObject extends Pane {
 	 */
 	public void update() {
 		image.update();
+
+		setLayoutX(logic.getLayoutX());
+		setLayoutY(logic.getLayoutY());
 
 		if (logic.isRemove()) remove();
 

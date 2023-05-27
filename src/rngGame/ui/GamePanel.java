@@ -40,7 +40,7 @@ public class GamePanel {
 	private final TileManager tileManager;
 
 	/** The tab menu. */
-	private TabMenu tabMenu;
+	private final TabMenu tabMenu;
 
 	/** The speak bubble. */
 	private final AnimatedImage speakBubble;
@@ -78,12 +78,16 @@ public class GamePanel {
 	/** The npcs. */
 	private final List<NPC> npcs;
 
+	private final List<MobRan> mobRans;
+
 	/** The clipboard. */
 	private List<List<TextureHolder>> clipboard;
 
 	private String backgroundPath;
 
 	private boolean backgroundPathDirty;
+
+	private final Fight fight;
 
 	/**
 	 * Instantiates a new game panel.
@@ -99,6 +103,8 @@ public class GamePanel {
 		npcs = new ArrayList<>();
 
 		buildings = new ArrayList<>();
+
+		mobRans = new ArrayList<>();
 
 		visualGamePanel = null;
 
@@ -118,6 +124,10 @@ public class GamePanel {
 		selectTool = new SelectTool(this, windowDataHolder);
 
 		tileManager = new TileManager(this, windowDataHolder);
+
+		tabMenu = new TabMenu(this);
+
+		fight = new Fight(this);
 
 		overlay = new AnimatedImage(windowDataHolder);
 
@@ -188,7 +198,11 @@ public class GamePanel {
 	 */
 	public Difficulty getDifficulty() { return difficulty; }
 
+	public Fight getFight() { return fight; }
+
 	public int getLayerCount() { return visualGamePanel.getLayerGroup().getChildren().size(); }
+
+	public List<MobRan> getMobRans() { return mobRans; }
 
 	/**
 	 * Gets the npcs.
@@ -396,6 +410,12 @@ public class GamePanel {
 
 		tileManager.setMap(path);
 
+		npcs.addAll(tileManager.getNPCSFromMap());
+
+		buildings.addAll(tileManager.getBuildingsFromMap());
+
+		mobRans.addAll(tileManager.getMobsFromMap());
+
 		backgroundPath		= tileManager.getBackgroundPath();
 		backgroundPathDirty	= true;
 
@@ -416,6 +436,26 @@ public class GamePanel {
 	 */
 	public void setVisualGamePanel(rngGame.visual.GamePanel gamePanel) { visualGamePanel = gamePanel; }
 
+	public void showFightingScreen(MobRan mobRan) {
+
+		mobRans.remove(mobRan);
+
+		getActionButton().setVisible(false);
+		LoadingScreen.getDefaultLoadingScreen(windowDataHolder).uninit();
+		LoadingScreen.getDefaultLoadingScreen(windowDataHolder).init("./res/gui/BattleIntro.gif");
+		SoundHandler.getInstance().makeSound("battleintro.wav");
+		goIntoLoadingScreen();
+		try {
+			Thread.sleep(2800);
+			visualGamePanel.showFight();// TODO add visual Fight
+			Thread.sleep(800);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		goOutOfLoadingScreen();
+
+	}
+
 	/**
 	 * Toggle fps label visible.
 	 */
@@ -428,6 +468,8 @@ public class GamePanel {
 
 		long lastFrameTime = frameTimes.size() > 0 ? frameTimes.get(frameTimes.size() - 1) : 0;
 
+		player.update(lastFrameTime);
+
 		selectTool.update();
 
 		tileManager.update();
@@ -438,7 +480,17 @@ public class GamePanel {
 
 		speakBubble.update();
 
-		player.update(lastFrameTime);
+		getBuildings().forEach(b -> {
+			b.update(lastFrameTime);
+		});
+
+		getNpcs().forEach(n -> {
+			n.update(lastFrameTime);
+		});
+
+		getMobRans().forEach(m -> {
+			m.update(lastFrameTime);
+		});
 
 		long frameTime = System.currentTimeMillis() - lastFrame;
 		lastFrame = System.currentTimeMillis();

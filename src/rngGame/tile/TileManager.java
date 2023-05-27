@@ -21,10 +21,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import rngGame.buildings.*;
 import rngGame.entity.*;
-import rngGame.main.GameObject;
-import rngGame.main.UndoRedo;
+import rngGame.main.*;
 import rngGame.main.UndoRedo.UndoRedoActionBase;
 import rngGame.ui.*;
+import rngGame.ui.GamePanel;
 
 
 // TODO: Auto-generated Javadoc
@@ -146,7 +146,7 @@ public class TileManager {
 	private int playerLayer;
 
 	/** The mobs. */
-	private List<MobRan> mobs;
+	private List<MobRan> mobRans;
 
 	/** The background music. */
 	private String backgroundMusic;
@@ -227,7 +227,7 @@ public class TileManager {
 
 		npcs		= new ArrayList<>();
 		buildings	= new ArrayList<>();
-		mobs		= new ArrayList<>();
+		mobRans		= new ArrayList<>();
 
 		contextMenuShowing = false;
 
@@ -260,6 +260,292 @@ public class TileManager {
 			}
 
 		return false;
+
+	}
+
+	/**
+	 * handles the context menus.
+	 *
+	 * @param e the event
+	 */
+	public void contextMenu(ActionEvent e) {
+		try {
+			if (requester.get() instanceof FakeTextureHolder fth && e.getSource() instanceof MenuItemWTile miw) {
+				int	blockPosX	= (int) fth.getLayoutX() / windowDataHolder.blockSizeX() - (fth.getLayoutX() < 0 ? 1 : 0);
+				int	blockPosY	= (int) fth.getLayoutY() / windowDataHolder.blockSizeY() - (fth.getLayoutY() < 0 ? 1 : 0);
+				System.out.println(blockPosY);
+				if (blockPosY < 0) for (int j = blockPosY; j < 0; j++) {
+					getMapTileNum().add(0, new ArrayList<>());
+					List<Integer> li = getMapTileNum().get(0);
+					for (int i = 0; i < getMapTileNum().get(1).size(); i++) li.add(0);
+
+					map.add(0, new ArrayList<>());
+
+					for (Building b : buildings) b.setY(b.getY() + windowDataHolder.blockSizeY());
+
+					for (NPC b : npcs) b.setY(b.getY() + windowDataHolder.blockSizeY());
+
+					for (MobRan b : mobRans) b.setY(b.getY() + windowDataHolder.blockSizeY());
+
+					gamePanel.getPlayer().setPosition(gamePanel.getPlayer().getX(), gamePanel.getPlayer().getY() + windowDataHolder.blockSizeY());
+
+					for (Entry<Point2D, Circle> en : gamePanel.getPoints().entrySet())
+						en.getValue().setLayoutY(en.getValue().getLayoutY() + windowDataHolder.blockSizeY());
+
+					startingPosition[1] = startingPosition[1] + windowDataHolder.blockSize();
+				}
+				if (blockPosX < 0) for (int i = blockPosX; i < 0; i++) {
+					for (List<Integer> row : getMapTileNum()) row.add(0, 0);
+
+					for (List<TextureHolder> row : map) row.add(0, null);
+
+					for (Building b : buildings) b.setX(b.getX() + windowDataHolder.blockSizeX());
+
+					for (NPC b : npcs) b.setX(b.getX() + windowDataHolder.blockSizeX());
+
+					for (MobRan b : mobRans) b.setX(b.getX() + windowDataHolder.blockSizeX());
+
+					gamePanel.getPlayer().setPosition(gamePanel.getPlayer().getX() + windowDataHolder.blockSizeX(), gamePanel.getPlayer().getY());
+
+					for (Entry<Point2D, Circle> en : gamePanel.getPoints().entrySet())
+						en.getValue().setLayoutX(en.getValue().getLayoutX() + windowDataHolder.blockSizeX());
+
+					startingPosition[0] = startingPosition[0] + windowDataHolder.blockSize();
+				}
+				if (blockPosY >= getMapTileNum().size()) for(int j = blockPosY - getMapTileNum().size(); j >= 0; j--) {
+
+					List<Integer> li = new ArrayList<>();
+
+					for (int i = 0; i < getMapTileNum().get(getMapTileNum().size() - 1).size(); i++) li.add(0);
+
+					getMapTileNum().add(li);
+
+					map.add(new ArrayList<>());
+				}
+				if (blockPosY < 0) blockPosY = 0;
+				if (blockPosX < 0) blockPosX = 0;
+				if (blockPosX >= getMapTileNum().get(blockPosY).size()) for (int i = blockPosX - getMapTileNum().get(blockPosY).size(); i >= 0; i--) {
+					for (List<Integer> row : getMapTileNum()) row.add(0, 0);
+
+					for (List<TextureHolder> row : map) row.add(0, null);
+				}
+
+				getMapTileNum().get(blockPosY).set(blockPosX, tiles.indexOf(miw.getTile()));
+
+				System.out.println("Yo " + blockPosX + " " + blockPosY);
+			}
+			if (e.getSource() instanceof MenuItemWTile miwt) {
+				Tile			t	= requester.get().getTile();
+				TextureHolder	th	= requester.get();
+				UndoRedo.getInstance().addAction(new UndoRedoActionBase(() -> {
+					th.setTile(t);
+				}, () -> {
+					th.setTile(miwt.getTile());
+				}));
+			} else if (e.getSource() instanceof MenuItemWBuilding miwb)
+				miwb.getBuilding().getClass()
+				.getDeclaredConstructor(miwb.getBuilding().getClass(), List.class,
+						ContextMenu.class, ObjectProperty.class)
+				.newInstance(miwb.getBuilding(), buildings, requesterB, gamePanel.getWindowDataHolder())
+				.setPosition(requester.get().getLayoutX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX(),
+						requester.get().getLayoutY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY());
+			else if (e.getSource() instanceof MenuItemWNPC miwn)
+				miwn.getNPC().getClass()
+				.getDeclaredConstructor(miwn.getNPC().getClass(), List.class, ContextMenu.class,
+						ObjectProperty.class)
+				.newInstance(miwn.getNPC(), npcs, requestorN, gamePanel.getWindowDataHolder())
+				.setPosition(requester.get().getLayoutX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX(),
+						requester.get().getLayoutY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY());
+			else if (e.getSource() instanceof MenuItemWMOB miwn)
+				miwn.getMob().getClass()
+				.getDeclaredConstructor(miwn.getMob().getClass(), List.class, ContextMenu.class,
+						ObjectProperty.class)
+				.newInstance(miwn.getMob(), mobRans, requestorN, gamePanel.getWindowDataHolder())
+				.setPosition(requester.get().getLayoutX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX(),
+						requester.get().getLayoutY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY());
+			else if (e.getSource() instanceof MenuItem mi && "add Texture".equals(mi.getText())) if (mi.getParentMenu() == mnpcs) {
+				FileChooser fc = new FileChooser();
+				fc.setInitialDirectory(new File("."));
+				fc.getExtensionFilters().add(new ExtensionFilter(
+						"A file containing an Image", "*.png", "*.gif"));
+				File f = fc.showOpenDialog(gamePanel.getWindow());
+				if (f == null || !f.exists()) return;
+				try {
+					Path	p1	= f.toPath();
+					Path	p2	= new File("./res/npc/" + f.getName()).toPath();
+					Files.copy(p1, p2, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+					System.out.println(p2);
+					Image		img				= new Image(new FileInputStream(p2.toFile()));
+					JsonObject	joN				= new JsonObject();
+					JsonArray	requestedSize	= new JsonArray();
+					requestedSize.add(new DoubleValue(img.getWidth()));
+					requestedSize.add(new DoubleValue(img.getHeight()));
+					joN.put("requestedSize", requestedSize);
+					JsonObject textures = new JsonObject();
+					textures.put("default", new StringValue(f.getName()));
+					joN.put("textures", textures);
+					JsonObject npcData = new JsonObject();
+					joN.put("npcData", npcData);
+					joN.put("type", new StringValue("NPC"));
+					joN.put("fps", new DoubleValue(7d));
+					JsonArray position = new JsonArray();
+					position.add(new DoubleValue(
+							requester.get().getLayoutX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX()));
+					position.add(new DoubleValue(
+							requester.get().getLayoutY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY()));
+					joN.put("position", position);
+					JsonArray originalSize = new JsonArray();
+					originalSize.add(new DoubleValue(img.getWidth()));
+					originalSize.add(new DoubleValue(img.getHeight()));
+					joN.put("originalSize", originalSize);
+
+					NPC n = new NPC(joN, gamePanel, npcs, requestorN, gamePanel.getWindowDataHolder());
+					mnpcs.getItems().remove(mi);
+					ImageView lIV = new ImageView(ImgUtil.resizeImage(n.getImage().getFrameAt(n.getImage().getFrameIndex()),
+							(int) n.getImage().getFrameAt(n.getImage().getFrameIndex()).getWidth(),
+							(int) n.getImage().getFrameAt(n.getImage().getFrameIndex()).getHeight(), 48, 48));
+					mnpcs.getItems()
+					.add(new MenuItemWNPC(f.getName(),
+							lIV,
+							n));
+					mnpcs.getItems().get(mnpcs.getItems().size() - 1).setOnAction(this::contextMenu);
+					mnpcs.getItems().add(mi);
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+				System.out.println(f);
+			} else if (mi.getParentMenu() == getMbuildings()) {
+				FileChooser fc = new FileChooser();
+				fc.setInitialDirectory(new File("."));
+				fc.getExtensionFilters().add(new ExtensionFilter(
+						"A file containing an Image", "*.png", "*.gif"));
+				File f = fc.showOpenDialog(gamePanel.getWindow());
+				if (f == null || !f.exists()) return;
+				try {
+					Path	p1	= f.toPath();
+					Path	p2	= new File("./res/building/" + f.getName()).toPath();
+					Files.copy(p1, p2, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+					System.out.println(p2);
+					Image		img				= new Image(new FileInputStream(p2.toFile()));
+					JsonObject	joB				= new JsonObject();
+					JsonArray	requestedSize	= new JsonArray();
+					requestedSize.add(new DoubleValue(img.getWidth()));
+					requestedSize.add(new DoubleValue(img.getHeight()));
+					joB.put("requestedSize", requestedSize);
+					JsonObject textures = new JsonObject();
+					textures.put("default", new StringValue(f.getName()));
+					joB.put("textures", textures);
+					JsonObject buildingData = new JsonObject();
+					joB.put("buildingData", buildingData);
+					joB.put("type", new StringValue("Building"));
+					JsonArray position = new JsonArray();
+					position.add(new DoubleValue(
+							requester.get().getLayoutX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX()));
+					position.add(new DoubleValue(
+							requester.get().getLayoutY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY()));
+					joB.put("position", position);
+					JsonArray originalSize = new JsonArray();
+					originalSize.add(new DoubleValue(img.getWidth()));
+					originalSize.add(new DoubleValue(img.getHeight()));
+					joB.put("originalSize", originalSize);
+
+					Building b = new Building(joB, gamePanel, buildings, requesterB, gamePanel.getWindowDataHolder());
+					getMbuildings().getItems().remove(mi);
+					ImageView lIV = new ImageView(ImgUtil.resizeImage(b.getImage().getFrameAt(b.getImage().getFrameIndex()),
+							(int) b.getImage().getFrameAt(b.getImage().getFrameIndex()).getWidth(),
+							(int) b.getImage().getFrameAt(b.getImage().getFrameIndex()).getHeight(), 48, 48));
+					getMbuildings().getItems()
+					.add(new MenuItemWBuilding(f.getName(),
+							lIV,
+							b));
+					getMbuildings().getItems().get(getMbuildings().getItems().size() - 1).setOnAction(this::contextMenu);
+					getMbuildings().getItems().add(mi);
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+				System.out.println(f);
+			} else if (mi.getParentMenu() == mmobs) {
+				FileChooser fc = new FileChooser();
+				fc.setInitialDirectory(new File("."));
+				fc.getExtensionFilters().add(new ExtensionFilter(
+						"A file containing an Image", "*.png", "*.gif"));
+				File f = fc.showOpenDialog(gamePanel.getWindow());
+				if (f == null || !f.exists()) return;
+				try {
+					Path	p1	= f.toPath();
+					Path	p2	= new File("./res/npc/" + f.getName()).toPath();
+					Files.copy(p1, p2, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+					System.out.println(p2);
+					Image		img				= new Image(new FileInputStream(p2.toFile()));
+					JsonObject	joN				= new JsonObject();
+					JsonArray	requestedSize	= new JsonArray();
+					requestedSize.add(new DoubleValue(img.getWidth()));
+					requestedSize.add(new DoubleValue(img.getHeight()));
+					joN.put("requestedSize", requestedSize);
+					JsonObject textures = new JsonObject();
+					textures.put("default", new StringValue(f.getName()));
+					joN.put("textures", textures);
+					JsonObject npcData = new JsonObject();
+					joN.put("npcData", npcData);
+					joN.put("type", new StringValue("NPC"));
+					joN.put("fps", new DoubleValue(7d));
+					JsonArray position = new JsonArray();
+					position.add(new DoubleValue(
+							requester.get().getLayoutX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX()));
+					position.add(new DoubleValue(
+							requester.get().getLayoutY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY()));
+					joN.put("position", position);
+					JsonArray originalSize = new JsonArray();
+					originalSize.add(new DoubleValue(img.getWidth()));
+					originalSize.add(new DoubleValue(img.getHeight()));
+					joN.put("originalSize", originalSize);
+
+					MobRan n = new MobRan(joN, gamePanel, mobRans, requestorM, gamePanel.getWindowDataHolder());
+					mmobs.getItems().remove(mi);
+					ImageView lIV = new ImageView(ImgUtil.resizeImage(n.getImage().getFrameAt(n.getImage().getFrameIndex()),
+							(int) n.getImage().getFrameAt(n.getImage().getFrameIndex()).getWidth(),
+							(int) n.getImage().getFrameAt(n.getImage().getFrameIndex()).getHeight(), 48, 48));
+					mmobs.getItems()
+					.add(new MenuItemWMOB(f.getName(),
+									lIV,
+							n));
+					mmobs.getItems().get(mmobs.getItems().size() - 1).setOnAction(this::contextMenu);
+					mmobs.getItems().add(mi);
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+				System.out.println(f);
+			} else if (mi.getParentMenu() == mtiles) {
+				FileChooser fc = new FileChooser();
+				fc.setInitialDirectory(new File("."));
+				fc.getExtensionFilters().add(new ExtensionFilter(
+						"A file containing an Image", "*.png", "*.gif"));
+				File f = fc.showOpenDialog(gamePanel.getWindow());
+				if (f == null || !f.exists()) return;
+				try {
+					Path	p1	= f.toPath();
+					Path	p2	= new File("./res/" + getDir() + "/" + f.getName()).toPath();
+					Files.copy(p1, p2, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+					System.out.println(p2);
+					Tile t = new Tile(f.getName(),
+							"./res/" + getDir() + "/" + f.getName(),
+							gamePanel);
+					tiles.add(t);
+					mtiles.getItems().remove(mi);
+					mtiles.getItems()
+					.add(new MenuItemWTile(f.getName(), new ImageView(ImgUtil.resizeImage(t.images[0],
+							(int) t.images[0].getWidth(), (int) t.images[0].getHeight(), 48, 48)), t));
+					mtiles.getItems().get(mtiles.getItems().size() - 1).setOnAction(this::contextMenu);
+					mtiles.getItems().add(mi);
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+				System.out.println(f);
+			}
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException ex) {
+			ex.printStackTrace();
+		}
 
 	}
 
@@ -336,6 +622,20 @@ public class TileManager {
 	public List<List<TextureHolder>> getMap() { return map; }
 
 	/**
+	 * Gets the map tile num.
+	 *
+	 * @return the map tile num
+	 */
+	public List<List<Integer>> getMapTileNum() { return mapTileNum; }
+
+	/**
+	 * Gets the mbuildings.
+	 *
+	 * @return the mbuildings
+	 */
+	public Menu getMbuildings() { return mbuildings; }
+
+	/**
 	 * Gets the context menu menus.
 	 *
 	 * @return the menus
@@ -391,7 +691,7 @@ public class TileManager {
 	 *
 	 * @return the mobs from map
 	 */
-	public List<MobRan> getMobsFromMap() { return mobs; }
+	public List<MobRan> getMobsFromMap() { return mobRans; }
 
 	/**
 	 * Gets the NPCS from map.
@@ -447,6 +747,13 @@ public class TileManager {
 	 * @return the player layer
 	 */
 	public int getPlayerLayer() { return playerLayer; }
+
+	/**
+	 * Gets the requester.
+	 *
+	 * @return the requester
+	 */
+	public ObjectProperty<TextureHolder> getRequester() { return requester; }
 
 	/**
 	 * Gets the requester B.
@@ -613,7 +920,7 @@ public class TileManager {
 				JsonArray npcs = (JsonArray) jo.get("npcs");
 				npcs.clear();
 				npcs.addAll(this.npcs.stream().filter(Entity::isMaster).toList());
-				npcs.addAll(mobs.stream().filter(Entity::isMaster).toList());
+				npcs.addAll(mobRans.stream().filter(Entity::isMaster).toList());
 				JsonObject map = (JsonObject) jo.get("map");
 				for (int i = 0; i < gamePanel.getViewGroups().size(); i++) {
 					Group v = gamePanel.getViewGroups().get(i);
@@ -688,309 +995,6 @@ public class TileManager {
 	public void setContextMenuShowing(boolean showing) { contextMenuShowing = showing; }
 
 	/**
-	 * handles the context menus.
-	 *
-	 * @param e the event
-	 */
-	public void contextMenu(ActionEvent e) {
-		try {
-			if (requester.get() instanceof FakeTextureHolder fth && e.getSource() instanceof MenuItemWTile miw) {
-				int	blockPosX	= (int) fth.getLayoutX() / windowDataHolder.blockSizeX() - (fth.getLayoutX() < 0 ? 1 : 0);
-				int	blockPosY	= (int) fth.getLayoutY() / windowDataHolder.blockSizeY() - (fth.getLayoutY() < 0 ? 1 : 0);
-				System.out.println(blockPosY);
-				if (blockPosY < 0) for (int j = blockPosY; j < 0; j++) {
-					getMapTileNum()().add(0, new ArrayList<>());
-					List<Integer> li = getMapTileNum().get(0);
-					for (int i = 0; i < getMapTileNum().get(1).size(); i++) li.add(0);
-
-					map.add(0, new ArrayList<>());
-
-					for (Building b : buildings) b.setY(b.getY() + windowDataHolder.blockSizeY());
-
-					for (NPC b : npcs) b.setY(b.getY() + windowDataHolder.blockSizeY());
-
-					for (MobRan b : mobs) b.setY(b.getY() + windowDataHolder.blockSizeY());
-
-					gamePanel.getPlayer().setPosition(gamePanel.getPlayer().getX(), gamePanel.getPlayer().getY() + windowDataHolder.blockSizeY());
-
-					for (Entry<Point2D, Circle> en : gamePanel.getPoints().entrySet())
-						en.getValue().setLayoutY(en.getValue().getLayoutY() + windowDataHolder.blockSizeY());
-
-					startingPosition[1] = startingPosition[1] + windowDataHolder.blockSize();
-				}
-				if (blockPosX < 0) for (int i = blockPosX; i < 0; i++) {
-					for (List<Integer> row : getMapTileNum()) row.add(0, 0);
-
-					for (List<TextureHolder> row : map) row.add(0, null);
-
-					for (Building b : buildings) b.setX(b.getX() + windowDataHolder.blockSizeX());
-
-					for (NPC b : npcs) b.setX(b.getX() + windowDataHolder.blockSizeX());
-
-					for (MobRan b : mobs) b.setX(b.getX() + windowDataHolder.blockSizeX());
-
-					gamePanel.getPlayer().setPosition(gamePanel.getPlayer().getX() + windowDataHolder.blockSizeX(), gamePanel.getPlayer().getY());
-
-					for (Entry<Point2D, Circle> en : gamePanel.getPoints().entrySet())
-						en.getValue().setLayoutX(en.getValue().getLayoutX() + windowDataHolder.blockSizeX());
-
-					startingPosition[0] = startingPosition[0] + windowDataHolder.blockSize();
-				}
-				if (blockPosY >= getMapTileNum().size()) for(int j = blockPosY - getMapTileNum().size(); j >= 0; j--) {
-
-					List<Integer> li = new ArrayList<>();
-
-					for (int i = 0; i < getMapTileNum().get(getMapTileNum().size() - 1).size(); i++) li.add(0);
-
-					getMapTileNum().add(li);
-
-					map.add(new ArrayList<>());
-				}
-				if (blockPosY < 0) blockPosY = 0;
-				if (blockPosX < 0) blockPosX = 0;
-				if (blockPosX >= getMapTileNum().get(blockPosY).size()) for (int i = blockPosX - getMapTileNum().get(blockPosY).size(); i >= 0; i--) {
-					for (List<Integer> row : getMapTileNum()) row.add(0, 0);
-
-					for (List<TextureHolder> row : map) row.add(0, null);
-				}
-
-				getMapTileNum().get(blockPosY).set(blockPosX, tiles.indexOf(miw.getTile()));
-
-				System.out.println("Yo " + blockPosX + " " + blockPosY);
-			}
-			if (e.getSource() instanceof MenuItemWTile miwt) {
-				Tile			t	= requester.get().getTile();
-				TextureHolder	th	= requester.get();
-				UndoRedo.getInstance().addAction(new UndoRedoActionBase(() -> {
-					th.setTile(t);
-				}, () -> {
-					th.setTile(miwt.getTile());
-				}));
-			} else if (e.getSource() instanceof MenuItemWBuilding miwb)
-				miwb.getBuilding().getClass()
-				.getDeclaredConstructor(miwb.getBuilding().getClass(), List.class,
-						ContextMenu.class, ObjectProperty.class)
-				.newInstance(miwb.getBuilding(), buildings, contextMenu, requesterB)
-				.setPosition(requester.get().getLayoutX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX(),
-						requester.get().getLayoutY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY());
-			else if (e.getSource() instanceof MenuItemWNPC miwn)
-				miwn.getNPC().getClass()
-				.getDeclaredConstructor(miwn.getNPC().getClass(), List.class, ContextMenu.class,
-						ObjectProperty.class)
-				.newInstance(miwn.getNPC(), npcs, contextMenu, requestorN)
-				.setPosition(requester.get().getLayoutX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX(),
-						requester.get().getLayoutY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY());
-			else if (e.getSource() instanceof MenuItemWMOB miwn)
-				miwn.getMob().getClass()
-				.getDeclaredConstructor(miwn.getMob().getClass(), List.class, ContextMenu.class,
-						ObjectProperty.class)
-				.newInstance(miwn.getMob(), mobs, contextMenu, requestorN)
-				.setPosition(requester.get().getLayoutX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX(),
-						requester.get().getLayoutY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY());
-			else if (e.getSource() instanceof MenuItem mi && "add Texture".equals(mi.getText())) if (mi.getParentMenu() == mnpcs) {
-				FileChooser fc = new FileChooser();
-				fc.setInitialDirectory(new File("."));
-				fc.getExtensionFilters().add(new ExtensionFilter(
-						"A file containing an Image", "*.png", "*.gif"));
-				File f = fc.showOpenDialog(contextMenu.getScene().getWindow());
-				if (f == null || !f.exists()) return;
-				try {
-					Path	p1	= f.toPath();
-					Path	p2	= new File("./res/npc/" + f.getName()).toPath();
-					Files.copy(p1, p2, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
-					System.out.println(p2);
-					Image		img				= new Image(new FileInputStream(p2.toFile()));
-					JsonObject	joN				= new JsonObject();
-					JsonArray	requestedSize	= new JsonArray();
-					requestedSize.add(new DoubleValue(img.getWidth()));
-					requestedSize.add(new DoubleValue(img.getHeight()));
-					joN.put("requestedSize", requestedSize);
-					JsonObject textures = new JsonObject();
-					textures.put("default", new StringValue(f.getName()));
-					joN.put("textures", textures);
-					JsonObject npcData = new JsonObject();
-					joN.put("npcData", npcData);
-					joN.put("type", new StringValue("NPC"));
-					joN.put("fps", new DoubleValue(7d));
-					JsonArray position = new JsonArray();
-					position.add(new DoubleValue(
-							requester.get().getLayoutX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX()));
-					position.add(new DoubleValue(
-							requester.get().getLayoutY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY()));
-					joN.put("position", position);
-					JsonArray originalSize = new JsonArray();
-					originalSize.add(new DoubleValue(img.getWidth()));
-					originalSize.add(new DoubleValue(img.getHeight()));
-					joN.put("originalSize", originalSize);
-
-					NPC n = new NPC(joN, gamePanel, npcs, contextMenu, requestorN);
-					mnpcs.getItems().remove(mi);
-					ImageView lIV;
-					if (n.isGif(n.getCurrentKey())) {
-						lIV = new ImageView(n.getImages().get(n.getCurrentKey()).get(0));
-						lIV.setFitWidth(16);
-						lIV.setFitHeight(16);
-					} else lIV = new ImageView(ImgUtil.resizeImage(n.getImages().get(n.getCurrentKey()).get(0),
-							(int) n.getImages().get(n.getCurrentKey()).get(0).getWidth(),
-							(int) n.getImages().get(n.getCurrentKey()).get(0).getHeight(), 48, 48));
-					mnpcs.getItems()
-					.add(new MenuItemWNPC(f.getName(),
-							lIV,
-							n));
-					mnpcs.getItems().get(mnpcs.getItems().size() - 1).setOnAction(this::contextMenu);
-					mnpcs.getItems().add(mi);
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-				System.out.println(f);
-			} else if (mi.getParentMenu() == getMbuildings()) {
-				FileChooser fc = new FileChooser();
-				fc.setInitialDirectory(new File("."));
-				fc.getExtensionFilters().add(new ExtensionFilter(
-						"A file containing an Image", "*.png", "*.gif"));
-				File f = fc.showOpenDialog(contextMenu.getScene().getWindow());
-				if (f == null || !f.exists()) return;
-				try {
-					Path	p1	= f.toPath();
-					Path	p2	= new File("./res/building/" + f.getName()).toPath();
-					Files.copy(p1, p2, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
-					System.out.println(p2);
-					Image		img				= new Image(new FileInputStream(p2.toFile()));
-					JsonObject	joB				= new JsonObject();
-					JsonArray	requestedSize	= new JsonArray();
-					requestedSize.add(new DoubleValue(img.getWidth()));
-					requestedSize.add(new DoubleValue(img.getHeight()));
-					joB.put("requestedSize", requestedSize);
-					JsonObject textures = new JsonObject();
-					textures.put("default", new StringValue(f.getName()));
-					joB.put("textures", textures);
-					JsonObject buildingData = new JsonObject();
-					joB.put("buildingData", buildingData);
-					joB.put("type", new StringValue("Building"));
-					JsonArray position = new JsonArray();
-					position.add(new DoubleValue(
-							requester.get().getLayoutX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX()));
-					position.add(new DoubleValue(
-							requester.get().getLayoutY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY()));
-					joB.put("position", position);
-					JsonArray originalSize = new JsonArray();
-					originalSize.add(new DoubleValue(img.getWidth()));
-					originalSize.add(new DoubleValue(img.getHeight()));
-					joB.put("originalSize", originalSize);
-
-					Building b = new Building(joB, gamePanel, buildings, contextMenu, requesterB);
-					getMbuildings().getItems().remove(mi);
-					ImageView lIV;
-					if (b.isGif(b.getCurrentKey())) {
-						lIV = new ImageView(b.getImages().get(b.getCurrentKey()).get(0));
-						lIV.setFitWidth(16);
-						lIV.setFitHeight(16);
-					} else lIV = new ImageView(ImgUtil.resizeImage(b.getImages().get(b.getCurrentKey()).get(0),
-							(int) b.getImages().get(b.getCurrentKey()).get(0).getWidth(),
-							(int) b.getImages().get(b.getCurrentKey()).get(0).getHeight(), 48, 48));
-					getMbuildings().getItems()
-					.add(new MenuItemWBuilding(f.getName(),
-							lIV,
-							b));
-					getMbuildings().getItems().get(getMbuildings().getItems().size() - 1).setOnAction(this::contextMenu);
-					getMbuildings().getItems().add(mi);
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-				System.out.println(f);
-			} else if (mi.getParentMenu() == mmobs) {
-				FileChooser fc = new FileChooser();
-				fc.setInitialDirectory(new File("."));
-				fc.getExtensionFilters().add(new ExtensionFilter(
-						"A file containing an Image", "*.png", "*.gif"));
-				File f = fc.showOpenDialog(contextMenu.getScene().getWindow());
-				if (f == null || !f.exists()) return;
-				try {
-					Path	p1	= f.toPath();
-					Path	p2	= new File("./res/npc/" + f.getName()).toPath();
-					Files.copy(p1, p2, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
-					System.out.println(p2);
-					Image		img				= new Image(new FileInputStream(p2.toFile()));
-					JsonObject	joN				= new JsonObject();
-					JsonArray	requestedSize	= new JsonArray();
-					requestedSize.add(new DoubleValue(img.getWidth()));
-					requestedSize.add(new DoubleValue(img.getHeight()));
-					joN.put("requestedSize", requestedSize);
-					JsonObject textures = new JsonObject();
-					textures.put("default", new StringValue(f.getName()));
-					joN.put("textures", textures);
-					JsonObject npcData = new JsonObject();
-					joN.put("npcData", npcData);
-					joN.put("type", new StringValue("NPC"));
-					joN.put("fps", new DoubleValue(7d));
-					JsonArray position = new JsonArray();
-					position.add(new DoubleValue(
-							requester.get().getLayoutX() - gamePanel.getPlayer().getScreenX() + gamePanel.getPlayer().getX()));
-					position.add(new DoubleValue(
-							requester.get().getLayoutY() - gamePanel.getPlayer().getScreenY() + gamePanel.getPlayer().getY()));
-					joN.put("position", position);
-					JsonArray originalSize = new JsonArray();
-					originalSize.add(new DoubleValue(img.getWidth()));
-					originalSize.add(new DoubleValue(img.getHeight()));
-					joN.put("originalSize", originalSize);
-
-					MobRan n = new MobRan(joN, gamePanel, mobs, contextMenu, requestorM);
-					mmobs.getItems().remove(mi);
-					ImageView lIV;
-					if (n.isGif(n.getCurrentKey())) {
-						lIV = new ImageView(n.getImages().get(n.getCurrentKey()).get(0));
-						lIV.setFitWidth(16);
-						lIV.setFitHeight(16);
-					} else lIV = new ImageView(ImgUtil.resizeImage(n.getImages().get(n.getCurrentKey()).get(0),
-							(int) n.getImages().get(n.getCurrentKey()).get(0).getWidth(),
-							(int) n.getImages().get(n.getCurrentKey()).get(0).getHeight(), 16, 16));
-					mmobs.getItems()
-					.add(new MenuItemWMOB(f.getName(),
-							new ImageView(ImgUtil.resizeImage(n.getImages().get(n.getCurrentKey()).get(0),
-									(int) n.getImages().get(n.getCurrentKey()).get(0).getWidth(),
-									(int) n.getImages().get(n.getCurrentKey()).get(0).getHeight(), 48, 48)),
-							n));
-					mmobs.getItems().get(mmobs.getItems().size() - 1).setOnAction(this::contextMenu);
-					mmobs.getItems().add(mi);
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-				System.out.println(f);
-			} else if (mi.getParentMenu() == mtiles) {
-				FileChooser fc = new FileChooser();
-				fc.setInitialDirectory(new File("."));
-				fc.getExtensionFilters().add(new ExtensionFilter(
-						"A file containing an Image", "*.png", "*.gif"));
-				File f = fc.showOpenDialog(contextMenu.getScene().getWindow());
-				if (f == null || !f.exists()) return;
-				try {
-					Path	p1	= f.toPath();
-					Path	p2	= new File("./res/" + getDir() + "/" + f.getName()).toPath();
-					Files.copy(p1, p2, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
-					System.out.println(p2);
-					Tile t = new Tile(f.getName(),
-							"./res/" + getDir() + "/" + f.getName(),
-							gamePanel);
-					tiles.add(t);
-					mtiles.getItems().remove(mi);
-					mtiles.getItems()
-					.add(new MenuItemWTile(f.getName(), new ImageView(ImgUtil.resizeImage(t.images[0],
-							(int) t.images[0].getWidth(), (int) t.images[0].getHeight(), 48, 48)), t));
-					mtiles.getItems().get(mtiles.getItems().size() - 1).setOnAction(this::contextMenu);
-					mtiles.getItems().add(mi);
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-				System.out.println(f);
-			}
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException ex) {
-			ex.printStackTrace();
-		}
-
-	}
-
-	/**
 	 * Sets the map.
 	 *
 	 * @param path the path to the new map
@@ -1021,7 +1025,7 @@ public class TileManager {
 
 			tiles.clear();
 			npcs.clear();
-			mobs.clear();
+			mobRans.clear();
 			buildings.clear();
 			playerLayer = 0;
 			JsonObject jo = (JsonObject) JsonParser
@@ -1141,7 +1145,7 @@ public class TileManager {
 			loadMap((JsonArray) map.get("matrix"));
 			this.buildings	= new ArrayList<>();
 			this.npcs		= new ArrayList<>();
-			mobs			= new ArrayList<>();
+			mobRans			= new ArrayList<>();
 			for (Object building : buildings) {
 				Building b = switch ( ((StringValue) ((JsonObject) building).get("type")).getValue()) {
 					case "House" -> new House((JsonObject) building, gamePanel, this.buildings, requesterB, windowDataHolder);
@@ -1160,31 +1164,35 @@ public class TileManager {
 								.findFirst().get()).getValue(),
 						lIV,
 						b));
+				this.buildings.add(b);
 			}
 			for (Object npc : npcs) {
 				Entity n = switch ( ((StringValue) ((JsonObject) npc).get("type")).getValue()) {
 					case "MonsterNPC", "monsternpc", "Demon", "demon" -> new MonsterNPC((JsonObject) npc, gamePanel, this.npcs,
 							requestorN, windowDataHolder);
-					case "MobRan", "mobran" -> new MobRan((JsonObject) npc, gamePanel, mobs, requestorM, windowDataHolder);
+					case "MobRan", "mobran" -> new MobRan((JsonObject) npc, gamePanel, mobRans, requestorM, windowDataHolder);
 					default -> new NPC((JsonObject) npc, gamePanel, this.npcs, requestorN, windowDataHolder);
 				};
 				ImageView	lIV	= new ImageView(ImgUtil.resizeImage(n.getImage().getFrameAt(n.getImage().getFrameIndex()),
 						(int) n.getImage().getFrameAt(n.getImage().getFrameIndex()).getWidth(),
 						(int) n.getImage().getFrameAt(n.getImage().getFrameIndex()).getHeight(), 48, 48));
-				if (n instanceof MobRan mr)
+				if (n instanceof MobRan mr) {
 					mmobs.getItems()
 					.add(new MenuItemWMOB(
 							((StringValue) ((JsonObject) ((JsonObject) npc).get("textures")).values().stream()
 									.findFirst().get()).getValue(),
 							lIV,
 							mr));
-				else if (n instanceof NPC np)
+					mobRans.add(mr);
+				} else if (n instanceof NPC np) {
 					mnpcs.getItems()
 					.add(new MenuItemWNPC(
 							((StringValue) ((JsonObject) ((JsonObject) npc).get("textures")).values().stream()
 									.findFirst().get()).getValue(),
 							lIV,
 							np));
+					this.npcs.add(np);
+				}
 
 			}
 			mtiles.getItems().add(new MenuItem("add Texture"));
@@ -1307,26 +1315,5 @@ public class TileManager {
 		}
 
 	}
-
-	/**
-	 * Gets the map tile num.
-	 *
-	 * @return the map tile num
-	 */
-	public List<List<Integer>> getMapTileNum() { return mapTileNum; }
-
-	/**
-	 * Gets the requester.
-	 *
-	 * @return the requester
-	 */
-	public ObjectProperty<TextureHolder> getRequester() { return requester; }
-
-	/**
-	 * Gets the mbuildings.
-	 *
-	 * @return the mbuildings
-	 */
-	public Menu getMbuildings() { return mbuildings; }
 
 }

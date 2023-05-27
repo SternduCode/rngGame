@@ -71,7 +71,7 @@ public class ActionButton extends Button {
 		if (ifc) {
 			this.handler = handler;
 
-			if (getPath() != druck)
+			if (!druck.equals(getPath()))
 				init(kann);
 			lastSetToTrue = System.currentTimeMillis();
 		} else {

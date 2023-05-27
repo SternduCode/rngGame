@@ -1,14 +1,6 @@
 package rngGame.ui;
 
 import java.io.FileNotFoundException;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import javafx.animation.TranslateTransition;
-import javafx.scene.Group;
-import javafx.scene.image.*;
-import javafx.scene.input.KeyCode;
-import javafx.util.Duration;
-import rngGame.main.Input;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -16,270 +8,121 @@ import rngGame.main.Input;
  */
 public class TabMenu {
 
-	/** The gamemenu. */
-	private final ImageView gamemenu;
-
-	/** The buttongroup. */
-	private final Group buttongroup = new Group();
-
-	/** The Y nbuttongroup. */
-	private final Group YNbuttongroup = new Group();
-
-
 	/** The inv B. */
-	private final ImageView invB;
+	private final Button inventoryButton;
+
+	/** The gamemenu. */
+	private final AnimatedImage gameMenuBackground;
 
 	/** The inv B 1. */
-	private Image invB1;
+	private final String inventoryButton1;
 
 	/** The inv B 2. */
-	private Image invB2;
+	private final String inventoryButton2;
 
 	/** The que B. */
-	private final ImageView queB;
+	private final Button questButton;
 
 	/** The que B 1. */
-	private Image queB1;
+	private final String questButton1;
 
 	/** The que B 2. */
-	private Image queB2;
+	private final String questButton2;
 
 	/** The leav B. */
-	private final ImageView leavB;
+	private final Button leaveButton;
 
 	/** The blank. */
-	private final ImageView blank;
+	private final AnimatedImage blank;
 
 	/** The leav B 1. */
-	private Image leavB1;
+	private final String leaveButton1;
 
 	/** The leav B 2. */
-	private Image leavB2;
+	private final String leaveButton2;
 
 	/** The surebackround. */
-	private final ImageView surebackround;
+	private final AnimatedImage sureBackground;
 
 	/** The sure Y. */
-	private final ImageView sureY;
+	private final Button sureY;
 
 	/** The sure N. */
-	private final ImageView sureN;
+	private final Button sureN;
 
 	/** The sure Y 1. */
-	private Image sureY1;
+	private final String sureY1;
 
 	/** The sure N 1. */
-	private Image sureN1;
+	private final String sureN1;
 
 	/** The sure Y 2. */
-	private Image sureY2;
+	private final String sureY2;
 
 	/** The sure N 2. */
-	private Image sureN2;
+	private final String sureN2;
 
 	/** The inventory. */
-	private final Inventory Inventory;
+	private final Inventory inventory;
 
 	/** The gamepanel. */
-	private final GamePanel gamepanel;
+	private final GamePanel gamePanel;
 
-	/** The no input. */
-	private final AtomicBoolean noInput = new AtomicBoolean(false);
-
-	/** The ab. */
-	private final AtomicBoolean ab = new AtomicBoolean(false);
 	/**
 	 * Instantiates a new tab menu.
 	 *
 	 * @param gamepanel the gamepanel
 	 * @throws FileNotFoundException the file not found exception
 	 */
-	public TabMenu(GamePanel gamepanel) throws FileNotFoundException {
-		gamemenu = new ImageView(ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/gamemenubackround.png"));
+	public TabMenu(GamePanel gamePanel) {
+		gameMenuBackground = new AnimatedImage("./res/gui/gamemenubackround.png", gamePanel.getWindowDataHolder());
 
-		blank = new ImageView(ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/blackTransparent.png"));
+		blank = new AnimatedImage("./res/gui/blackTransparent.png", gamePanel.getWindowDataHolder());
 
-		invB1 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/invAbutton1.png");
-		invB2 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/invAbutton2.png");
-		invB = new ImageView(invB1);
+		inventoryButton1	= "./res/gui/invAbutton1.png";
+		inventoryButton2	= "./res/gui/invAbutton2.png";
+		inventoryButton		= new Button(inventoryButton1, gamePanel.getWindowDataHolder());
 
-		queB1 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/queAbutton1.png");
-		queB2 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/queAbutton2.png");
-		queB = new ImageView(queB1);
+		questButton1	= "./res/gui/queAbutton1.png";
+		questButton2	= "./res/gui/queAbutton2.png";
+		questButton		= new Button(questButton1, gamePanel.getWindowDataHolder());
 
-		leavB1 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/LeavAbutton1.png");
-		leavB2 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/LeavAbutton2.png");
-		leavB = new ImageView(leavB1);
+		leaveButton1	= "./res/gui/LeavAbutton1.png";
+		leaveButton2	= "./res/gui/LeavAbutton2.png";
+		leaveButton		= new Button(leaveButton1, gamePanel.getWindowDataHolder());
 
-		surebackround = new ImageView(ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/Sure.png"));
+		sureBackground = new AnimatedImage("./res/gui/Sure.png", gamePanel.getWindowDataHolder());
 
-		sureY1 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/SureY.png");
-		sureY2 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/SureY2.png");
-		sureY = new ImageView(sureY1);
+		sureY1	= "./res/gui/SureY.png";
+		sureY2	= "./res/gui/SureY2.png";
+		sureY	= new Button(sureY1, gamePanel.getWindowDataHolder());
 
-		sureN1 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/SureN.png");
-		sureN2 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/SureN2.png");
-		sureN = new ImageView(sureN1);
+		sureN1	= "./res/gui/SureN.png";
+		sureN2	= "./res/gui/SureN2.png";
+		sureN	= new Button(sureN1, gamePanel.getWindowDataHolder());
 
+		this.gamePanel = gamePanel;
 
-		buttongroup.getChildren().addAll(invB,queB,leavB);
-		YNbuttongroup.getChildren().addAll(sureY, sureN);
-
-
-		getChildren().add(gamemenu);
-		getChildren().add(buttongroup);
-		getChildren().add(blank);
-		getChildren().add(surebackround);
-		getChildren().add(YNbuttongroup);
-
-
-		blank.setVisible(false);
-		gamemenu.setVisible(false);
-		buttongroup.setVisible(false);
-		YNbuttongroup.setVisible(false);
-		surebackround.setVisible(false);
-
-		setDisable(true);
-		this.gamepanel = gamepanel;
-
-		Inventory = new Inventory(gamepanel, this);
-		getChildren().add(Inventory);
-		Inventory.setDisable(true);
-
-		Input.getInstance().setKeyHandler("inv", mod -> {
-			if(!noInput.get()) {
-				TranslateTransition ft = new TranslateTransition(Duration.millis(150), gamemenu);
-				TranslateTransition ib1 = new TranslateTransition(Duration.millis(150), buttongroup);
-
-
-				if (!ab.getAndSet(!ab.get())) {
-					gamepanel.getVgp().setBlockUserInputs(true);
-					setDisable(false);
-					gamemenu.setVisible(true);
-					buttongroup.setVisible(true);
-
-
-					invB.setOnMousePressed(me -> {
-						invB.setImage(invB2);
-					});
-					invB.setOnMouseReleased(me -> {
-						invB.setImage(invB1);
-						Inventory.show();
-					});
-
-					queB.setOnMousePressed(me -> {
-						queB.setImage(queB2);
-					});
-					queB.setOnMouseReleased(me -> {
-						queB.setImage(queB1);
-					});
-
-
-					leavB.setOnMousePressed(me -> {
-						leavB.setImage(leavB2);
-					});
-					leavB.setOnMouseReleased(me -> {
-						blank.setVisible(true);
-						leavB.setImage(leavB1);
-						noInput.set(true);
-						surebackround.setVisible(true);
-						YNbuttongroup.setVisible(true);
-					});
-
-					sureN.setOnMousePressed(me -> {
-						sureN.setImage(sureN2);
-					});
-					sureN.setOnMouseReleased(me -> {
-						sureN.setImage(sureN1);
-						blank.setVisible(false);
-						noInput.set(false);
-						surebackround.setVisible(false);
-						YNbuttongroup.setVisible(false);
-					});
-
-					sureY.setOnMousePressed(me -> {
-						sureY.setImage(sureY2);
-					});
-					sureY.setOnMouseReleased(me -> {
-						sureY.setImage(sureY1);
-						System.exit(0);
-					});
-
-
-					ft.setFromY(gamepanel.getVgp().getGameHeight() / 2);
-					ib1.setFromY(gamepanel.getVgp().getGameHeight() / 2);
-					ft.setToY(0);
-					ib1.setToY(0);
-					ft.play();
-					ib1.play();
-
-
-				} else {
-					ft.setToY(gamepanel.getVgp().getGameHeight() / 2);
-					ib1.setToY(gamepanel.getVgp().getGameHeight() / 2);
-					ft.play();
-					ib1.play();
-					closeTabm(false);
-					Inventory.endShow();
-				}
-			}
-		}, KeyCode.TAB, false);
+		inventory = new Inventory(gamePanel, this);
 	}
 
 
-	/**
-	 * Close tabmenu.
-	 *
-	 * @param toggleState the toggle state
-	 */
-	public void closeTabm(boolean toggleState) {
-		if(toggleState) ab.getAndSet(!ab.get());
-		gamepanel.setBlockUserInputs(false);
 
-		Inventory.setDisable(true);
-
-		new Thread(()->{
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			gamemenu.setVisible(false);
-			blank.setVisible(false);
-			buttongroup.setVisible(false);
-			setDisable(true);
-
-		}).start();
-	}
 	/**
 	 * F 11 scale.
 	 */
 	public void f11Scale() {
-		gamemenu.setImage(ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/gamemenubackround.png"));
-		blank.setImage(ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/blackTransparent.png"));
 
-		invB1 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/invAbutton1.png");
-		invB2 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/invAbutton2.png");
-		invB.setImage(invB1);
+		blank.scaleF11();
+		inventoryButton.scaleF11();
+		questButton.scaleF11();
+		leaveButton.scaleF11();
+		sureY.scaleF11();
+		sureN.scaleF11();
+		gameMenuBackground.scaleF11();
+		sureBackground.scaleF11();
 
-		queB1 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/queAbutton1.png");
-		queB2 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/queAbutton2.png");
-		queB.setImage(queB1);
-
-		leavB1 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/LeavAbutton1.png");
-		leavB2 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/LeavAbutton2.png");
-		leavB.setImage(leavB1);
-
-		surebackround.setImage(ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/Sure.png"));
-		sureY1 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/SureY.png");
-		sureY2 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/SureY2.png");
-		sureY.setImage(sureY1);
-
-		sureN1 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/SureN.png");
-		sureN2 = ImgUtil.getScaledImage(gamepanel.getWindowDataHolder(), "./res/gui/SureN2.png");
-		sureN.setImage(sureN1);
-
-		Inventory.scaleF11();
+		inventory.scaleF11();
 	}
 
 	/**
@@ -287,5 +130,24 @@ public class TabMenu {
 	 *
 	 * @return the inventory
 	 */
-	public Inventory getInventory() { return Inventory; }
+	public Inventory getInventory() { return inventory; }
+
+	public void setBlockUserInputs(boolean block) {
+
+		gamePanel.setBlockUserInputs(block);
+
+	}
+
+	public void update() {
+		inventoryButton.update();
+		gameMenuBackground.update();
+		questButton.update();
+		leaveButton.update();
+		blank.update();
+		sureBackground.update();
+		sureY.update();
+		sureN.update();
+		inventory.update();
+	}
+
 }

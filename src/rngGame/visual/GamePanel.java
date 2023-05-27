@@ -36,6 +36,8 @@ public class GamePanel extends Pane {
 	/** The action button. */
 	private final ActionButton actionButton;
 
+	private final Fight fight;
+
 	/** The point group. */
 	private final Group pointGroup;
 
@@ -87,6 +89,9 @@ public class GamePanel extends Pane {
 
 		gameObjects = new ArrayList<>();
 
+		fight = new Fight(logic.getFight(), this, windowDataHolder);
+		fight.setVisible(false);
+
 		loadingScreen = new LoadingScreen(rngGame.ui.LoadingScreen.getDefaultLoadingScreen(windowDataHolder));
 		loadingScreen.setDisable(true);
 		loadingScreen.setOpacity(0);
@@ -120,7 +125,7 @@ public class GamePanel extends Pane {
 		fpsLabel.setVisible(false);
 
 		getChildren().addAll(tileManager, layerGroup, overlay, pointGroup, selectTool, actionButton, speakBubble, speakBubbleText,
-				tabMenu, fpsLabel, loadingScreen);
+				tabMenu, fight, fpsLabel, loadingScreen);
 
 	}
 
@@ -219,12 +224,28 @@ public class GamePanel extends Pane {
 	 */
 	public boolean isInLoadingScreen() { return loadingScreen.isInLoadingScreen(); }
 
+	public void showFight() { fight.setVisible(true); }
+
 	/**
 	 * Update.
 	 */
 	public void update() {
 
 		long lastFrameTime = frameTimes.size() > 0 ? frameTimes.get(frameTimes.size() - 1) : 0;
+
+		gameObjects.clear();
+
+		gameObjects.add(player);
+
+		logic.getNpcs().forEach(n -> {
+			gameObjects.add(new GameObject(n, windowDataHolder, getContextMenu(), this));
+		});
+		logic.getBuildings().forEach(b -> {
+			gameObjects.add(new GameObject(b, windowDataHolder, getContextMenu(), this));
+		});
+		logic.getMobRans().forEach(m -> {
+			gameObjects.add(new GameObject(m, windowDataHolder, getContextMenu(), this));
+		});
 
 		if (logic.isBackgroundPathDirty()) if (logic.getBackgroundPath() != null) try {
 			setBackground(new Background(

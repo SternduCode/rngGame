@@ -2,7 +2,6 @@ package rngGame.stats;
 
 import java.util.Random;
 
-import javafx.scene.image.Image;
 import rngGame.entity.MonsterNPC;
 
 // TODO: Auto-generated Javadoc
@@ -73,7 +72,7 @@ public class Demon {
 	 *
 	 * @param currenthp the currenthp
 	 */
-	public void changeCurrenthp(int currenthp) {
+	public void changeCurrentHp(int currenthp) {
 		currenthp = Math.min(this.currenthp+currenthp, getMaxHp());
 		currenthp = Math.max(currenthp, 0);
 		this.currenthp = currenthp;
@@ -113,7 +112,7 @@ public class Demon {
 	 *
 	 * @return the currenthp
 	 */
-	public int getCurrenthp() {
+	public int getCurrentHp() {
 		return currenthp;
 	}
 
@@ -124,15 +123,6 @@ public class Demon {
 	 */
 	public MonsterNPC getDemon() {
 		return demon;
-	}
-
-	/**
-	 * Gets the demon img.
-	 *
-	 * @return the demon img
-	 */
-	public Image getDemonImg() {
-		return getDemon().getImages().get(getDemon().getCurrentKey()).get(0);
 	}
 
 	/**
@@ -241,6 +231,20 @@ public class Demon {
 		return resList;
 	}
 
+	public void levelup() {
+		if(testExp(currentexp)) {
+			currentexp = 0;
+			getMaxExp();
+			setLvl(getLvl()+1);
+			if(getLvl() % 5 == 1) setAtk(getAtk()+1);
+			else if(getLvl() % 5 == 2) setMaxHp(getMaxHp()+1);
+			else if(getLvl() % 5 == 3) setRes(getRes()+0.0025);
+			else if(getLvl() % 5 == 4) setDgc(getDgc()+0.0015);
+			else if(getLvl() % 5 == 0) setMaxHp(getMaxHp()+1);
+		}
+	}
+
+
 	/**
 	 * Sets the atk.
 	 *
@@ -280,7 +284,6 @@ public class Demon {
 		Item4List = item4List;
 	}
 
-
 	/**
 	 * Sets the lvl.
 	 *
@@ -308,6 +311,11 @@ public class Demon {
 		this.res = element.getRes() + res;
 	}
 
+	public boolean testExp(int c) {
+		if(c == maxExp) return true;
+		return false;
+	}
+
 	/**
 	 * To string.
 	 *
@@ -317,32 +325,5 @@ public class Demon {
 	public String toString() {
 		return "Demon [Element=" + element + ", mobName=" + mobName + ", atk=" + atk + ", res=" + res + ", hp=" + maxhp + ", dgc="
 				+ dgc + ", lvl=" + lvl + "]";
-	}
-
-	public boolean testExp(int c) {
-		if(c == maxExp) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	public void levelup() {
-		if(testExp(currentexp)) {
-			currentexp = 0;
-			getMaxExp();
-			setLvl(getLvl()+1);
-			       if(getLvl() % 5 == 1) {
-				setAtk(getAtk()+1);
-			} else if(getLvl() % 5 == 2) {
-				setMaxHp(getMaxHp()+1);
-			} else if(getLvl() % 5 == 3) {
-				setRes(getRes()+0.0025);
-			} else if(getLvl() % 5 == 4) {
-				setDgc(getDgc()+0.0015);
-			} else if(getLvl() % 5 == 0) {
-				setMaxHp(getMaxHp()+1);
-			}
-		}
 	}
 }

@@ -788,6 +788,9 @@ public class GameObject implements JsonValue, Collidable {
 	 */
 	private void remove() {
 		remove = true;
+		gamepanel.getNpcs().remove(this);
+		gamepanel.getBuildings().remove(this);
+		gamepanel.getMobRans().remove(this);
 		removeCallbacks.forEach(Runnable::run);
 
 	}
