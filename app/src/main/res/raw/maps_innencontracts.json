@@ -1,0 +1,443 @@
+{
+	"exit" : {
+		"spawnPosition" : [
+			864.000,
+			446.000
+		],
+		"position" : [
+			326,
+			552
+		],
+		"map" : "lavaMap2.json"
+	},
+	"npcs" : [
+		
+	],
+	"buildings" : [
+		{
+			"requestedSize" : [
+				130,
+				130
+			],
+			"textures" : {
+				"default" : "CCarpet.png"
+			},
+			"extraData" : [
+				{
+					
+				}
+			],
+			"background" : [
+				true
+			],
+			"fps" : [
+				7
+			],
+			"position" : [
+				247,
+				300
+			],
+			"type" : "Building",
+			"originalSize" : [
+				128,
+				128
+			],
+			"layer" : [
+				0
+			]
+		},
+		{
+			"requestedSize" : [
+				110,
+				100
+			],
+			"textures" : {
+				"default" : "CTisch.png"
+			},
+			"extraData" : [
+				{
+					
+				}
+			],
+			"background" : [
+				true
+			],
+			"fps" : [
+				7
+			],
+			"position" : [
+				257,
+				150
+			],
+			"type" : "ContractsTable",
+			"originalSize" : [
+				128,
+				128
+			],
+			"miscBoxes" : [
+				{
+					"name" : "table",
+					"x" : 55,
+					"y" : 85,
+					"type" : "circle",
+					"radius" : 5
+				}
+			],
+			"layer" : [
+				0
+			]
+		},
+		{
+			"requestedSize" : [
+				75,
+				130
+			],
+			"textures" : {
+				"default" : "CBett.png"
+			},
+			"extraData" : [
+				{
+					
+				}
+			],
+			"background" : [
+				true
+			],
+			"fps" : [
+				7
+			],
+			"position" : [
+				96,
+				200
+			],
+			"type" : "Building",
+			"originalSize" : [
+				64,
+				128
+			],
+			"layer" : [
+				0
+			]
+		},
+		{
+			"requestedSize" : [
+				75,
+				150
+			],
+			"textures" : {
+				"default" : "CTisch2.png"
+			},
+			"extraData" : [
+				{
+					
+				}
+			],
+			"background" : [
+				true
+			],
+			"fps" : [
+				7
+			],
+			"position" : [
+				96,
+				295
+			],
+			"type" : "Building",
+			"originalSize" : [
+				64,
+				128
+			],
+			"layer" : [
+				0
+			]
+		},
+		{
+			"requestedSize" : [
+				[
+					50,
+					50
+				],
+				[
+					50,
+					50
+				]
+			],
+			"textures" : {
+				"default" : "CPlant.png"
+			},
+			"extraData" : [
+				{
+					
+				},
+				{
+					
+				}
+			],
+			"background" : [
+				false,
+				false
+			],
+			"fps" : [
+				7,
+				7
+			],
+			"position" : [
+				[
+					140,
+					475
+				],
+				[
+					433,
+					475
+				]
+			],
+			"type" : "Building",
+			"originalSize" : [
+				64,
+				64
+			],
+			"layer" : [
+				0,
+				0
+			]
+		},
+		{
+			"requestedSize" : [
+				40,
+				120
+			],
+			"textures" : {
+				"default" : "CSofa.png"
+			},
+			"extraData" : [
+				{
+					
+				}
+			],
+			"background" : [
+				false
+			],
+			"fps" : [
+				7
+			],
+			"position" : [
+				488,
+				360
+			],
+			"type" : "Building",
+			"originalSize" : [
+				64,
+				192
+			],
+			"layer" : [
+				0
+			]
+		},
+		{
+			"requestedSize" : [
+				155,
+				140
+			],
+			"textures" : {
+				"default" : "CTreppe.png"
+			},
+			"extraData" : [
+				{
+					
+				}
+			],
+			"background" : [
+				true
+			],
+			"fps" : [
+				7
+			],
+			"position" : [
+				405,
+				150
+			],
+			"type" : "Building",
+			"originalSize" : [
+				128,
+				160
+			],
+			"layer" : [
+				0
+			]
+		},
+		{
+			"requestedSize" : [
+				45,
+				50
+			],
+			"textures" : {
+				"default" : "CHooka.png"
+			},
+			"extraData" : [
+				{
+					
+				}
+			],
+			"background" : [
+				false
+			],
+			"fps" : [
+				7
+			],
+			"position" : [
+				150,
+				335
+			],
+			"type" : "Building",
+			"originalSize" : [
+				64,
+				64
+			],
+			"layer" : [
+				0
+			]
+		},
+		{
+			"requestedSize" : [
+				300,
+				300
+			],
+			"textures" : {
+				"default" : "CLicht.png"
+			},
+			"extraData" : [
+				{
+					
+				}
+			],
+			"background" : [
+				false
+			],
+			"fps" : [
+				7
+			],
+			"position" : [
+				165,
+				215
+			],
+			"type" : "Building",
+			"originalSize" : [
+				128,
+				128
+			],
+			"layer" : [
+				0
+			]
+		},
+		{
+			"requestedSize" : [
+				60,
+				60
+			],
+			"textures" : {
+				"default" : "CKatze.png"
+			},
+			"extraData" : [
+				{
+					
+				}
+			],
+			"background" : [
+				true
+			],
+			"fps" : [
+				3
+			],
+			"position" : [
+				480,
+				276
+			],
+			"type" : "Building",
+			"originalSize" : [
+				64,
+				64
+			],
+			"layer" : [
+				0
+			]
+		},
+		{
+			"requestedSize" : [
+				32,
+				32
+			],
+			"textures" : {
+				"default" : "CTischCircle.png",
+				"open" : "CTischCircleOpen.png"
+			},
+			"extraData" : [
+				{
+					
+				}
+			],
+			"background" : [
+				true
+			],
+			"fps" : [
+				7
+			],
+			"position" : [
+				296,
+				222
+			],
+			"type" : "Building",
+			"originalSize" : [
+				32,
+				32
+			],
+			"layer" : [
+				0
+			]
+		}
+	],
+	"map" : {
+		"playerLayer" : 0,
+		"textures" : [
+			"Void.png",
+			"RechtsEckeMU.png",
+			"Oben.png",
+			"LinksEckeM.png",
+			"RechtsEckeU.png",
+			"BookWand.png",
+			"HalbBookWand.png",
+			"LeerWand.png",
+			"SchubWand.png",
+			"LinksEckeU.png",
+			"Boden.png",
+			"Rechts.png",
+			"Links.png",
+			"RechtsEckeM.png",
+			"RechtsEcke.png",
+			"LinksEckeO.png",
+			"LinksEckeMO.png",
+			"Unten.png",
+			"BodenAusgang.png"
+		],
+		"startingPosition" : [
+			264,
+			528
+		],
+		"dir" : "buildingInside",
+		"matrix" : [
+			"0 0 0 0 0 0 0 0 0 0 0 0 0",
+			"0 0 0 1 2 2 2 2 2 3 0 0 0",
+			"0 0 1 4 5 6 6 7 8 9 3 0 0",
+			"0 1 4 8 10 10 10 10 10 6 9 3 0",
+			"0 11 6 10 10 10 10 10 10 10 7 12 0",
+			"0 11 10 10 10 10 10 10 10 10 10 12 0",
+			"0 11 10 10 10 10 10 10 10 10 10 12 0",
+			"0 11 10 10 10 10 10 10 10 10 10 12 0",
+			"0 11 10 10 10 10 10 10 10 10 10 12 0",
+			"0 11 10 10 10 10 10 10 10 10 10 12 0",
+			"0 13 14 10 10 10 10 10 10 10 15 16 0",
+			"0 0 13 17 14 10 10 10 15 17 16 0 0",
+			"0 0 0 0 13 14 18 15 16 0 0 0 0"
+		],
+		"BackgroundMusic" : "music/Gandalfus Hausus.wav"
+	}
+}

@@ -1,0 +1,81 @@
+{
+	"generated" : true,
+	"background" : "backgrounds/dungeonhintergrund1.png",
+	"mainmap": "StawtMap.json",
+	"endmap": "EndMap.json",
+	"maps": [
+		{"folder" : "insel_g", "size" : "BIG" },
+		{"folder" : "insel_k", "size" : "SMALL" },
+		{"folder" : "insel_m", "size" : "MIDDLE" }
+	],
+	"void" : "Void.png",
+	"overlay" : "DungeonBlinder.png",
+	"additionalData" : {
+		"cornerPieces" : [ 
+			"EckeLinksOben.png",
+			"EckeLinksUnten.png",
+			"EckeRechtsOben.png",
+			"EckeRechtsUnten.png"
+		],
+		"cornerObjects": [{ 
+			"texture" : "Faggel.png",
+			"requestedSize" : [ 96, 96 ],
+			"position" : [ -24, -48 ]
+		}],
+		"randomPieces" : [
+			"LochMiniEckeLinks.png",
+			"LochMiniEckeLinkU.png",
+			"LochMiniEckeRechts.png",
+			"LochMiniEckeRechtsO.png",
+			"Mitte.png",
+			"Mitte2.png",
+			"SeiteLinks.png",
+			"SeiteLinks2.png",
+			"SeiteLinks3.png",
+			"SeiteOben.png",
+			"SeiteOben2.png",
+			"SeiteOben3.png",
+			"SeiteRechts.png",
+			"SeiteRechts2.png",
+			"SeiteRechts3.png",
+			"SeiteUnten.png",
+			"SeiteUnten2.png",
+			"SeiteUnten3.png"
+		],
+		"randomObjects": [
+			{ 
+				"texture" : "Buecher1.png",
+				"requestedSize" : [ 50, 50 ],
+				"position" : [ 0, 0 ]
+			},
+			{ 
+				"texture" : "Buecher2.png",
+				"requestedSize" : [ 50, 50 ],
+				"position" : [ 0, 0 ]
+			}
+			
+			
+		]
+	},
+	"connectors" : [ 
+		{ "name" : "SeiteLinksB.png", "direction" : "left" },
+		{ "name" : "SeiteLinksBS.png", "direction" : "left" },
+		{ "name" : "SeiteObenB.png", "direction" : "up" },
+		{ "name" : "SeiteObenBS.png", "direction" : "up" },
+		{ "name" : "SeiteRechtsB.png", "direction" : "right" },
+		{ "name" : "SeiteRechtsBS.png", "direction" : "right" },
+		{ "name" : "SeiteUntenB.png", "direction" : "down" },
+		{ "name" : "SeiteUntenBS.png", "direction" : "down" }
+	],
+	"connections" : [ 
+		{ "name":[ "BrueckeH2.png",  "BrueckeH2S.png"  ], "plus" : [ "BRG.png" ], "direction" : "horizontal" },
+		{ "name":[ "BrueckeV2.png" ], "direction" : "vertical" }
+	],
+	"replacments" : [ 
+		{ "name":[ "SeiteLinks.png", "SeiteLinks2.png", "SeiteLinks3.png" ], "direction" : "left" },
+		{ "name":[ "SeiteRechts.png", "SeiteRechts2.png", "SeiteRechts3.png" ] , "direction" : "right" },
+		{ "name":[ "SeiteOben.png", "SeiteOben2.png", "SeiteOben3.png" ], "direction" : "up" },
+		{ "name":[ "SeiteUnten.png", "SeiteUnten2.png", "SeiteUnten3.png" ], "plus": [ "Gehaenge.png" ], "direction" : "down" }
+	],
+	"BackgroundMusic" : "music/dungeon.wav"
+}

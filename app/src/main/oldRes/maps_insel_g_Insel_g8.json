@@ -1,0 +1,55 @@
+{
+	"npcs" : [
+		
+	],
+	"buildings" : [
+		
+	],
+	"map" : {
+		"playerLayer" : 0,
+		"textures" : [
+			"EckeLinksOben.png",
+			"SeiteObenBS.png",
+			"EckeRechtsOben.png",
+			"Void.png",
+			"SeiteLinksBS.png",
+			"Mitte2.png",
+			"SeiteRechtsBS.png",
+			"BrueckeH2.png",
+			"SeiteRechts3.png",
+			"SeiteLinks.png",
+			"EckeLinksUnten.png",
+			"SeiteUnten2.png",
+			"EckeRechtsUnten.png",
+			"SeiteUntenBS.png",
+			"Gehaenge.png",
+			"BrueckeV2.png",
+			"SeiteOben2.png",
+			"SeiteRechts2.png",
+			"SeiteLinks2.png",
+			"SeiteUnten3.png"
+		],
+		"background" : "backgrounds/dungeonhintergrund1.png",
+		"startingPosition" : [
+			48.0000,
+			48.0000
+		],
+		"dir" : "Insel",
+		"matrix" : [
+			"0 1 2 3 3 0 1 2 3 3 0 1 2",
+			"4 5 6 7 7 4 5 8 3 3 9 5 6",
+			"10 11 12 3 3 10 13 12 3 3 10 13 12",
+			"14 14 14 3 3 14 15 14 3 3 14 15 14",
+			"3 3 3 3 3 3 15 3 3 3 3 15 3",
+			"0 16 2 3 3 0 1 2 3 3 0 1 2",
+			"4 5 6 7 7 4 5 17 3 3 18 5 6",
+			"10 13 12 3 3 10 19 12 3 3 10 13 12",
+			"14 15 14 3 3 14 14 14 3 3 14 15 14",
+			"3 15 3 3 3 3 3 3 3 3 3 15 3",
+			"0 1 2 3 3 0 16 2 3 3 0 1 2",
+			"4 5 6 7 7 4 5 6 7 7 4 5 6",
+			"10 13 12 3 3 10 13 12 3 3 10 13 12",
+			"14 3 14 3 3 14 3 14 3 3 14 3 14"
+		]
+	}
+}

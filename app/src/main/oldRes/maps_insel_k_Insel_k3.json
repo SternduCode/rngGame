@@ -1,0 +1,87 @@
+{
+	"npcs" : [
+		{
+			"requestedSize" : [
+				192,
+				192
+			],
+			"textures" : {
+				"default" : "Booky.png"
+			},
+			"extraData" : [
+				{
+					
+				}
+			],
+			"background" : [
+				false
+			],
+			"fps" : [
+				7.00000
+			],
+			"position" : [
+				1730.00,
+				1113.00
+			],
+			"type" : "MonsterNPC",
+			"originalSize" : [
+				64,
+				64
+			],
+			"dir" : "Fire",
+			"layer" : [
+				0
+			]
+		}
+	],
+	"buildings" : [
+		
+	],
+	"map" : {
+		"playerLayer" : 0,
+		"textures" : [
+			"Void.png",
+			"EckeLinksOben.png",
+			"SeiteOben3.png",
+			"EckeRechtsOben.png",
+			"SeiteObenBS.png",
+			"LochMiniEckeRechtsO.png",
+			"Mitte2.png",
+			"SeiteRechts3.png",
+			"SeiteLinks3.png",
+			"Mitte.png",
+			"SeiteLinks2.png",
+			"LochMiniEckeLinkU.png",
+			"EckeLinksUnten.png",
+			"LochMiniEckeRechts.png",
+			"SeiteRechtsBS.png",
+			"Gehaenge.png",
+			"Staihn.png",
+			"Treppe.png",
+			"SeiteRechts2.png",
+			"SeiteLinksBS.png",
+			"SeiteUnten3.png",
+			"SeiteUnten2.png",
+			"SeiteUntenBS.png",
+			"EckeRechtsUnten.png"
+		],
+		"background" : "backgrounds/dungeonhintergrund1.png",
+		"startingPosition" : [
+			48.0000,
+			48.0000
+		],
+		"dir" : "Insel",
+		"matrix" : [
+			"0 0 0 1 2 3 0",
+			"1 4 2 5 6 7 0",
+			"8 6 9 6 9 7 0",
+			"10 9 6 6 9 11 3",
+			"12 13 6 9 6 9 14",
+			"15 16 17 17 17 17 16",
+			"0 8 6 9 6 6 18",
+			"0 19 9 6 9 9 7",
+			"0 12 20 21 21 22 23",
+			"0 15 15 15 15 0 15"
+		]
+	}
+}
