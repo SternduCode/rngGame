@@ -36,10 +36,19 @@ import androidx.core.graphics.set
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rngGame.demonUniverse.ui.theme.DemonUniverseTheme
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.runBlocking
 import kotlin.math.floor
 
 
 class MainActivity : ComponentActivity() {
+
+    val widthFlow = MutableStateFlow(0)
+    val heightFlow = MutableStateFlow(0)
+
+    var width = 0
+    var height = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -95,12 +104,27 @@ class MainActivity : ComponentActivity() {
             val config = LocalConfiguration.current
             val width = with(LocalDensity.current) { config.screenWidthDp.dp.roundToPx() }
             val height = with(LocalDensity.current) { config.screenHeightDp.dp.roundToPx() }
-            if (!appViewModel.imageIsLoaded("titleScreen")) {
-                appViewModel.loadGif(resources.openRawResource(R.drawable.backgrounds_main_bg), height, width,"titleScreen")
-                appViewModel.setFrameRate(30, "titleScreen")
+            val widthFromFlow by widthFlow.collectAsState()
+            val heightFromFlow by heightFlow.collectAsState()
+            if (widthFromFlow != width) runBlocking { widthFlow.emit(width) }
+            else if (heightFromFlow != height) runBlocking { heightFlow.emit(height) }
+            else {
+                if (!appViewModel.imageIsLoaded("titleScreen")) {
+                    appViewModel.loadGif(
+                        resources.openRawResource(R.drawable.backgrounds_main_bg),
+                        width,
+                        height,
+                        "titleScreen"
+                    )
+                    appViewModel.setFrameRate(30, "titleScreen")
+                }
+                val bitmap by appViewModel.getImage("titleScreen")!!.collectAsState()
+                Image(
+                    bitmap = bitmap!!.asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize()
+                )
             }
-            val bitmap by appViewModel.getImage("titleScreen")!!.collectAsState()
-            Image(bitmap = bitmap!!.asImageBitmap(), contentDescription = null, modifier = Modifier.fillMaxSize())
         }
     }
 }
