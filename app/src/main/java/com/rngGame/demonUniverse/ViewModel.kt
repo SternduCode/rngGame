@@ -1,7 +1,6 @@
 package com.rngGame.demonUniverse
 
 import android.graphics.Bitmap
-import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.StateFlow
 import java.io.InputStream
@@ -21,7 +20,7 @@ class ViewModel : ViewModel() {
 
     private val images: MutableMap<String, Image> = HashMap()
 
-    fun loadGif(stream: InputStream, width: Int, height: Int, identifier: String) {
+    fun loadGif(stream: InputStream, width: Int = -1, height: Int = -1, identifier: String) {
         val decoder = GifFileDecoder(stream)
         decoder.start()
         val bitmaps = ArrayList<Bitmap>()
@@ -33,21 +32,25 @@ class ViewModel : ViewModel() {
                 Bitmap.Config.ARGB_8888
             )
             bitmap.copyPixelsFromBuffer(IntBuffer.wrap(pixels))
-            //val bitmap2 = resizeImage(bitmap, bitmap.width, bitmap.height, width, height)
             bitmaps.add(bitmap)
         }
         val bitmapsArray = bitmaps.toTypedArray()
-        Thread {
-            for (i in bitmapsArray.indices) {
-                bitmapsArray[i] = resizeImage(bitmapsArray[i], bitmapsArray[i].width, bitmapsArray[i].height, width, height)
-            }
-        }.start()
-        images[identifier] = Image(bitmapsArray)
+        images[identifier] = Image(bitmaps = bitmapsArray, _width = width, _height = height)
     }
 
     fun setFrameRate(frameRate: Int, identifier: String): Boolean {
         return if (images.containsKey(identifier)) {
             images[identifier]!!.frameRate = frameRate
+            true
+        } else false
+    }
+
+    fun setSize(width: Int = -1, height: Int = -1, identifier: String): Boolean {
+        return if (images.containsKey(identifier)) {
+            images[identifier]!!.setSize(
+                if (width != -1) width else images[identifier]!!.width,
+                if (height != -1) height else images[identifier]!!.height
+            )
             true
         } else false
     }
@@ -60,13 +63,15 @@ class ViewModel : ViewModel() {
 
     fun imageIsLoaded(identifier: String) = images.containsKey(identifier)
 
+    fun isDone(identifier: String): Boolean? {
+        return if (images.containsKey(identifier)) {
+            images[identifier]!!.isDone
+        } else null
+    }
+
     private var _finishedTutorial: Boolean = false
 
     val finishedTutorial: Boolean
         get() = _finishedTutorial
 
-    private var _titleScreenFrame: Int = 0
-
-    val titleScreenFrame: Int
-        get() = _titleScreenFrame
 }

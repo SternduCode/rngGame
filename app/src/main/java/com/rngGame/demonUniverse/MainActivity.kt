@@ -21,9 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
@@ -38,6 +35,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rngGame.demonUniverse.ui.theme.DemonUniverseTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runBlocking
+import java.nio.IntBuffer
 import kotlin.math.floor
 
 
@@ -80,11 +78,20 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    if (!appViewModel.finishedTutorial) {
+                    val config = LocalConfiguration.current
+                    width = with(LocalDensity.current) { config.screenWidthDp.dp.roundToPx() }
+                    height = with(LocalDensity.current) { config.screenHeightDp.dp.roundToPx() }
+                    val widthFromFlow by widthFlow.collectAsState()
+                    val heightFromFlow by heightFlow.collectAsState()
+                    if (widthFromFlow != width) runBlocking { widthFlow.emit(width) }
+                    else if (heightFromFlow != height) runBlocking { heightFlow.emit(height) }
+                    else {
+                        if (!appViewModel.finishedTutorial) {
 
+                        }
+                        TitleScreen(appViewModel)
+                        GamePanel(appViewModel)
                     }
-                    TitleScreen(appViewModel)
-                    GamePanel(appViewModel)
                 }
             }
         }
@@ -101,26 +108,37 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier.fillMaxSize(),
             color = Color(19,16,43)
         ) {
-            val config = LocalConfiguration.current
-            val width = with(LocalDensity.current) { config.screenWidthDp.dp.roundToPx() }
-            val height = with(LocalDensity.current) { config.screenHeightDp.dp.roundToPx() }
-            val widthFromFlow by widthFlow.collectAsState()
-            val heightFromFlow by heightFlow.collectAsState()
-            if (widthFromFlow != width) runBlocking { widthFlow.emit(width) }
-            else if (heightFromFlow != height) runBlocking { heightFlow.emit(height) }
-            else {
-                if (!appViewModel.imageIsLoaded("titleScreen")) {
-                    appViewModel.loadGif(
-                        resources.openRawResource(R.drawable.backgrounds_main_bg),
-                        width,
-                        height,
-                        "titleScreen"
-                    )
-                    appViewModel.setFrameRate(30, "titleScreen")
-                }
-                val bitmap by appViewModel.getImage("titleScreen")!!.collectAsState()
+            println("TitleScreen")
+            if (!appViewModel.imageIsLoaded("titleScreen")) {
+                appViewModel.loadGif(
+                    resources.openRawResource(R.drawable.backgrounds_main_bg),
+                    width,
+                    height,
+                    "titleScreen"
+                )
+                appViewModel.setFrameRate(30, "titleScreen")
+            }
+            val bitmap by appViewModel.getImage("titleScreen")!!.collectAsState()
+            if ((bitmap.width != width || bitmap.height != height) && appViewModel.isDone("titleScreen") == true) {
+                appViewModel.setSize(width, height, "titleScreen")
+            }
+            if (appViewModel.isDone("titleScreen") == true) {
                 Image(
-                    bitmap = bitmap!!.asImageBitmap(),
+                    bitmap = bitmap.asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else {
+                val decoder = GifFileDecoder(resources.openRawResource(R.drawable.backgrounds_main_bg))
+                decoder.start()
+                val pixels = decoder.readFrame()
+                val firstFrame = Bitmap.createBitmap(
+                    decoder.width, decoder.height,
+                    Bitmap.Config.ARGB_8888
+                )
+                firstFrame.copyPixelsFromBuffer(IntBuffer.wrap(pixels))
+                Image(
+                    bitmap = firstFrame.asImageBitmap(),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize()
                 )
