@@ -30,7 +30,7 @@ public class Player extends Entity {
 	private final AtomicBoolean p = new AtomicBoolean(false);
 
 	/** The colli box height. */
-	private final double colliBoxX = 33, colliBoxY = 45, colliBoxWidth = 31, colliBoxHeight = 20;
+	private final double colliBoxX = 66, colliBoxY = 90, colliBoxWidth = 62, colliBoxHeight = 40;
 
 	/** The screen X. */
 	private int screenX; // the players X position in the window
