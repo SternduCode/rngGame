@@ -1,7 +1,11 @@
 package rngGame.ui
 
+import javafx.animation.*
+import javafx.beans.property.DoublePropertyBase
 import javafx.scene.layout.Pane
+import javafx.scene.paint.Color
 import javafx.scene.shape.Polygon
+import javafx.util.Duration
 import rngGame.main.Direction
 import rngGame.main.WindowManager
 import rngGame.visual.AnimatedImage
@@ -16,6 +20,28 @@ object JoyStick: Pane() {
 	private var _y = 0.0
 
 	private var _theta = 0.0
+
+	private var lastRadiusPercentage = 0.0
+
+	private var positionForGravity = object: DoublePropertyBase() {
+
+		override fun getBean(): Any = Unit
+
+		override fun getName() = "PositionForGravity"
+
+		override fun setValue(p0: Number?) {
+			super.setValue(p0)//Needs to be adjusted to keep theta while in animation
+			joyStick.layoutX = background.imgRequestedWidth * .5 - joyStick.imgRequestedWidth * .5 + (p0?.toDouble() ?: 0.0) * (background.imgRequestedWidth/2) * lastRadiusPercentage * cos(theta)
+			joyStick.layoutY = background.imgRequestedHeight * .5 - joyStick.imgRequestedHeight * .5 + (p0?.toDouble() ?: 0.0) * (background.imgRequestedHeight/2) * lastRadiusPercentage * sin(theta)
+		}
+
+	}
+
+	val timeline = Timeline(KeyFrame(Duration.seconds(3.0), KeyValue(positionForGravity, 3.75, object: Interpolator() {
+		override fun curve(p0: Double) = (Math.E.pow(-p0 * 3.75) * cos(Math.PI * 2 * p0 * 3.75)).also { v ->
+			positionForGravity.value = v
+		}
+	})))
 
 	val x
 		get() = _x
@@ -35,6 +61,8 @@ object JoyStick: Pane() {
 	private val background = AnimatedImage("./res/gui/always/JoyschtickRand.png")
 
 	init {
+		timeline.cycleCount = 1
+
 		background.imgRequestedWidth = 128
 		background.imgRequestedHeight = 128
 
@@ -80,10 +108,19 @@ object JoyStick: Pane() {
 		line.points[5] = background.imgRequestedHeight * .5
 
 		setOnMousePressed {
+
+			if (timeline.status == Animation.Status.RUNNING) {
+				timeline.stop()
+			}
+
 			joyStick.layoutX = it.x - joyStick.imgRequestedWidth * .5
 			joyStick.layoutY = it.y - joyStick.imgRequestedHeight * .5
 
-			val x = calculateX(it.x, it.y);
+			val x = calculateX(it.x, it.y)
+
+			lastRadiusPercentage = sqrt((abs(it.x - joyStick.imgRequestedWidth * .5) / (background.imgRequestedWidth / 2)).pow(2) + (abs(it.y - joyStick.imgRequestedHeight * .5) / (background.imgRequestedHeight / 2)).pow(2))
+
+			println("$lastRadiusPercentage $x ${it.x - joyStick.imgRequestedWidth * .5} ${it.y - joyStick.imgRequestedHeight * .5}")
 
 			val y1 = calculateY(x, it.x, it.y) * joyStick.imgRequestedHeight / 2
 
@@ -111,6 +148,10 @@ object JoyStick: Pane() {
 
 			val x = calculateX(newX, newY)
 
+			lastRadiusPercentage = sqrt((abs(newX - joyStick.imgRequestedWidth * .5) / background.imgRequestedWidth * 2).pow(2) + (abs(newY - joyStick.imgRequestedHeight * .5) / background.imgRequestedHeight * 2).pow(2))
+
+			println("$lastRadiusPercentage $x ${sqrt((newX - joyStick.imgRequestedWidth * .5).pow(2) + (newY - joyStick.imgRequestedHeight * .5).pow(2))}")
+
 			val y1 = if (x != 0.0)
 				calculateY(x, newX, newY) * joyStick.imgRequestedHeight / 2
 			else
@@ -134,8 +175,9 @@ object JoyStick: Pane() {
 			it.consume()
 		}
 		setOnMouseReleased {
-			joyStick.layoutX = background.imgRequestedWidth * .5 - joyStick.imgRequestedWidth * .5
-			joyStick.layoutY = background.imgRequestedHeight * .5 - joyStick.imgRequestedHeight * .5
+			//Original
+			//joyStick.layoutX = background.imgRequestedWidth * .5 - joyStick.imgRequestedWidth * .5
+			//joyStick.layoutY = background.imgRequestedHeight * .5 - joyStick.imgRequestedHeight * .5
 
 			line.points[2] = background.imgRequestedWidth * .5
 			line.points[3] = background.imgRequestedHeight * .5
@@ -145,6 +187,10 @@ object JoyStick: Pane() {
 
 			_x = 0.0
 			_y = 0.0
+
+			positionForGravity.value = 0.0
+
+			timeline.play()
 
 			it.consume()
 		}
