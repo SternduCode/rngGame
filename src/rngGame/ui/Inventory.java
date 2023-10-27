@@ -80,7 +80,7 @@ public class Inventory extends Pane {
 	private final GamePanel gamepanel;
 
 	/** The inv backround. */
-	private ImageView invBackround,ctov,ctcomp,comingView;
+	private ImageView invBackround,invBackround_layer,ctov,ctcomp,comingView;
 
 	/** The aus xb. */
 	private Button ausXb, backButton, applyButton, removeButton;
@@ -325,6 +325,7 @@ public class Inventory extends Pane {
 
 		// invBackround
 		invBackround		= new ImageView(ImgUtil.getScaledImage("./res/gui/InvMain/Inv_Background.png", WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight()));
+		invBackround_layer  = new ImageView(ImgUtil.getScaledImage("./res/gui/InvMain/Inv_Background_Layer.png", WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight()));
 		textBackroundCT		= new ImageView(ImgUtil.getScaledImage("./res/gui/invNameTitle.png"));
 		elementView			= new ImageView(ImgUtil.getScaledImage("./res/gui/invElementFire.png"));
 		itemOverlay			= new ImageView(ImgUtil.getScaledImage("./res/gui/ItemAuswahlOverlay.png"));
@@ -1125,7 +1126,7 @@ public class Inventory extends Pane {
 		status.setLayoutX( (WindowManager.getInstance().getGameWidth() / 2 + 10) * WindowManager.getInstance().getScalingFactorX());
 		status.setLayoutY(10 * WindowManager.getInstance().getScalingFactorY());
 
-		getChildren().add(ausXb);
+
 
 		// TODO fix f11
 
@@ -1159,9 +1160,12 @@ public class Inventory extends Pane {
 		itemSureBackround.setVisible(false);
 		itemSureBackroundm1.setVisible(false);
 		itemSureBackroundm2.setVisible(false);
-
+//TODO
 		getChildren().add(invSlots_v2);
-		KotlinExtensionFunctionsKt.setPosition(invSlots_v2,1080-invSlots_v2.getWidth(),0);
+
+		getChildren().add(invBackround_layer);
+
+		getChildren().add(ausXb);
 
 		itemStuff.setLayoutX(240 * WindowManager.getInstance().getScalingFactorX());
 		itemStuff.setLayoutY(130 * WindowManager.getInstance().getScalingFactorY());
@@ -1523,6 +1527,8 @@ public class Inventory extends Pane {
 				(int) (lvlText1.getHeight() * WindowManager.getInstance().getScalingFactorY()));
 
 		moveFromArrayToView();
+
+		KotlinExtensionFunctionsKt.setPosition(invSlots_v2,WindowManager.getInstance().getGameWidth()-invSlots_v2.getWidth(),0);
 
 		hpView.setImage(hpText1);
 		atkView.setImage(atkText1);
