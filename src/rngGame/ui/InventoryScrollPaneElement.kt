@@ -12,7 +12,7 @@ class InventoryScrollPaneElement(item: Item): Pane() {
 			itemView.init(item.path)
 		}
 
-	private val background: AnimatedImage = AnimatedImage("path")
+	private val background: AnimatedImage = AnimatedImage("./res/gui/InvMain/Item_background.png")
 	private val itemView: AnimatedImage = AnimatedImage()
 
 	init {

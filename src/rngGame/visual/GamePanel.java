@@ -399,7 +399,7 @@ public class GamePanel extends Pane {
 	 */
 	public void setBlockUserInputs(boolean blockUserInputs) { this.blockUserInputs = blockUserInputs; }
 
-	public void setLayout(Positions pos, ImageView bild) {
+	public void setLayoutPos(Positions pos, ImageView bild) {
 		
 		int px = (int) (pos.x*WindowManager.getInstance().getScalingFactorX());
 		int py = (int) (pos.y*WindowManager.getInstance().getScalingFactorY());
@@ -423,8 +423,8 @@ public class GamePanel extends Pane {
 	}
 	
 	public void setLayout(int x, int y, ImageView bild) {
-		bild.setLayoutX(x);
-		bild.setLayoutY(y);
+		bild.setLayoutX(x*WindowManager.getInstance().getScalingFactorX());
+		bild.setLayoutY(y*WindowManager.getInstance().getScalingFactorY());
 	}
 	
 	

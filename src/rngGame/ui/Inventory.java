@@ -10,6 +10,8 @@ import rngGame.entity.*;
 import rngGame.main.*;
 import rngGame.stats.*;
 import rngGame.tile.ImgUtil;
+import rngGame.visual.AnimatedImage;
+import rngGame.visual.Positions;
 
 
 /**
@@ -85,6 +87,8 @@ public class Inventory extends Pane {
 
 	/** The inv slots. */
 	private final ImageView[][] invSlots = new ImageView[10][4];
+
+	private  final InventoryScrollPane invSlots_v2 = new InventoryScrollPane();
 
 	/** The Item 4 slots. */
 	private final ImageView[] Item4Slots = new ImageView[4];
@@ -320,7 +324,7 @@ public class Inventory extends Pane {
 		namePane	= new Pane();
 
 		// invBackround
-		invBackround		= new ImageView(ImgUtil.getScaledImage("./res/gui/InvBackround.png", WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight()));
+		invBackround		= new ImageView(ImgUtil.getScaledImage("./res/gui/InvMain/Inv_Background.png", WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight()));
 		textBackroundCT		= new ImageView(ImgUtil.getScaledImage("./res/gui/invNameTitle.png"));
 		elementView			= new ImageView(ImgUtil.getScaledImage("./res/gui/invElementFire.png"));
 		itemOverlay			= new ImageView(ImgUtil.getScaledImage("./res/gui/ItemAuswahlOverlay.png"));
@@ -331,7 +335,7 @@ public class Inventory extends Pane {
 		comingView 			= new ImageView(ImgUtil.getScaledImage("./res/gui/InvComingsoon.png"));
 
 		/////////////
-		
+		gamepanel.getVgp().setLayout(18,18,elementView);
 		/////////////
 	
 
@@ -380,6 +384,9 @@ public class Inventory extends Pane {
 		String	ausX	= "./res/Contractstuff/Xbutton.png";
 		String	ausX2	= "./res/Contractstuff/XbuttonC.png";
 		ausXb = new Button(ausX);
+		ausXb.setImgRequestedSize(60,60);
+		ausXb.scaleF11();
+		gamepanel.getVgp().setLayoutPos(Positions.Topright,ausXb);
 
 		// backbutton
 		String	back1	= "./res/Contractstuff/MonsterBackbutton.png";
@@ -1071,6 +1078,7 @@ public class Inventory extends Pane {
 		getChildren().add(invBackround);
 
 		elementView	= new ImageView(showElementbr(getCurrentDemon().getElement()));
+		gamepanel.getVgp().setLayout(18,18,elementView);
 		eIconView	= new ImageView(showElementIcon(getCurrentDemon().getElement()));
 		eIconView.setLayoutX(785 * WindowManager.getInstance().getScalingFactorX());
 		eIconView.setLayoutY(100 * WindowManager.getInstance().getScalingFactorY());
@@ -1151,6 +1159,9 @@ public class Inventory extends Pane {
 		itemSureBackround.setVisible(false);
 		itemSureBackroundm1.setVisible(false);
 		itemSureBackroundm2.setVisible(false);
+
+		getChildren().add(invSlots_v2);
+		KotlinExtensionFunctionsKt.setPosition(invSlots_v2,1080-invSlots_v2.getWidth(),0);
 
 		itemStuff.setLayoutX(240 * WindowManager.getInstance().getScalingFactorX());
 		itemStuff.setLayoutY(130 * WindowManager.getInstance().getScalingFactorY());
@@ -1338,25 +1349,25 @@ public class Inventory extends Pane {
 	public Image showElementbr(Element e) {
 		Image test = ImgUtil.getScaledImage("./res/gui/invElementFire.png");
 		if (e == Element.Fire) {
-			Image firebr = ImgUtil.getScaledImage("./res/gui/invElementFire.png");
+			Image firebr = ImgUtil.getScaledImage("./res/gui/InvElementView/Element_View_Fire.png");
 			test = firebr;
 		} else if (e == Element.Water) {
-			Image waterbr = ImgUtil.getScaledImage("./res/gui/invElementWater.png");
+			Image waterbr = ImgUtil.getScaledImage("./res/gui/InvElementView/Element_View_Water.png");
 			test = waterbr;
 		} else if (e == Element.Plant) {
-			Image plantbr = ImgUtil.getScaledImage("./res/gui/invElementPlant.png");
+			Image plantbr = ImgUtil.getScaledImage("./res/gui/InvElementView/Element_View_Plant.png");
 			test = plantbr;
 		} else if (e == Element.Shadow) {
-			Image shadowbr = ImgUtil.getScaledImage("./res/gui/invElementShadow.png");
+			Image shadowbr = ImgUtil.getScaledImage("./res/gui/InvElementView/Element_View_Dark.png");
 			test = shadowbr;
 		} else if (e == Element.Light) {
-			Image lightbr = ImgUtil.getScaledImage("./res/gui/invElementLight.png");
+			Image lightbr = ImgUtil.getScaledImage("./res/gui/InvElementView/Element_View_Light.png");
 			test = lightbr;
 		} else if (e == Element.DimensionMaster) {
 			Image lightbr = ImgUtil.getScaledImage("./res/gui/invElementWorld_Ender.png");
 			test = lightbr;
 		} else {
-			Image voidbr = ImgUtil.getScaledImage("./res/gui/invElementVoid.png");
+			Image voidbr = ImgUtil.getScaledImage("./res/gui/InvElementView/Element_View_Void.png");
 			test = voidbr;
 		}
 		return test;
