@@ -23,6 +23,9 @@ public class Button extends AnimatedImage {
 	public Button(String path) { super(path); }
 
 
+
+	public Button(String path, int fps) { super(path, fps); }
+
 	/**
 	 * Sets the on action.
 	 *

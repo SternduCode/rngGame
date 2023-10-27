@@ -1,10 +1,8 @@
 package rngGame.stats;
 
 import javafx.scene.image.Image;
-import rngGame.main.GamePanel;
 import rngGame.tile.ImgUtil;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Item.
  */
@@ -15,6 +13,8 @@ public class Item {
 
 	/** The rarity. */
 	protected Rarity rarity;
+
+	public static final Item NOITEM = new Item("Use", "noItem", Rarity.COMMON);
 
 	/**
 	 * Instantiates a new item.
@@ -32,10 +32,9 @@ public class Item {
 	/**
 	 * Gets the t1.
 	 *
-	 * @param gp the gp
 	 * @return the t1
 	 */
-	public Image getImage(GamePanel gp) { return ImgUtil.getScaledImage(path); }
+	public Image getImage() { return ImgUtil.getScaledImage(path); }
 
 	/**
 	 * Gets the rarity.
@@ -43,6 +42,8 @@ public class Item {
 	 * @return the rarity
 	 */
 	public Rarity getRarity() { return rarity; }
+
+	public String getPath() { return path; }
 
 
 	/**
