@@ -8,6 +8,7 @@ import javafx.scene.image.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import rngGame.tile.ImgUtil;
+import rngGame.visual.AnimatedText;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -15,141 +16,11 @@ import rngGame.tile.ImgUtil;
  */
 public class Text {
 
-	/**
-	 * The Class AnimatedText.
-	 */
-	public class AnimatedText extends Pane {
-
-		/** The text. */
-		private final String text;
-
-		/** The font height. */
-		private final int fontHeight;
-
-		/** The text color. */
-		private final Color textColor;
-
-		/** The show one by one. */
-		private final boolean showOneByOne;
-
-		/** The img. */
-		private final WritableImage img;
-
-		/** The iv. */
-		private ImageView iv;
-
-		/**
-		 * Instantiates a new animated text.
-		 *
-		 * @param text         the text
-		 * @param fontHeight the font height
-		 * @param showOneByOne the show one by one
-		 * @param textColor    the text color
-		 */
-		public AnimatedText(String text, int fontHeight, boolean showOneByOne, Color textColor) {
-			this.text			= text;
-			this.fontHeight		= fontHeight;
-			this.showOneByOne	= showOneByOne;
-			this.textColor		= textColor;
-
-			animatedTexts.add(this);
-
-			img = (WritableImage) convertText(text, fontHeight);
-
-			if (textColor != Color.WHITE) {
-				System.out.println(textColor.getBlue() + " " + textColor.getRed() + " " + textColor.getGreen());
-
-				PixelReader pr = img.getPixelReader();
-
-				int val = 0;
-
-				int ii = 0, jj = 0;
-
-				while (val == 0 || val == -16777216) {
-					val = pr.getArgb(ii, jj);
-					ii++;
-					if (ii >= img.getWidth()) {
-						jj++;
-						ii = 0;
-					}
-				}
-
-				System.out.println((byte) (val >> 16));
-				System.out.println((byte) (val >> 8));
-				System.out.println((byte) val);
-				System.out.println(val);
-
-				PixelWriter pw = img.getPixelWriter();
-
-				for (int i = 0; i < img.getWidth(); i++) for (int j = 0; j < img.getHeight(); j++) {
-					val	= pr.getArgb(i, j);
-					val	= (int) ( (Math.round(Byte.toUnsignedInt((byte) (val >> 24)) * textColor.getOpacity()) << 24)
-							+ (Math.round(Byte.toUnsignedInt((byte) (val >> 16)) * textColor.getRed()) << 16)
-							+ (Math.round(Byte.toUnsignedInt((byte) (val >> 8)) * textColor.getGreen()) << 8)
-							+ Math.round(Byte.toUnsignedInt((byte) val) * textColor.getBlue()));
-					pw.setArgb(i, j, val);
-				}
-			}
-
-		}
-
-		/**
-		 * Gets the img height.
-		 *
-		 * @return the img height
-		 */
-		public double getImgHeight() { return img.getHeight(); }
-
-		/**
-		 * Gets the img width.
-		 *
-		 * @return the img width
-		 */
-		public double getImgWidth() {
-			return img.getWidth();
-		}
-
-		/**
-		 * Methode gibt dir die RGB werte von deinem HEX code wieder um den dann als Farbe (für Schrift) benutzen zu können
-		 * wennde aufrufst einfach ein hex code übergeben, ganzer hex auch mit dem # | BSP: #4f9abd.
-		 *
-		 * @param hexc  the given hexcode
-		 * @return the RGB from hex
-		 */
-		public int getRGBFromHex(String hexc) {
-			String rr, gg, bb;
-			rr=hexc.substring(1,3); gg=hexc.substring(3,5); bb=hexc.substring(5,7);
-			int valr=Integer.parseInt(rr, 16); int valg=Integer.parseInt(gg, 16); int valb=Integer.parseInt(bb, 16);
-			return valr + valg + valb;
-		}
-		//		public void setTextColorRGB(Text HierBraucheHilfe) {
-		//			HierBraucheHilfe.setFill(Color.rgb(0, 0, 0));
-		//		}
-
-		/**
-		 * Update.
-		 *
-		 * @param lastFrameTime the last frame time
-		 */
-		public void update(long lastFrameTime) {
-			if (iv == null) {
-				iv = new ImageView();
-				getChildren().add(iv);
-			}
-
-			iv.setImage(img);
-		}
-
-	}
-
 	/** The Constant INSTANCE. */
 	private static final Text INSTANCE = new Text();
 
 	/** The charmap. */
 	private final Map<Character, Image> charmap;
-
-	/** The animated texts. */
-	private final List<AnimatedText> animatedTexts = new ArrayList<>();
 
 	/**
 	 * Instantiates a new text.
@@ -307,12 +178,5 @@ public class Text {
 
 		charmap.put(' ', new WritableImage(12, 32));
 	}
-
-	/**
-	 * Update.
-	 *
-	 * @param lastFrameTime the last frame time
-	 */
-	public void update(long lastFrameTime) { animatedTexts.forEach(t -> t.update(lastFrameTime)); }
 
 }
