@@ -14,7 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.util.Duration;
 import rngGame.main.*;
-import rngGame.main.Text.AnimatedText;
+import rngGame.visual.AnimatedText;
 import rngGame.stats.*;
 import rngGame.tile.ImgUtil;
 import rngGame.ui.SoundHandler;

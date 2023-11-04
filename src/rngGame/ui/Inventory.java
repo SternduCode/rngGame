@@ -1462,12 +1462,14 @@ public class Inventory extends Pane {
 	 */
 	public void statsImages(int demonIndex) {
 
+		invSlots_v2.update();
+
 		int idx = getChildren().indexOf(getCurrentDemon().getDemon());
 		
 		currentDemonIndex = demonIndex;
 
 		if (idx == -1) {
-			idx = getChildren().indexOf(getChildren().stream().filter(e -> e instanceof MonsterNPC).findFirst().orElseGet(() -> null));
+			idx = getChildren().indexOf(getChildren().stream().filter(MonsterNPC.class::isInstance).findFirst().orElseGet(() -> null));
 			if (idx != -1) getChildren().set(idx, getCurrentDemon().getDemon());
 			else getChildren().add(4,getCurrentDemon().getDemon());
 
@@ -1528,7 +1530,7 @@ public class Inventory extends Pane {
 
 		moveFromArrayToView();
 
-		KotlinExtensionFunctionsKt.setPosition(invSlots_v2,WindowManager.getInstance().getGameWidth()-invSlots_v2.getWidth(),0);
+		KotlinExtensionFunctionsKt.setPosition(invSlots_v2,WindowManager.getInstance().getGameWidth() / 1.88,21 * WindowManager.getInstance().getScalingFactorY());
 
 		hpView.setImage(hpText1);
 		atkView.setImage(atkText1);
