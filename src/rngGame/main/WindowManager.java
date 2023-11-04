@@ -3,7 +3,7 @@ package rngGame.main;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.util.Duration;
-import rngGame.visual.AnimatedImage;
+import rngGame.visual.*;
 import rngGame.visual.GamePanel;
 
 import java.util.ArrayList;
@@ -14,8 +14,8 @@ public class WindowManager {
 
 	private WindowManager() {}
 
-	/** The animated images. */
 	private final List<AnimatedImage> animatedImages = new ArrayList<>();
+	private final List<AnimatedText> animatedTexts = new ArrayList<>();
 
 	private static final WindowManager INSTANCE = new WindowManager();
 
@@ -120,7 +120,6 @@ public class WindowManager {
 	public int getyBlocks() { return yBlocks; }
 
 	public void setGamePanel(GamePanel gamePanel) {
-
 		this.gamePanel = gamePanel;
 	}
 
@@ -140,6 +139,9 @@ public class WindowManager {
 		blockSizeY		= (int) (blockSize * scaleFactorY);
 		gameWidth		= blockSizeX * xBlocks;
 		gameHeight		= blockSizeY * yBlocks;
+
+		animatedImages.forEach(AnimatedImage::scaleF11);
+		animatedTexts.forEach(AnimatedText::scaleF11);
 	}
 
 	/**
@@ -178,6 +180,7 @@ public class WindowManager {
 	public void update() {
 
 		animatedImages.forEach(AnimatedImage::update);
+		animatedTexts.forEach(AnimatedText::update);
 
 		if (gamePanel != null) {
 			gamePanel.update();
@@ -187,6 +190,14 @@ public class WindowManager {
 
 	public void removeAnimatedImage(AnimatedImage animatedImage) {
 		animatedImages.remove(animatedImage);
+	}
+
+	public void addAnimatedText(AnimatedText animatedText) {
+		animatedTexts.add(animatedText);
+	}
+
+	public void removeAnimatedText(AnimatedText animatedText) {
+		animatedTexts.remove(animatedText);
 	}
 
 }
