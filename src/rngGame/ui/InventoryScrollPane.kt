@@ -20,7 +20,7 @@ class InventoryScrollPane: Pane() {
 
 	fun update() {
 		elements.forEach {
-			it.layoutX = parabola((it.imageHeight / 2 + it.layoutY - WindowManager.getInstance().gameHeight / 2) / 3)
+			it.layoutX = parabola((it.imageHeight / 2 + it.layoutY - (WindowManager.getInstance().gameHeight / 2 - 21 * WindowManager.getInstance().scalingFactorY)) / 3)
 			println(it.layoutX)
 		}
 	}
