@@ -1,9 +1,6 @@
 package rngGame.main;
 
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
@@ -34,7 +31,7 @@ public class TitleScreen extends Pane{
 	private AnimatedImage storyView;
 
 	/** The last. */
-	private long last = 0l;
+	private long last = 0L;
 
 	/** The frames. */
 	private Image[] frames;
@@ -167,10 +164,17 @@ public class TitleScreen extends Pane{
 
 		getChildren().addAll(iv, ploy, settins, clous, pfail, storyView, LoadingScreen.INSTANCE, cursor_);
 
-		Timeline timeline = new Timeline(200.0,
-				new KeyFrame(Duration.millis(2000), new KeyValue(cursor_.rotateProperty(), 360.0, Interpolator.LINEAR)),
-				new KeyFrame(Duration.millis(2000), new KeyValue(cursor_.scaleXProperty(), 3, Interpolator.EASE_BOTH)),
-				new KeyFrame(Duration.millis(2000), new KeyValue(cursor_.scaleYProperty(), 3, Interpolator.EASE_BOTH))
+		ScaleTransition scale = new ScaleTransition(Duration.millis(500), cursor_);
+		scale.setCycleCount(-1);
+		scale.setFromX(1);
+		scale.setFromY(1);
+		scale.setToX(2);
+		scale.setToY(2);
+		scale.setAutoReverse(true);
+		scale.playFromStart();
+
+		Timeline timeline = new Timeline(scale.getTargetFramerate(),
+				new KeyFrame(Duration.millis(2000), new KeyValue(cursor_.rotateProperty(), 360.0, Interpolator.LINEAR))
 		);
 		timeline.setCycleCount(-1);
 		timeline.playFromStart();
