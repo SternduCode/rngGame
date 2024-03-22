@@ -67,22 +67,32 @@ public class TabMenu extends Pane {
 	 * @throws FileNotFoundException the file not found exception
 	 */
 	public TabMenu(GamePanel gamepanel) throws FileNotFoundException {
-		gamemenu = new ImageView(ImgUtil.getScaledImage("./res/gui/gamemenubackround.png"));
+		gamemenu = new ImageView(ImgUtil.getScaledImage("./res/gui/gamemenubackround.png", WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight()));
 
-		blank = new ImageView(ImgUtil.getScaledImage("./res/gui/blackTransparent.png"));
+		blank = new ImageView(ImgUtil.getScaledImage("./res/gui/blackTransparent.png", WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight()));
 
 
 		invB = new Button("./res/gui/invAbutton1.png");
+		invB.setImgRequestedSize(WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight());
+		invB.scaleF11();
 
 		queB = new Button("./res/gui/queAbutton1.png");
+		queB.setImgRequestedSize(WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight());
+		queB.scaleF11();
 
 		leavB = new Button("./res/gui/leavAbutton1.png");
+		leavB.setImgRequestedSize(WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight());
+		leavB.scaleF11();
 
-		surebackround = new ImageView(ImgUtil.getScaledImage("./res/gui/Sure.png"));
+		surebackround = new ImageView(ImgUtil.getScaledImage("./res/gui/Sure.png", WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight()));
 
 		sureY = new Button("./res/gui/SureY.png");
+		sureY.setImgRequestedSize(WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight());
+		sureY.scaleF11();
 
 		sureN = new Button("./res/gui/SureN.png");
+		sureN.setImgRequestedSize(WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight());
+		sureN.scaleF11();
 
 
 		buttongroup.getChildren().addAll(invB,queB,leavB);

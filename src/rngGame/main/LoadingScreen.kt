@@ -11,6 +11,13 @@ object LoadingScreen: AnimatedImage() {
 		init("./res/gui/Loadingscreen.gif")
 		isDisable = true
 		opacity = 0.0
+		scaleF11()
+	}
+
+	override fun scaleF11() {
+		imgRequestedWidth = WindowManager.getInstance().gameWidth
+		imgRequestedHeight = WindowManager.getInstance().gameHeight
+		super.scaleF11()
 	}
 
 	fun isInLoadingScreen(): Boolean {

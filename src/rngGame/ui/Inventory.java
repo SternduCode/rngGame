@@ -320,7 +320,7 @@ public class Inventory extends Pane {
 		namePane	= new Pane();
 
 		// invBackround
-		invBackround		= new ImageView(ImgUtil.getScaledImage("./res/gui/InvBackround.png"));
+		invBackround		= new ImageView(ImgUtil.getScaledImage("./res/gui/InvBackround.png", WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight()));
 		textBackroundCT		= new ImageView(ImgUtil.getScaledImage("./res/gui/invNameTitle.png"));
 		elementView			= new ImageView(ImgUtil.getScaledImage("./res/gui/invElementFire.png"));
 		itemOverlay			= new ImageView(ImgUtil.getScaledImage("./res/gui/ItemAuswahlOverlay.png"));

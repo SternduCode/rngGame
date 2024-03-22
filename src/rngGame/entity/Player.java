@@ -37,7 +37,7 @@ public class Player extends Entity {
 	private final AtomicBoolean p = new AtomicBoolean(false);
 
 	/** The colli box height. */
-	private final double colliBoxX = 33, colliBoxY = 45, colliBoxWidth = 31, colliBoxHeight = 20;
+	private final double colliBoxX = 40, colliBoxY = 90, colliBoxWidth = 46.5, colliBoxHeight = 40;
 
 	private AtomicBoolean w = new AtomicBoolean(false), a = new AtomicBoolean(false), s = new AtomicBoolean(false), d = new AtomicBoolean(false);
 
@@ -60,12 +60,12 @@ public class Player extends Entity {
 	 * @param requestor Is used to know on what the {@link TileManager#getCM() ContextMenu} was triggered
 	 */
 	public Player(GamePanel gamePanel, ContextMenu cm, ObjectProperty<? extends Entity> requestor) {
-		super(null, 4 * 60, gamePanel, "player", null, cm, requestor);
+		super(null, 6 * 60, gamePanel, "player", null, cm, requestor);
 		setCurrentKey("E_idle");
 
 		fps = 10.5;
 
-		reqWidth = (int) ((reqHeight = getSize()) * 1.5); // Set reqHeight to 64 and reqWidth to 96; Player size is
+		reqWidth = ((reqHeight = getSize())); // Set reqHeight to 64 and reqWidth to 96; Player size is
 		// rectangular in this case
 
 		gamepanel = gamePanel;
