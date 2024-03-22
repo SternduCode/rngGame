@@ -12,7 +12,6 @@ import rngGame.buildings.Building;
 import rngGame.tile.TextureHolder;
 import rngGame.visual.GamePanel;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Input.
  */

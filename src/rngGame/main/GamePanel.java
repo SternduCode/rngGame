@@ -23,7 +23,6 @@ import rngGame.tile.*;
 import rngGame.ui.SoundHandler;
 import rngGame.visual.AnimatedImage;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class GamePanel.
  */

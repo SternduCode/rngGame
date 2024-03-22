@@ -15,7 +15,6 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import rngGame.main.GameObject;
 import rngGame.visual.GamePanel;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class House.
  */

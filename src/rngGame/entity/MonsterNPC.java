@@ -10,7 +10,6 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import rngGame.visual.GamePanel;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MonsterNPC.
  */

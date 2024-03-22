@@ -10,7 +10,6 @@ import com.sterndu.json.*;
 import javafx.geometry.Point2D;
 import rngGame.visual.GamePanel;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Map.
  */

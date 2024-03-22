@@ -12,7 +12,6 @@ import javafx.scene.paint.Color;
 import rngGame.main.*;
 import rngGame.visual.GamePanel;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Building.
  */

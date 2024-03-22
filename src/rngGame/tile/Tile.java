@@ -5,7 +5,6 @@ import java.util.*;
 import javafx.scene.image.*;
 import rngGame.visual.GamePanel;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Tile.
  */

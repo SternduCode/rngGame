@@ -5,7 +5,6 @@ import javafx.scene.layout.Pane;
 import rngGame.ui.Button;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Inventory.
  */

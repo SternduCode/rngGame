@@ -3,7 +3,6 @@ package rngGame.ui;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ScrollPaneElement.
  */

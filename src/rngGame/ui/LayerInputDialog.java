@@ -11,7 +11,6 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.*;
 import rngGame.main.GamePanel;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class LayerInputDialog.
  */

@@ -4,7 +4,6 @@ import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import rngGame.buildings.Building;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MenuItemWBuilding.
  */

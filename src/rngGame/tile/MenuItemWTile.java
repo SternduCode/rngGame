@@ -3,7 +3,6 @@ package rngGame.tile;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MenuItemWTile.
  */

@@ -9,7 +9,6 @@ import javafx.scene.control.ContextMenu;
 import rngGame.main.GameObject;
 import rngGame.visual.GamePanel;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Entity.
  */

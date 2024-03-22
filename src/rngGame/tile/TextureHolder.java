@@ -11,7 +11,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import rngGame.visual.GamePanel;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class TextureHolder.
  */

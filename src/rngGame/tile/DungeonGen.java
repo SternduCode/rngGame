@@ -18,14 +18,12 @@ import rngGame.main.WindowManager;
 import rngGame.visual.GamePanel;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * Class DungeonGen for generating Dungeon maps.
  */
 public class DungeonGen {
 
-	// TODO: Auto-generated Javadoc
-	/**
+		/**
 	 * The Enum Direction.
 	 */
 	private enum Direction {
@@ -93,8 +91,7 @@ public class DungeonGen {
 	/** The difficulty. */
 	private final Difficulty difficulty;
 
-	// TODO: Auto-generated Javadoc
-	/**
+		/**
 	 * Instantiates a new dungeon generation class.
 	 *
 	 * @param gp           the GamePanel

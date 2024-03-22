@@ -8,7 +8,6 @@ import javafx.scene.media.*;
 import javafx.util.Duration;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class SoundHandler.
  */

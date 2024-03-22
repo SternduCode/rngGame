@@ -14,7 +14,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import rngGame.tile.*;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class PartialFillDialog.
  */

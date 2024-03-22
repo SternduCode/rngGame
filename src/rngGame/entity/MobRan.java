@@ -24,7 +24,6 @@ import rngGame.ui.SoundHandler;
 import rngGame.visual.*;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MobRan.
  */

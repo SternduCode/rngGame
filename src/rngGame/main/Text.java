@@ -10,7 +10,6 @@ import javafx.scene.paint.Color;
 import rngGame.tile.ImgUtil;
 import rngGame.visual.AnimatedText;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Text.
  */

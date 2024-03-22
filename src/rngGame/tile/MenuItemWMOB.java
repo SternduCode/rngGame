@@ -4,7 +4,6 @@ import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import rngGame.entity.MobRan;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MenuItemWMOB.
  */

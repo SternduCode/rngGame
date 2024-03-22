@@ -21,7 +21,6 @@ import rngGame.ui.SoundHandler;
 import rngGame.visual.GamePanel;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class TreasureChest.
  */

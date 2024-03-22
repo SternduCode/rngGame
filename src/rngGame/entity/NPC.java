@@ -17,7 +17,6 @@ import rngGame.tile.ImgUtil;
 import rngGame.ui.Button;
 import rngGame.visual.GamePanel;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class NPC.
  */

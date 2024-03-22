@@ -11,7 +11,6 @@ import rngGame.main.*;
 import rngGame.tile.*;
 import rngGame.visual.GamePanel;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class LevelSelectionScrollPaneElement.
  */

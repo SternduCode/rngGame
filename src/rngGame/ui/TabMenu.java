@@ -12,7 +12,6 @@ import javafx.util.Duration;
 import rngGame.main.*;
 import rngGame.tile.ImgUtil;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class TabMenu.
  */
