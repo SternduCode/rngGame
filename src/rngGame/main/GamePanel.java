@@ -337,11 +337,6 @@ public class GamePanel extends Pane {
 	 */
 	public void update() {
 
-		Point me = MouseInfo.getPointerInfo().getLocation();
-		Point2D scenePosition = getVgp().localToScreen(new Point2D(0,0));
-		me.translate((int)-scenePosition.getX(), (int)-scenePosition.getY());
-		KotlinExtensionFunctionsKt.setPosition(TitleScreen.cursor_, me.getX() - TitleScreen.cursor_.getWidth()/2, me.getY() - TitleScreen.cursor_.getHeight()/2);
-
 		long lastFrameTime = frameTimes.size() > 0 ? frameTimes.get(frameTimes.size() - 1) : 0;
 
 		input.update(lastFrameTime);

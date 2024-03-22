@@ -23,8 +23,6 @@ public class TitleScreen extends Pane{
 
 	private boolean destroy;
 
-	static AnimatedImage cursor_ = new AnimatedImage("./res/gui/always/Cursor.png");
-
 	/** The iv. */
 	private final ImageView iv;
 	
@@ -48,11 +46,8 @@ public class TitleScreen extends Pane{
 	 * Instantiates a new title screen.
 	 */
 	public TitleScreen() throws FileNotFoundException {
-		//setCursor(Cursor.NONE);
 
 		iv = new ImageView();
-
-		WindowManager.getInstance().startLogicThread();
 
 		storyView = new AnimatedImage("./res/story/Story0.gif", 7);
 		
@@ -92,7 +87,7 @@ public class TitleScreen extends Pane{
 				Input.getInstance().setGamePanel(gp.getVgp()); // pass instance of GamePanel to the Instance of Input
 				WindowManager.getInstance().setGamePanel(gp.getVgp()); // pass instance of GamePanel to WindowManager
 				getChildren().clear();
-				getChildren().addAll(gp.getVgp(), LoadingScreen.INSTANCE, cursor_);
+				getChildren().addAll(gp.getVgp());
 				gp.getVgp().setBlockUserInputs(false);
 			} catch (FileNotFoundException ex) {
 				ex.printStackTrace();
@@ -162,51 +157,27 @@ public class TitleScreen extends Pane{
 
 		});
 
-		getChildren().addAll(iv, ploy, settins, clous, pfail, storyView, LoadingScreen.INSTANCE, cursor_);
-
-		ScaleTransition scale = new ScaleTransition(Duration.millis(500), cursor_);
-		scale.setCycleCount(-1);
-		scale.setFromX(1);
-		scale.setFromY(1);
-		scale.setToX(2);
-		scale.setToY(2);
-		scale.setAutoReverse(true);
-		scale.playFromStart();
-
-		Timeline timeline = new Timeline(scale.getTargetFramerate(),
-				new KeyFrame(Duration.millis(2000), new KeyValue(cursor_.rotateProperty(), 360.0, Interpolator.LINEAR))
-		);
-		timeline.setCycleCount(-1);
-		timeline.playFromStart();
-
-		new Thread(()->{
-			while (!destroy) {
-				try {
-					Point me = MouseInfo.getPointerInfo().getLocation();
-					Point2D scenePosition = localToScreen(new Point2D(0,0));
-					me.translate((int)-scenePosition.getX(), (int)-scenePosition.getY());
-					KotlinExtensionFunctionsKt.setPosition(cursor_, me.getX() - cursor_.getWidth()/2, me.getY() - cursor_.getHeight()/2);
-					storyView.update();
-					Thread.sleep(1);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				if (frames != null) {
-					long t = System.currentTimeMillis();
-					if (t - last > 1000 / 30) {
-						Platform.runLater(() -> {
-							if (frames != null) {
-								iv.setImage(frames[currFrame]);
-							}
-						});
-						currFrame++;
-						if (currFrame >= frames.length) currFrame = 0;
-						last = t;
-					}
-				}
-			}
-		}).start();
+		getChildren().addAll(iv, ploy, settins, clous, pfail, storyView);
 	}
+
+	public void updateLogic() {
+		if (!destroy) {
+			storyView.update();
+		}
+	}
+
+	public void updateUI() {
+		if (!destroy && (frames != null)) {
+			long t = System.currentTimeMillis();
+			if (t - last > 1000 / 30) {
+				iv.setImage(frames[currFrame]);
+				currFrame++;
+				if (currFrame >= frames.length) currFrame = 0;
+				last = t;
+			}
+		}
+	}
+
 	private void destroy() {
 
         destroy = true;

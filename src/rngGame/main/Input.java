@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import rngGame.buildings.Building;
 import rngGame.tile.TextureHolder;
 import rngGame.visual.GamePanel;
+import rngGame.visual.VisualRoot;
 
 /**
  * The Class Input.
@@ -155,12 +156,12 @@ public class Input {
 		}
 		try {
 			RandomAccessFile raf = new RandomAccessFile(f, "rws");
-			raf.seek(0l);
+			raf.seek(0L);
 			raf.writeInt(t.getPoints().size());
 			boolean s = false;
 			for (Double element: t.getPoints())
 				raf.writeDouble((long) (element / ( ( s = !s ) ? WindowManager.getInstance().getScalingFactorX() : WindowManager.getInstance().getScalingFactorY())));
-			raf.setLength(4l + t.getPoints().size() * 8l);
+			raf.setLength(4L + t.getPoints().size() * 8L);
 			raf.close();
 
 		} catch (IOException e) {
@@ -478,15 +479,14 @@ public class Input {
 		double scaleFactorX, scaleFactorY;
 		scaleFactorX = gamepanel.getScene().getWidth();
 		scaleFactorY = gamepanel.getScene().getHeight();
-		if (((Stage) gamepanel.getScene().getWindow()).isFullScreen())
-			((Stage) gamepanel.getScene().getWindow()).setFullScreen(false);
-		else((Stage) gamepanel.getScene().getWindow()).setFullScreen(true);
+		((Stage) gamepanel.getScene().getWindow()).setFullScreen(!( (Stage) gamepanel.getScene().getWindow() ).isFullScreen());
 		if (WindowManager.getInstance().getScalingFactorX() > 1) scaleFactorX = 1;
 		else scaleFactorX = gamepanel.getScene().getWidth() / scaleFactorX;
 		if (WindowManager.getInstance().getScalingFactorY() > 1) scaleFactorY = 1;
 		else scaleFactorY = gamepanel.getScene().getHeight() / scaleFactorY;
 		System.out.println(scaleFactorX + " " + scaleFactorY);
 		gamepanel.changeScalingFactor(scaleFactorX, scaleFactorY);
+		VisualRoot.INSTANCE.scaleF11();
 	}
 
 	/**

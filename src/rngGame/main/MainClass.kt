@@ -7,6 +7,7 @@ import javafx.scene.image.Image
 import javafx.scene.input.*
 import javafx.stage.Stage
 import javafx.stage.Window
+import rngGame.visual.VisualRoot
 import java.io.FileInputStream
 import kotlin.system.exitProcess
 
@@ -20,8 +21,6 @@ class MainClass: Application() {
 	 */
 	@Throws(Exception::class)
 	override fun start(primaryStage: Stage) {
-		val ts = TitleScreen()
-
 		primaryStage.isFullScreen = false
 		primaryStage.isResizable = false
 		primaryStage.title = "Demon Universe"
@@ -41,10 +40,10 @@ class MainClass: Application() {
 		primaryStage.addEventHandler(MouseEvent.MOUSE_MOVED) { me: MouseEvent? -> input.mouseMoved(me) }
 		primaryStage.addEventHandler(MouseEvent.MOUSE_DRAGGED) { me: MouseEvent? -> input.mouseDragged(me) }
 
-		val gameScene = Scene(ts)
+		val gameScene = Scene(VisualRoot)
 		primaryStage.scene = gameScene
 
-		ts.scaleF11()
+		VisualRoot.scaleF11()
 
 		primaryStage.show()
 

@@ -22,7 +22,7 @@ public class WindowManager {
 	private GamePanel gamePanel;
 
 	/** The target FPS. */
-	private final int targetFPS = 80;
+	private final int targetFPS = 120;
 
 	/** The scaling factor Y. */
 	private double scalingFactorX = 1, scalingFactorY = 1;
@@ -185,6 +185,10 @@ public class WindowManager {
 		if (gamePanel != null) {
 			gamePanel.update();
 		}
+
+		VisualRoot.INSTANCE.updateUI();
+
+		VisualRoot.INSTANCE.updateLogic();
 
 	}
 
