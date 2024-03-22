@@ -308,7 +308,7 @@ public class GamePanel extends Pane {
 		tl.setCycleCount(Animation.INDEFINITE);
 		Runnable r = () -> {
 			update();
-			if (!MainClass.isStopping() && "true".equals(System.getProperty("alternateUpdate")))
+			if (!MainClass.Companion.isStopping() && "true".equals(System.getProperty("alternateUpdate")))
 				Platform.runLater(runnable.get());
 			else arTl.get().play();
 		};
@@ -375,8 +375,7 @@ public class GamePanel extends Pane {
 			view.getChildren().addAll(nodes);
 		}
 
-		if ("true".equals(System.getProperty("edit"))) getVgp().getPointGroup().setVisible(true);
-		else getVgp().getPointGroup().setVisible(false);
+		getVgp().getPointGroup().setVisible("true".equals(System.getProperty("edit")));
 
 		long frameTime = System.currentTimeMillis() - lastFrame;
 		lastFrame = System.currentTimeMillis();

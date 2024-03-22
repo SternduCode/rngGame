@@ -166,7 +166,7 @@ public class WindowManager {
 		tl.setCycleCount(Animation.INDEFINITE);
 		Runnable r = () -> {
 			update();
-			if (!MainClass.isStopping() && "true".equals(System.getProperty("alternateUpdate")))
+			if (!MainClass.Companion.isStopping() && "true".equals(System.getProperty("alternateUpdate")))
 				Platform.runLater(runnable.get());
 			else arTl.get().play();
 		};
