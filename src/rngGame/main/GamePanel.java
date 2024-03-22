@@ -1,7 +1,9 @@
 package rngGame.main;
 
+import java.awt.*;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -19,6 +21,7 @@ import rngGame.buildings.Building;
 import rngGame.entity.*;
 import rngGame.tile.*;
 import rngGame.ui.SoundHandler;
+import rngGame.visual.AnimatedImage;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -28,6 +31,7 @@ public class GamePanel extends Pane {
 
 	/** The difficulty. */
 	private Difficulty difficulty;
+
 
 	/** The input. */
 	private final Input input;
@@ -48,7 +52,7 @@ public class GamePanel extends Pane {
 	private final Map<Point2D, Circle> points;
 
 	/** The fps. */
-	private final int FPS = 80;
+	private final int FPS = 300;
 
 	/** The bubble. */
 	private final Pane bubble;
@@ -169,6 +173,8 @@ public class GamePanel extends Pane {
 		mp.setAutoPlay(true);
 		mp.setVolume(.2);
 	}
+
+
 
 	/**
 	 * Reload.
@@ -331,6 +337,11 @@ public class GamePanel extends Pane {
 	 * Update.
 	 */
 	public void update() {
+
+		Point me = MouseInfo.getPointerInfo().getLocation();
+		Point2D scenePosition = getVgp().localToScreen(new Point2D(0,0));
+		me.translate((int)-scenePosition.getX(), (int)-scenePosition.getY());
+		KotlinExtensionFunctionsKt.setPosition(TitleScreen.cursor_, me.getX() - TitleScreen.cursor_.getWidth()/2, me.getY() - TitleScreen.cursor_.getHeight()/2);
 
 		long lastFrameTime = frameTimes.size() > 0 ? frameTimes.get(frameTimes.size() - 1) : 0;
 

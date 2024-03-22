@@ -1,15 +1,22 @@
 package rngGame.main;
 
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
+import javafx.scene.Cursor;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 import rngGame.tile.ImgUtil;
 import rngGame.ui.Button;
 import rngGame.ui.SoundHandler;
 import rngGame.visual.AnimatedImage;
 
+import java.awt.*;
 import java.io.FileNotFoundException;
 
 /**
@@ -18,6 +25,8 @@ import java.io.FileNotFoundException;
 public class TitleScreen extends Pane{
 
 	private boolean destroy;
+
+	static AnimatedImage cursor_ = new AnimatedImage("./res/gui/always/Cursor.png");
 
 	/** The iv. */
 	private final ImageView iv;
@@ -41,7 +50,9 @@ public class TitleScreen extends Pane{
 	/**
 	 * Instantiates a new title screen.
 	 */
-	public TitleScreen() {
+	public TitleScreen() throws FileNotFoundException {
+		//setCursor(Cursor.NONE);
+
 		iv = new ImageView();
 
 		WindowManager.getInstance().startLogicThread();
@@ -84,7 +95,7 @@ public class TitleScreen extends Pane{
 				Input.getInstance().setGamePanel(gp.getVgp()); // pass instance of GamePanel to the Instance of Input
 				WindowManager.getInstance().setGamePanel(gp.getVgp()); // pass instance of GamePanel to WindowManager
 				getChildren().clear();
-				getChildren().addAll(gp.getVgp(), LoadingScreen.INSTANCE);
+				getChildren().addAll(gp.getVgp(), LoadingScreen.INSTANCE, cursor_);
 				gp.getVgp().setBlockUserInputs(false);
 			} catch (FileNotFoundException ex) {
 				ex.printStackTrace();
@@ -154,12 +165,25 @@ public class TitleScreen extends Pane{
 
 		});
 
-		getChildren().addAll(iv, ploy, settins, clous, pfail, storyView, LoadingScreen.INSTANCE);
+		getChildren().addAll(iv, ploy, settins, clous, pfail, storyView, LoadingScreen.INSTANCE, cursor_);
+
+		Timeline timeline = new Timeline(200.0,
+				new KeyFrame(Duration.millis(2000), new KeyValue(cursor_.rotateProperty(), 360.0, Interpolator.LINEAR)),
+				new KeyFrame(Duration.millis(2000), new KeyValue(cursor_.scaleXProperty(), 3, Interpolator.EASE_BOTH)),
+				new KeyFrame(Duration.millis(2000), new KeyValue(cursor_.scaleYProperty(), 3, Interpolator.EASE_BOTH))
+		);
+		timeline.setCycleCount(-1);
+		timeline.playFromStart();
+
 		new Thread(()->{
 			while (!destroy) {
 				try {
+					Point me = MouseInfo.getPointerInfo().getLocation();
+					Point2D scenePosition = localToScreen(new Point2D(0,0));
+					me.translate((int)-scenePosition.getX(), (int)-scenePosition.getY());
+					KotlinExtensionFunctionsKt.setPosition(cursor_, me.getX() - cursor_.getWidth()/2, me.getY() - cursor_.getHeight()/2);
 					storyView.update();
-					Thread.sleep(20);
+					Thread.sleep(1);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -179,7 +203,6 @@ public class TitleScreen extends Pane{
 			}
 		}).start();
 	}
-
 	private void destroy() {
 
         destroy = true;
@@ -201,6 +224,7 @@ public class TitleScreen extends Pane{
 		frames = ImgUtil.getScaledImages("./res/backgrounds/Main BG.gif", WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight());
 		iv.setImage(frames[0]);
 		Input.getInstance().setBlockInputs(true);
+
 	}
 
 }
