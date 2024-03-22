@@ -49,9 +49,9 @@ class MainClass: Application() {
 		primaryStage.show()
 
 		// input.toggleFullScreen();
-		Window.getWindows().addListener(ListChangeListener { c: ListChangeListener.Change<out Window?> ->
+		Window.getWindows().addListener { c: ListChangeListener.Change<out Window?> ->
 			if (c.list.isEmpty()) isStopping = true
-		})
+		}
 	}
 
 	companion object {
