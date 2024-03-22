@@ -1,12 +1,19 @@
 package rngGame.entity;
 
+import com.sun.javafx.cursor.CursorFrame;
+import com.sun.javafx.cursor.ImageCursorFrame;
 import javafx.beans.property.ObjectProperty;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
-import rngGame.main.Input;
-import rngGame.main.WindowManager;
+import javafx.scene.transform.Transform;
+import rngGame.main.*;
 import rngGame.tile.TileManager;
 import rngGame.ui.JoyStick;
 import rngGame.visual.GamePanel;
@@ -31,6 +38,10 @@ public class Player extends Entity {
 
 	/** The colli box height. */
 	private final double colliBoxX = 33, colliBoxY = 45, colliBoxWidth = 31, colliBoxHeight = 20;
+
+	private AtomicBoolean w = new AtomicBoolean(false), a = new AtomicBoolean(false), s = new AtomicBoolean(false), d = new AtomicBoolean(false);
+
+	private Direction direction = Direction.E;
 
 	/** The screen X. */
 	private int screenX; // the players X position in the window
@@ -76,6 +87,16 @@ public class Player extends Entity {
 		 * KeyHandler P > sets the Player invisible
 		 */
 		Input.getInstance().setKeyHandler("p", mod -> p.set(!p.get()), KeyCode.P, false);
+
+		Input.getInstance().setKeyHandler("w-d", mod -> w.set(true), KeyCode.W, false);
+		Input.getInstance().setKeyHandler("a-d", mod -> a.set(true), KeyCode.A, false);
+		Input.getInstance().setKeyHandler("s-d", mod -> s.set(true), KeyCode.S, false);
+		Input.getInstance().setKeyHandler("d-d", mod -> d.set(true), KeyCode.D, false);
+
+		Input.getInstance().setKeyHandler("w-u", mod -> w.set(false), KeyCode.W, true);
+		Input.getInstance().setKeyHandler("a-u", mod -> a.set(false), KeyCode.A, true);
+		Input.getInstance().setKeyHandler("s-u", mod -> s.set(false), KeyCode.S, true);
+		Input.getInstance().setKeyHandler("d-u", mod -> d.set(false), KeyCode.D, true);
 	}
 
 	/**
@@ -276,10 +297,25 @@ public class Player extends Entity {
 
 		String lastKey = getCurrentKey();
 
-		if (JoyStick.INSTANCE.getX() != 0.0 || JoyStick.INSTANCE.getY() != 0.0) {
-			x += updateSpeed * JoyStick.INSTANCE.getX() * WindowManager.getInstance().getScalingFactorX();
-			y += updateSpeed * JoyStick.INSTANCE.getY() * WindowManager.getInstance().getScalingFactorY();
-			switch (JoyStick.INSTANCE.getDirection()){
+		if (w.get() || a.get() || s.get() || d.get()) {
+			int xDir = 0;
+			int yDir = 0;
+			if (w.get()) {
+				yDir -= 1;
+			}
+			if (s.get()) {
+				yDir += 1;
+			}
+			if (d.get()) {
+				xDir += 1;
+			}
+			if (a.get()) {
+				xDir -= 1;
+			}
+			direction = Direction.Companion.getDirectionFromAngle(Math.atan2(yDir, xDir));
+			x += updateSpeed * xDir * WindowManager.getInstance().getScalingFactorX();
+			y += updateSpeed * yDir * WindowManager.getInstance().getScalingFactorY();
+			switch (direction){
 				case N -> setCurrentKey("N_run");
 				case NE -> setCurrentKey("NE_run");
 				case NW -> setCurrentKey("NW_run");
@@ -290,7 +326,7 @@ public class Player extends Entity {
 				case SW -> setCurrentKey("SW_run");
 			}
 		} else {
-			switch (JoyStick.INSTANCE.getDirection()){
+			switch (direction){
 				case N -> setCurrentKey("N_idle");
 				case NE -> setCurrentKey("NE_idle");
 				case NW -> setCurrentKey("NW_idle");
