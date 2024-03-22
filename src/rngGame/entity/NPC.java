@@ -12,7 +12,7 @@ import javafx.scene.image.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import rngGame.main.*;
-import rngGame.main.Text.AnimatedText;
+import rngGame.visual.AnimatedText;
 import rngGame.tile.ImgUtil;
 import rngGame.ui.Button;
 import rngGame.visual.GamePanel;
