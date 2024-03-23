@@ -1,21 +1,12 @@
 package rngGame.entity;
 
-import com.sun.javafx.cursor.CursorFrame;
-import com.sun.javafx.cursor.ImageCursorFrame;
 import javafx.beans.property.ObjectProperty;
-import javafx.scene.Cursor;
-import javafx.scene.ImageCursor;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.image.Image;
-import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
-import javafx.scene.transform.Transform;
 import rngGame.main.*;
 import rngGame.tile.TileManager;
-import rngGame.ui.JoyStick;
 import rngGame.visual.GamePanel;
 
 import java.util.concurrent.atomic.AtomicBoolean;
