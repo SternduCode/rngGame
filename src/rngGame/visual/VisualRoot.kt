@@ -18,6 +18,9 @@ object VisualRoot: Pane() {
 
 	private val titleScreen = TitleScreen()
 
+	var cursorPosition: Point2D = Point2D.ZERO
+		private set
+
 	init {
 		WindowManager.startLogicThread()
 
@@ -49,8 +52,8 @@ object VisualRoot: Pane() {
 
 	fun updateLogic() {
 		val (x, y) = MouseInfo.getPointerInfo().location
-		val scenePosition = Point2D(x, y).subtract(localToScreen(Point2D(0.0, 0.0)))
-		cursor_.setPosition(scenePosition.x - cursor_.width / 2, scenePosition.y - cursor_.height / 2)
+		cursorPosition = Point2D(x, y).subtract(localToScreen(Point2D(0.0, 0.0)))
+		cursor_.setPosition(cursorPosition.x - cursor_.width / 2, cursorPosition.y - cursor_.height / 2)
 		titleScreen.updateLogic()
 		gamePanel?.updateLogic()
 	}
