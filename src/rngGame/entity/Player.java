@@ -281,6 +281,15 @@ public class Player extends Entity {
 	}
 
 
+
+//	fun playerPosition() {
+//		val range = 10.0
+//		val (x, y) = VisualRoot.cursorPosition
+//		val (correctedX, correctedY) = JoyStick.pythagorasDistanceCap(x, y, range)
+//		val playerPosition = Point2D(correctedX, correctedY)
+//	}
+
+
 	/**
 	 * Update.
 	 *

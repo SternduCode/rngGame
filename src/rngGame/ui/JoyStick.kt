@@ -104,7 +104,7 @@ object JoyStick: Pane() {
 		}
 		setOnMouseDragged {
 
-			val (newX, newY) = pythagorasDistanceCap(it.x - background.imgRequestedWidth * .5, it.y - background.imgRequestedHeight * .5)
+			val (newX, newY) = pythagorasDistanceCap(it.x - background.imgRequestedWidth * .5, it.y - background.imgRequestedHeight * .5, background.imgRequestedWidth/2.0)
 				.let { (x, y) -> (x + background.imgRequestedWidth * .5) to (y + background.imgRequestedHeight * .5) }
 
 			joyStick.layoutX = newX - joyStick.imgRequestedWidth * .5
@@ -151,12 +151,12 @@ object JoyStick: Pane() {
 		}
 	}
 
-	private fun pythagorasDistanceCap(x: Double, y: Double): Pair<Double, Double> {
+	fun pythagorasDistanceCap(x: Double, y: Double, maxRange: Double): Pair<Double, Double> {
 		val a = x.pow(2)
 		val b = y.pow(2)
 		val sum = a + b
 		val fraction = a / sum
-		val distance64pow2 = (background.imgRequestedWidth/2.0).pow(2)
+		val distance64pow2 = maxRange.pow(2)
 		val distancePow2 = a + b
 		return if (distancePow2 > distance64pow2) {
 			val newA = distance64pow2 * fraction
