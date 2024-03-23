@@ -1,6 +1,7 @@
 package rngGame.entity;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.geometry.Point2D;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -8,6 +9,7 @@ import javafx.scene.shape.Polygon;
 import rngGame.main.*;
 import rngGame.tile.TileManager;
 import rngGame.visual.GamePanel;
+import rngGame.visual.VisualRoot;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -291,6 +293,9 @@ public class Player extends Entity {
 
 		String lastKey = getCurrentKey();
 
+		Point2D cursorAroundCenter = VisualRoot.INSTANCE.getCursorPosition().subtract(WindowManager.INSTANCE.getScreenCenter());
+		direction = Direction.Companion.getDirectionFromAngle(Math.atan2(cursorAroundCenter.getY(), cursorAroundCenter.getX()));
+
 		if (w.get() || a.get() || s.get() || d.get()) {
 			int xDir = 0;
 			int yDir = 0;
@@ -306,7 +311,6 @@ public class Player extends Entity {
 			if (a.get()) {
 				xDir -= 1;
 			}
-			direction = Direction.Companion.getDirectionFromAngle(Math.atan2(yDir, xDir));
 			x += updateSpeed * xDir * WindowManager.INSTANCE.getScalingFactorX();
 			y += updateSpeed * yDir * WindowManager.INSTANCE.getScalingFactorY();
 			switch (direction){

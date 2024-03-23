@@ -2,6 +2,7 @@ package rngGame.main
 
 import javafx.animation.*
 import javafx.application.Platform
+import javafx.geometry.Point2D
 import javafx.util.Duration
 import rngGame.main.MainClass.Companion.isStopping
 import rngGame.visual.*
@@ -43,6 +44,9 @@ object WindowManager {
 	var gameHeight: Int = 1080 //blockSizeY * yBlocks;
 		private set
 
+	var screenCenter = Point2D(gameWidth/2.0, gameHeight/2.0)
+		private set
+
 	fun setGamePanel(gamePanel: GamePanel) {
 		this.gamePanel = gamePanel
 	}
@@ -58,6 +62,8 @@ object WindowManager {
 		blockSizeY = (blockSize * scaleFactorY).toInt()
 		gameWidth = blockSizeX * xBlocks
 		gameHeight = blockSizeY * yBlocks
+
+		screenCenter = Point2D(gameWidth/2.0, gameHeight/2.0)
 
 		animatedImages.forEach(AnimatedImage::scaleF11)
 		animatedTexts.forEach(AnimatedText::scaleF11)
