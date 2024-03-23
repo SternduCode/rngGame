@@ -2,7 +2,6 @@ package rngGame.main
 
 import javafx.animation.*
 import javafx.application.Platform
-import javafx.event.ActionEvent
 import javafx.util.Duration
 import rngGame.main.MainClass.Companion.isStopping
 import rngGame.visual.*
@@ -10,7 +9,6 @@ import rngGame.visual.GamePanel
 import rngGame.visual.VisualRoot.updateLogic
 import rngGame.visual.VisualRoot.updateUI
 import java.util.concurrent.atomic.AtomicReference
-import java.util.function.Consumer
 
 object WindowManager {
 

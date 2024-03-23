@@ -477,13 +477,13 @@ public class Input {
 	 */
 	public void toggleFullScreen() {
 		double scaleFactorX, scaleFactorY;
-		scaleFactorX = gamepanel.getScene().getWidth();
-		scaleFactorY = gamepanel.getScene().getHeight();
-		((Stage) gamepanel.getScene().getWindow()).setFullScreen(!( (Stage) gamepanel.getScene().getWindow() ).isFullScreen());
+		scaleFactorX = VisualRoot.INSTANCE.getScene().getWidth();
+		scaleFactorY = VisualRoot.INSTANCE.getScene().getHeight();
+		((Stage) VisualRoot.INSTANCE.getScene().getWindow()).setFullScreen(!( (Stage) VisualRoot.INSTANCE.getScene().getWindow() ).isFullScreen());
 		if (WindowManager.INSTANCE.getScalingFactorX() > 1) scaleFactorX = 1;
-		else scaleFactorX = gamepanel.getScene().getWidth() / scaleFactorX;
+		else scaleFactorX = VisualRoot.INSTANCE.getScene().getWidth() / scaleFactorX;
 		if (WindowManager.INSTANCE.getScalingFactorY() > 1) scaleFactorY = 1;
-		else scaleFactorY = gamepanel.getScene().getHeight() / scaleFactorY;
+		else scaleFactorY = VisualRoot.INSTANCE.getScene().getHeight() / scaleFactorY;
 		System.out.println(scaleFactorX + " " + scaleFactorY);
 		gamepanel.changeScalingFactor(scaleFactorX, scaleFactorY);
 		VisualRoot.INSTANCE.scaleF11();

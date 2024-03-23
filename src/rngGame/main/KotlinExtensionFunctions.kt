@@ -1,5 +1,6 @@
 package rngGame.main
 
+import javafx.geometry.Point2D
 import javafx.scene.Node
 import java.awt.Point
 
@@ -15,3 +16,6 @@ fun Node.setPositionScaling(x: Double, y: Double) {
 
 operator fun Point.component1() = getX()
 operator fun Point.component2() = getY()
+
+operator fun Point2D.component1() = x
+operator fun Point2D.component2() = y

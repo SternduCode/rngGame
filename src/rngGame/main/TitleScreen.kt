@@ -1,205 +1,187 @@
-package rngGame.main;
+package rngGame.main
 
-import javafx.animation.*;
-import javafx.application.Platform;
-import javafx.geometry.Point2D;
-import javafx.scene.Cursor;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
-import javafx.util.Duration;
-import rngGame.tile.ImgUtil;
-import rngGame.ui.Button;
-import rngGame.ui.SoundHandler;
-import rngGame.visual.AnimatedImage;
-
-import java.awt.*;
-import java.io.FileNotFoundException;
+import javafx.application.Platform
+import javafx.event.EventHandler
+import javafx.scene.image.Image
+import javafx.scene.image.ImageView
+import javafx.scene.input.MouseEvent
+import javafx.scene.layout.Pane
+import rngGame.main.LoadingScreen.goIntoLoadingScreen
+import rngGame.main.LoadingScreen.goOutOfLoadingScreen
+import rngGame.main.WindowManager.gameHeight
+import rngGame.main.WindowManager.gameWidth
+import rngGame.main.WindowManager.removeAnimatedImage
+import rngGame.main.WindowManager.setGamePanel
+import rngGame.tile.ImgUtil
+import rngGame.ui.Button
+import rngGame.ui.SoundHandler
+import rngGame.visual.AnimatedImage
+import java.io.FileNotFoundException
+import kotlin.system.exitProcess
 
 /**
  * The Class TitleScreen.
  */
-public class TitleScreen extends Pane{
+class TitleScreen : Pane() {
 
-	private boolean destroy;
+	private var destroy = false
 
-	/** The iv. */
-	private final ImageView iv;
-	
-	private AnimatedImage storyView;
+	private val iv = ImageView().also {
+		children.add(it)
+	}
 
-	/** The last. */
-	private long last = 0L;
+	private var last = 0L
 
-	/** The frames. */
-	private Image[] frames;
+	private var frames: Array<Image> = emptyArray()
 
-	/** The curr frame. */
-	private int currFrame = 0;
-	
-	private int index = 0;
+	private var currFrame = 0
 
-	/** The pfail. */
-	private Button ploy = null, settins = null, clous = null, pfail = null;
+	private var index = 0
 
-	/**
-	 * Instantiates a new title screen.
-	 */
-	public TitleScreen() throws FileNotFoundException {
-
-		iv = new ImageView();
-
-		storyView = new AnimatedImage("./res/story/Story0.gif", 7);
-		
-		storyView.setOnMouseReleased(me -> {
-			SoundHandler.getInstance().makeSound("click.wav");
-			if(index < 6) {
-				index++;
-				storyView.init("./res/story/Story"+ index +".gif");
-			} else {
-				storyView.setVisible(false);
-			}
-		});
-		
-		clous = new Button("./res/backgrounds/Clous.png");
-		Point2D clousSize = ImgUtil.getoriginalSize(clous.getPath());
-		clous.setImgRequestedSize((int) (clousSize.getX() * 1.5), (int) (clousSize.getY() * 1.5));
-		clous.scaleF11();
-		KotlinExtensionFunctionsKt.setPosition(clous, WindowManager.INSTANCE.getGameWidth() * .99 - clous.getWidth(), WindowManager.INSTANCE.getGameHeight() * .885);
-		clous.setOnPressed(e -> clous.init("./res/backgrounds/Clous2.png"));
-		clous.setOnReleased(e -> {
-			clous.init("./res/backgrounds/Clous.png");
-			System.exit(0);
-		});
-
-		ploy = new Button("./res/backgrounds/Ploy.png");
-		Point2D ploySize = ImgUtil.getoriginalSize(ploy.getPath());
-		ploy.setImgRequestedSize((int) (ploySize.getX() * 2), (int) (ploySize.getY() * 2));
-		ploy.scaleF11();
-		KotlinExtensionFunctionsKt.setPosition(ploy, WindowManager.INSTANCE.getGameWidth() / 2.0 - ploy.getWidth() / 2.0, WindowManager.INSTANCE.getGameHeight() * .85);
-		ploy.setOnMousePressed(e -> ploy.init("./res/backgrounds/Ploy2.png"));
-		ploy.setOnMouseReleased(e -> {
-			SoundHandler.getInstance().makeSound("click.wav");
-			LoadingScreen.INSTANCE.goIntoLoadingScreen();
-			GamePanel gp = null;
+	private var ploy = Button("./res/backgrounds/Ploy.png").apply {
+		val (origWidth, origHeight) = ImgUtil.getoriginalSize(path)
+		setImgRequestedSize((origWidth * 2).toInt(), (origHeight * 2).toInt())
+		scaleF11()
+		setPosition(gameWidth / 2.0 - width / 2.0, gameHeight * .85)
+		onMousePressed = EventHandler { _ -> init("./res/backgrounds/Ploy2.png") }
+		onMouseReleased = EventHandler { _ ->
+			SoundHandler.getInstance().makeSound("click.wav")
+			goIntoLoadingScreen()
+			val gp: GamePanel
 			try {
-				gp = new GamePanel();
-				Input.getInstance().setGamePanel(gp.getVgp()); // pass instance of GamePanel to the Instance of Input
-				WindowManager.INSTANCE.setGamePanel(gp.getVgp()); // pass instance of GamePanel to WindowManager
-				getChildren().clear();
-				getChildren().addAll(gp.getVgp());
-				gp.getVgp().setBlockUserInputs(false);
-			} catch (FileNotFoundException ex) {
-				ex.printStackTrace();
+				gp = GamePanel()
+				Input.getInstance().setGamePanel(gp.vgp) // pass instance of GamePanel to the Instance of Input
+				setGamePanel(gp.vgp) // pass instance of GamePanel to WindowManager
+				children.clear()
+				children.addAll(gp.vgp)
+				gp.vgp.isBlockUserInputs = false
+			} catch (ex: FileNotFoundException) {
+				ex.printStackTrace()
 			}
-			destroy();
-			Input.getInstance().setBlockInputs(false);
-
-			new Thread(() -> {
+			destroy()
+			Input.getInstance().isBlockInputs = false
+			Thread {
 				try {
-					Thread.sleep(200);
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
+					Thread.sleep(200)
+				} catch (e1: InterruptedException) {
+					e1.printStackTrace()
 				}
-
-				Platform.runLater(() -> {
-					if (ploy != null) {
-						ploy.init("./res/backgrounds/Ploy.png");
-						ploy.setVisible(false);
-					}
-					iv.setVisible(false);
-					if (settins!= null) {
-						settins.setVisible(false);
-					}
-					if (clous!= null) {
-						clous.setVisible(false);
-					}
-				});
-
+				Platform.runLater {
+					init("./res/backgrounds/Ploy.png")
+					isVisible = false
+					iv.isVisible = false
+					settins.isVisible = false
+					clous.isVisible = false
+				}
 				try {
-					Thread.sleep(2000);
-					LoadingScreen.INSTANCE.goOutOfLoadingScreen();
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
+					Thread.sleep(2000)
+					goOutOfLoadingScreen()
+				} catch (e1: InterruptedException) {
+					e1.printStackTrace()
 				}
-			}).start();
-
-		});
-
-		settins	= new Button("./res/backgrounds/Settins.png");
-		Point2D settinsSize = ImgUtil.getoriginalSize(settins.getPath());
-		settins.setImgRequestedSize((int) (settinsSize.getX() * 1.5), (int) (settinsSize.getY() * 1.5));
-		settins.scaleF11();
-		KotlinExtensionFunctionsKt.setPosition(settins, WindowManager.INSTANCE.getGameWidth() * .01, WindowManager.INSTANCE.getGameHeight() * .885);
-		pfail	= new Button("./res/backgrounds/Pfail.png");
-		KotlinExtensionFunctionsKt.setPosition(pfail, WindowManager.INSTANCE.getGameWidth() - pfail.getWidth() * 1.1, WindowManager.INSTANCE.getGameHeight() * .01);
-		pfail.setVisible(false);
-		settins.setOnPressed(e -> {
-			settins.init("./res/backgrounds/Settins2.png");
-		});
-		settins.setOnReleased(e -> {
-			settins.init("./res/backgrounds/Settins.png");
-			ploy.setVisible(false);
-			clous.setVisible(false);
-			settins.setVisible(false);
-			pfail.setVisible(true);
-			pfail.setOnPressed(_e -> {
-				pfail.init("./res/backgrounds/Pfail2.png");
-			});
-			pfail.setOnReleased(__e -> {
-				pfail.init("./res/backgrounds/Pfail.png");
-				pfail.setVisible(false);
-				ploy.setVisible(true);
-				clous.setVisible(true);
-				settins.setVisible(true);
-				settins.init("./res/backgrounds/Settins.png");
-			});
-
-		});
-
-		getChildren().addAll(iv, ploy, settins, clous, pfail, storyView);
+			}.start()
+		}
+	}.also {
+		children.add(it)
+	}
+	private var settins = Button("./res/backgrounds/Settins.png").apply {
+		val (origWidth, origHeight) = ImgUtil.getoriginalSize(path)
+		setImgRequestedSize((origWidth * 1.5).toInt(), (origHeight * 1.5).toInt())
+		scaleF11()
+		setPosition(gameWidth * .01, gameHeight * .885)
+	}.also {
+		children.add(it)
+	}
+	private var clous = Button("./res/backgrounds/Clous.png").apply {
+		val clousSize = ImgUtil.getoriginalSize(path)
+		setImgRequestedSize((clousSize.x * 1.5).toInt(), (clousSize.y * 1.5).toInt())
+		scaleF11()
+		setPosition(gameWidth * .99 - width, gameHeight * .885)
+		setOnPressed { _ -> init("./res/backgrounds/Clous2.png") }
+		setOnReleased { _ ->
+			init("./res/backgrounds/Clous.png")
+			exitProcess(0)
+		}
+	}.also {
+		children.add(it)
+	}
+	private var pfail = Button("./res/backgrounds/Pfail.png").apply {
+		setPosition(gameWidth - width * 1.1, gameHeight * .01)
+		isVisible = false
+		settins.setOnPressed { _ ->
+			settins.init("./res/backgrounds/Settins2.png")
+		}
+		settins.setOnReleased { _ ->
+			settins.init("./res/backgrounds/Settins.png")
+			ploy.isVisible = false
+			clous.isVisible = false
+			settins.isVisible = false
+			isVisible = true
+			setOnPressed { _ ->
+				init("./res/backgrounds/Pfail2.png")
+			}
+			setOnReleased { _ ->
+				init("./res/backgrounds/Pfail.png")
+				isVisible = false
+				ploy.isVisible = true
+				clous.isVisible = true
+				settins.isVisible = true
+				settins.init("./res/backgrounds/Settins.png")
+			}
+		}
+	}.also {
+		children.add(it)
 	}
 
-	public void updateLogic() {
+	private var storyView = AnimatedImage("./res/story/Story0.gif", 7).apply {
+		onMouseReleased = EventHandler { _ ->
+			SoundHandler.getInstance().makeSound("click.wav")
+			if (index < 6) {
+				index++
+				init("./res/story/Story$index.gif")
+			} else {
+				isVisible = false
+			}
+		}
+	}.also {
+		children.add(it)
+	}
+
+	fun updateLogic() {
 		if (!destroy) {
-			storyView.updateUI();
+			storyView.updateUI()
 		}
 	}
 
-	public void updateUI() {
-		if (!destroy && (frames != null)) {
-			long t = System.currentTimeMillis();
+	fun updateUI() {
+		if (!destroy && (frames.isNotEmpty())) {
+			val t = System.currentTimeMillis()
 			if (t - last > 1000 / 30) {
-				iv.setImage(frames[currFrame]);
-				currFrame++;
-				if (currFrame >= frames.length) currFrame = 0;
-				last = t;
+				iv.image = frames[currFrame]
+				currFrame++
+				if (currFrame >= frames.size) currFrame = 0
+				last = t
 			}
 		}
 	}
 
-	private void destroy() {
-
-        destroy = true;
-		frames = null;
-		iv.setImage(null);
-		WindowManager.INSTANCE.removeAnimatedImage(storyView);
-		storyView = null;
-		ploy = null;
-		settins = null;
-		clous = null;
-		pfail = null;
-
+	private fun destroy() {
+		destroy = true
+		frames = emptyArray()
+		iv.image = null
+		removeAnimatedImage(storyView)
+		storyView.uninit()
+		ploy.uninit()
+		settins.uninit()
+		clous.uninit()
+		pfail.uninit()
 	}
 
-	/**
-	 * Scale F 11.
-	 */
-	public void scaleF11() {
-		frames = ImgUtil.getScaledImages("./res/backgrounds/Main BG.gif", WindowManager.INSTANCE.getGameWidth(), WindowManager.INSTANCE.getGameHeight());
-		iv.setImage(frames[0]);
-		Input.getInstance().setBlockInputs(true);
-
+	fun scaleF11() {
+		if (!destroy) {
+			frames = ImgUtil.getScaledImages("./res/backgrounds/Main BG.gif", gameWidth, gameHeight)
+			iv.image = frames[0]
+			Input.getInstance().isBlockInputs = true
+		}
 	}
-
 }
