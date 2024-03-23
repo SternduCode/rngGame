@@ -11,8 +11,8 @@ import rngGame.visual.GamePanel;
 
 public class HealthBar extends Pane {
 	
-	private ImageView healthB;
-	private GamePanel gp;
+	private final ImageView healthB;
+	private final GamePanel gp;
 	private Canvas c;
 	private Demon d;
 
@@ -34,8 +34,8 @@ public class HealthBar extends Pane {
 		c.getGraphicsContext2D().clearRect(0, 0, c.getWidth(), c.getHeight());
 		c.getGraphicsContext2D().setFill(Color.LIMEGREEN);
 		if(d.getCurrenthp() > 0) {
-		c.getGraphicsContext2D().fillRect(44* WindowManager.getInstance().getScalingFactorX(), 16*WindowManager.getInstance().getScalingFactorY(), 165*WindowManager.getInstance().getScalingFactorX()*(d.getCurrenthp()/(double)d.getMaxHp()), 14*WindowManager.getInstance().getScalingFactorY());
-		c.getGraphicsContext2D().fillRect(44* WindowManager.getInstance().getScalingFactorX() + 165*WindowManager.getInstance().getScalingFactorX()*(d.getCurrenthp()/(double)d.getMaxHp()), 18*WindowManager.getInstance().getScalingFactorY(), WindowManager.getInstance().getScalingFactorX(), 10*WindowManager.getInstance().getScalingFactorY());
+		c.getGraphicsContext2D().fillRect(44* WindowManager.INSTANCE.getScalingFactorX(), 16*WindowManager.INSTANCE.getScalingFactorY(), 165*WindowManager.INSTANCE.getScalingFactorX()*(d.getCurrenthp()/(double)d.getMaxHp()), 14*WindowManager.INSTANCE.getScalingFactorY());
+		c.getGraphicsContext2D().fillRect(44* WindowManager.INSTANCE.getScalingFactorX() + 165*WindowManager.INSTANCE.getScalingFactorX()*(d.getCurrenthp()/(double)d.getMaxHp()), 18*WindowManager.INSTANCE.getScalingFactorY(), WindowManager.INSTANCE.getScalingFactorX(), 10*WindowManager.INSTANCE.getScalingFactorY());
 		}
 	}
 

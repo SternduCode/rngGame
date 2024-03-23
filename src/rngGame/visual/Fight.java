@@ -26,7 +26,7 @@ public class Fight extends Pane{
 	private final ImageView fight, battlebackgroundvisual, eName, dName, eIcon, dIcon;
 	
 	
-	private AnimatedImage hit;
+	private final AnimatedImage hit;
 
 	/** The gamepanel. */
 	private final GamePanel gamepanel;
@@ -50,7 +50,7 @@ public class Fight extends Pane{
 	
 	private boolean f = false;
 
-	private boolean overlayVisible;
+	private final boolean overlayVisible;
 	
 	
 	
@@ -132,8 +132,8 @@ public class Fight extends Pane{
 			majyc.setDisable(true);
 			leaf.setDisable(true);
 			stych.setDisable(true);
-			ft.setToY(WindowManager.getInstance().getGameHeight() / 2);
-			ib1.setToY(WindowManager.getInstance().getGameHeight() / 2);
+			ft.setToY(WindowManager.INSTANCE.getGameHeight() / 2);
+			ib1.setToY(WindowManager.INSTANCE.getGameHeight() / 2);
 			ft.play(); 
 			ib1.play();
 			int rr = r.nextInt(2)+1;
@@ -169,8 +169,8 @@ public class Fight extends Pane{
 			majyc.setDisable(true);
 			leaf.setDisable(true);
 			stych.setDisable(true);
-			ft.setToY(WindowManager.getInstance().getGameHeight() / 2);
-			ib1.setToY(WindowManager.getInstance().getGameHeight() / 2);
+			ft.setToY(WindowManager.INSTANCE.getGameHeight() / 2);
+			ib1.setToY(WindowManager.INSTANCE.getGameHeight() / 2);
 			ft.play();
 			ib1.play();
 			int rr = r.nextInt(2)+1;
@@ -300,7 +300,7 @@ public class Fight extends Pane{
 	 */
 	public void scaleF11() {
 		fight.setImage(ImgUtil.getScaledImage("./res/fight/Auswahl.png"));
-		battlebackgroundvisual.setImage(ImgUtil.getScaledImage("./res/fight/Fight.png", WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight()));
+		battlebackgroundvisual.setImage(ImgUtil.getScaledImage("./res/fight/Fight.png", WindowManager.INSTANCE.getGameWidth(), WindowManager.INSTANCE.getGameHeight()));
 		demonMob.getDemon().setReqWidth(256);
 		demonMob.getDemon().setReqHeight(256);
 		demonMob.getDemon().setLayoutX(gamepanel.getWidth()/1.5);
@@ -386,21 +386,21 @@ public class Fight extends Pane{
 			}
 	}
 public void resetName() {
-	Image eigenmobname = Text.getInstance().convertText(""+eigenMob.getMobName(), 48);
+	Image eigenmobname = Text.getInstance().convertText(eigenMob.getMobName(), 48);
 	eigenmobname = ImgUtil.resizeImage(
 			eigenmobname, (int) eigenmobname.getWidth(), (int) eigenmobname.getHeight(),
-			(int) (eigenmobname.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-			(int) (eigenmobname.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+			(int) (eigenmobname.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+			(int) (eigenmobname.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 	eName.setImage(eigenmobname);
 	eName.setLayoutX(gamepanel.getWidth()/4+44);
 	eName.setLayoutY(20);
 	eIcon.setImage(gamepanel.getGamemenu().getInventory().showElementIcon(eigenMob.getElement()));
 	
-	Image gegenmobname = Text.getInstance().convertText(""+demonMob.getMobName(), 48);
+	Image gegenmobname = Text.getInstance().convertText(demonMob.getMobName(), 48);
 	gegenmobname = ImgUtil.resizeImage(
 			gegenmobname, (int) gegenmobname.getWidth(), (int) gegenmobname.getHeight(),
-			(int) (gegenmobname.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-			(int) (gegenmobname.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+			(int) (gegenmobname.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+			(int) (gegenmobname.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 	dName.setImage(gegenmobname);
 	dName.setLayoutX(gamepanel.getWidth()/2+210-gegenmobname.getWidth());
 	dName.setLayoutY(20);

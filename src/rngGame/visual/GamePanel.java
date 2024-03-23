@@ -3,12 +3,9 @@ package rngGame.visual;
 import java.io.*;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicReference;
 
 import com.sterndu.json.*;
 
-import javafx.animation.*;
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.*;
@@ -129,12 +126,12 @@ public class GamePanel extends Pane {
 	private final Group pointGroup;
 
 	/** The frame times. */
-	private List<Long> frameTimes;
+	private final List<Long> frameTimes;
 
 	/** The last frame. */
 	private Long lastFrame;
 
-	private JoyStick joyStick;
+	private final JoyStick joyStick;
 
 	/** The tile M. */
 	private final TileManager tileManager;
@@ -168,7 +165,7 @@ public class GamePanel extends Pane {
 	 */
 	public GamePanel(rngGame.main.GamePanel lgp)
 			throws FileNotFoundException {
-		setPrefSize(WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight());
+		setPrefSize(WindowManager.INSTANCE.getGameWidth(), WindowManager.INSTANCE.getGameHeight());
 
 		joyStick = JoyStick.INSTANCE;
 
@@ -201,7 +198,7 @@ public class GamePanel extends Pane {
 		selectTool = new SelectTool(this);
 
 		tileManager = new TileManager(this);
-		tileManager.setPrefSize(WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight());
+		tileManager.setPrefSize(WindowManager.INSTANCE.getGameWidth(), WindowManager.INSTANCE.getGameHeight());
 
 		player = new Player(this, tileManager.getCM(), tileManager.getRequestorN());
 
@@ -221,9 +218,9 @@ public class GamePanel extends Pane {
 	 * @param scaleFactorY the scale factor Y
 	 */
 	public void changeScalingFactor(double scaleFactorX, double scaleFactorY) {
-		player.setPosition(player.getX() * (scaleFactorX / WindowManager.getInstance().getScalingFactorX() ),
-				player.getY() * (scaleFactorY / WindowManager.getInstance().getScalingFactorY() ));
-		WindowManager.getInstance().changeScalingFactor(scaleFactorX, scaleFactorY);
+		player.setPosition(player.getX() * (scaleFactorX / WindowManager.INSTANCE.getScalingFactorX() ),
+				player.getY() * (scaleFactorY / WindowManager.INSTANCE.getScalingFactorY() ));
+		WindowManager.INSTANCE.changeScalingFactor(scaleFactorX, scaleFactorY);
 		reload();
 		player.getPlayerImage();
 		player.generateCollisionBox();
@@ -344,7 +341,7 @@ public class GamePanel extends Pane {
 					new BackgroundImage(new Image(new FileInputStream("./res/" + tileManager.getBackgroundPath())),
 							BackgroundRepeat.NO_REPEAT,
 							BackgroundRepeat.NO_REPEAT, null,
-							new BackgroundSize(WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight() + WindowManager.getInstance().getScalingFactorY(), false, false, false, false))));
+							new BackgroundSize(WindowManager.INSTANCE.getGameWidth(), WindowManager.INSTANCE.getGameHeight() + WindowManager.INSTANCE.getScalingFactorY(), false, false, false, false))));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -356,8 +353,8 @@ public class GamePanel extends Pane {
 		getLgp().setNpcs(tileManager.getNPCSFromMap());
 		getLgp().setTest(tileManager.getMobsFromMap());
 
-		Circle spawn = new Circle(getTileManager().getSpawnPoint().getX() * WindowManager.getInstance().getScalingFactorX(),
-				getTileManager().getSpawnPoint().getY() * WindowManager.getInstance().getScalingFactorY(), 15,
+		Circle spawn = new Circle(getTileManager().getSpawnPoint().getX() * WindowManager.INSTANCE.getScalingFactorX(),
+				getTileManager().getSpawnPoint().getY() * WindowManager.INSTANCE.getScalingFactorY(), 15,
 				Color.color(0, 1, 0, .75));
 		lgp.getPoints().put(tileManager.getSpawnPoint(), spawn);
 		getPointGroup().getChildren().add(spawn);
@@ -373,7 +370,7 @@ public class GamePanel extends Pane {
 							JsonArray	spawnPosition	= (JsonArray) exit.get("spawnPosition");
 							Point2D		p				= new Point2D( ((NumberValue) spawnPosition.get(0)).getValue().longValue(),
 									((NumberValue) spawnPosition.get(1)).getValue().longValue());
-							Circle		respawn			= new Circle(p.getX() * WindowManager.getInstance().getScalingFactorX(), p.getY() * WindowManager.getInstance().getScalingFactorY(),
+							Circle		respawn			= new Circle(p.getX() * WindowManager.INSTANCE.getScalingFactorX(), p.getY() * WindowManager.INSTANCE.getScalingFactorY(),
 									15,
 									Color.color(0, 1, 0, .75));
 							lgp.getPoints().put(p, respawn);
@@ -401,8 +398,8 @@ public class GamePanel extends Pane {
 
 	public void setLayout(Positions pos, ImageView bild) {
 		
-		int px = (int) (pos.x*WindowManager.getInstance().getScalingFactorX());
-		int py = (int) (pos.y*WindowManager.getInstance().getScalingFactorY());
+		int px = (int) (pos.x*WindowManager.INSTANCE.getScalingFactorX());
+		int py = (int) (pos.y*WindowManager.INSTANCE.getScalingFactorY());
 		
 		int bx = (int) bild.getImage().getWidth();
 		int by = (int) bild.getImage().getHeight();
@@ -447,7 +444,7 @@ public class GamePanel extends Pane {
 					new BackgroundImage(new Image(new FileInputStream("./res/" + tileManager.getBackgroundPath())),
 							BackgroundRepeat.NO_REPEAT,
 							BackgroundRepeat.NO_REPEAT, null,
-							new BackgroundSize(WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight(), false, false, false, false))));
+							new BackgroundSize(WindowManager.INSTANCE.getGameWidth(), WindowManager.INSTANCE.getGameHeight(), false, false, false, false))));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -459,8 +456,8 @@ public class GamePanel extends Pane {
 		lgp.setBuildings(tileManager.getBuildingsFromMap());
 		lgp.setNpcs(tileManager.getNPCSFromMap());
 		lgp.setTest(tileManager.getMobsFromMap());
-		Circle spawn = new Circle(tileManager.getSpawnPoint().getX() * WindowManager.getInstance().getScalingFactorX(),
-				tileManager.getSpawnPoint().getY() * WindowManager.getInstance().getScalingFactorY(), 15,
+		Circle spawn = new Circle(tileManager.getSpawnPoint().getX() * WindowManager.INSTANCE.getScalingFactorX(),
+				tileManager.getSpawnPoint().getY() * WindowManager.INSTANCE.getScalingFactorY(), 15,
 				Color.color(0, 1, 0, .75));
 		lgp.getPoints().put(tileManager.getSpawnPoint(), spawn);
 		getPointGroup().getChildren().add(spawn);
@@ -490,12 +487,12 @@ public class GamePanel extends Pane {
 
 		if (position != null)
 			player.setPosition(new double[] {
-					position[0] * WindowManager.getInstance().getScalingFactorX(), position[1] * WindowManager.getInstance().getScalingFactorY()
+					position[0] * WindowManager.INSTANCE.getScalingFactorX(), position[1] * WindowManager.INSTANCE.getScalingFactorY()
 			});
 		else {
 			double[] posi = tileManager.getStartingPosition();
 			player.setPosition(new double[] {
-					posi[0] * WindowManager.getInstance().getScalingFactorX(), posi[1] * WindowManager.getInstance().getScalingFactorY()
+					posi[0] * WindowManager.INSTANCE.getScalingFactorX(), posi[1] * WindowManager.INSTANCE.getScalingFactorY()
 			});
 		}
 		player.setLayer(tileManager.getPlayerLayer());
@@ -519,24 +516,24 @@ public class GamePanel extends Pane {
 		long lastFrameTime = frameTimes.size() > 0 ? frameTimes.get(frameTimes.size() - 1) : 0;
 
 		fpsLabel.setText(String.format("%.2f", 1000 / fps));
-		fpsLabel.setLayoutX(WindowManager.getInstance().getGameWidth() - fpsLabel.getWidth());
+		fpsLabel.setLayoutX(WindowManager.INSTANCE.getGameWidth() - fpsLabel.getWidth());
 
 		try {
 			player.update(lastFrameTime);
-		} catch (ConcurrentModificationException e) {}
+		} catch (ConcurrentModificationException ignored) {}
 
 		selectTool.update();
 
 		aktionbutton.update();
 
 		for (Entry<Point2D, Circle> point : lgp.getPoints().entrySet()) {
-			point.getValue().setCenterX(point.getKey().getX() * WindowManager.getInstance().getScalingFactorX() - player.getX() + player.getScreenX());
-			point.getValue().setCenterY(point.getKey().getY() * WindowManager.getInstance().getScalingFactorY() - player.getY() + player.getScreenY());
+			point.getValue().setCenterX(point.getKey().getX() * WindowManager.INSTANCE.getScalingFactorX() - player.getX() + player.getScreenX());
+			point.getValue().setCenterY(point.getKey().getY() * WindowManager.INSTANCE.getScalingFactorY() - player.getY() + player.getScreenY());
 		}
 
 		tileManager.update();
 
-		getLgp().update();
+		getLgp().updateLogic();
 
 		long frameTime = System.currentTimeMillis() - lastFrame;
 		lastFrame = System.currentTimeMillis();

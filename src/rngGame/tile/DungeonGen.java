@@ -35,8 +35,8 @@ public class DungeonGen {
 		/** Connector direction left. */
 		LEFT,
 		/** Connector direction right. */
-		RIGHT;
-	}
+		RIGHT
+		}
 
 	/**
 	 * Map Size.
@@ -48,7 +48,7 @@ public class DungeonGen {
 		/** Map size middle. */
 		MIDDLE,
 		/** Map size small. */
-		SMALL;
+		SMALL
 	}
 
 	/** The GamePanel. */
@@ -62,31 +62,39 @@ public class DungeonGen {
 	private final List<Entry<JsonObject, Size>> maps;
 
 	/** The map tiles. */
-	private final List<Tile> mainMapTiles, endMapTiles, mapsTiles[];
+	private final List<Tile> mainMapTiles;
+	private final List<Tile> endMapTiles;
+	private final List<Tile>[] mapsTiles;
 
 	/** The buildings. */
 	private final Map<Integer, JsonArray> buildings;
 
 	/** The map tile numbers. */
-	private final List<List<Integer>> mainMapTileNum, endMapTileNum, mapsTileNum[];
+	private final List<List<Integer>> mainMapTileNum;
+	private final List<List<Integer>> endMapTileNum;
+	private final List<List<Integer>>[] mapsTileNum;
 
 	/** The connectors, connections and replacements. */
 	private final List<JsonObject> connectors, connections, replacements;
 
 	/** The map connector locations and directions. */
-	private final List<Entry<Point2D, Direction>> mainMapConnectors,endMapConnectors, mapsConnectors[];
+	private final List<Entry<Point2D, Direction>> mainMapConnectors;
+	private final List<Entry<Point2D, Direction>> endMapConnectors;
+	private final List<Entry<Point2D, Direction>>[] mapsConnectors;
 
 	/** The mainMap void number. */
 	private int mainMapVoidNum,endMapVoidNum ;
 
 	/** The map void numbers. */
-	private final int mapsVoidNum[];
+	private final int[] mapsVoidNum;
 
 	/** The additional data. */
 	private final JsonObject additionalData;
 
 	/** The map connector tiles. */
-	private final Map<Integer, Map.Entry<Tile, JsonObject>> mainMapConnectorTiles, endMapConnectorTiles, mapsConnectorTiles[];
+	private final Map<Integer, Map.Entry<Tile, JsonObject>> mainMapConnectorTiles;
+	private final Map<Integer, Map.Entry<Tile, JsonObject>> endMapConnectorTiles;
+	private final Map<Integer, Map.Entry<Tile, JsonObject>>[] mapsConnectorTiles;
 
 	/** The difficulty. */
 	private final Difficulty difficulty;
@@ -128,7 +136,7 @@ public class DungeonGen {
 			System.out.println(folderName.getValue() + " " + sizeStr.getValue());
 			Size size = Size.valueOf(sizeStr.getValue());
 			File f	= new File("./res/maps/" + folderName.getValue());
-			for (File m : f.listFiles((FilenameFilter) (dir, name) -> name.endsWith(".json"))) try {
+			for (File m : f.listFiles((dir, name) -> name.endsWith(".json"))) try {
 				this.maps.add(Map.entry((JsonObject) JsonParser.parse(m), size));
 				buildings.put(this.maps.size()-1, (JsonArray)((JsonObject) JsonParser.parse(m)).get("buildings"));
 			} catch (JsonParseException e) {
@@ -163,12 +171,12 @@ public class DungeonGen {
 					RandomAccessFile raf = new RandomAccessFile(new File("./res/collisions/" + dir + "/"
 							+ String.join(".", Arrays.copyOf(sp, sp.length - 1))
 							+ ".collisionbox"), "rws");
-					raf.seek(0l);
+					raf.seek(0L);
 					int length = raf.readInt();
 					t.poly = new ArrayList<>();
 					boolean s = false;
 					for (int i = 0; i < length; i++)
-						t.poly.add(raf.readDouble() * ( (s = !s) ? WindowManager.getInstance().getScalingFactorX() : WindowManager.getInstance().getScalingFactorY()));
+						t.poly.add(raf.readDouble() * ( (s = !s) ? WindowManager.INSTANCE.getScalingFactorX() : WindowManager.INSTANCE.getScalingFactorY()));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -185,12 +193,12 @@ public class DungeonGen {
 					RandomAccessFile raf = new RandomAccessFile(new File("./res/collisions/" + dir + "/"
 							+ String.join(".", Arrays.copyOf(sp, sp.length - 1))
 							+ ".collisionbox"), "rws");
-					raf.seek(0l);
+					raf.seek(0L);
 					int length = raf.readInt();
 					t.poly = new ArrayList<>();
 					boolean s = false;
 					for (int i = 0; i < length; i++)
-						t.poly.add(raf.readDouble() * ( (s = !s) ? WindowManager.getInstance().getScalingFactorX() : WindowManager.getInstance().getScalingFactorY()));
+						t.poly.add(raf.readDouble() * ( (s = !s) ? WindowManager.INSTANCE.getScalingFactorX() : WindowManager.INSTANCE.getScalingFactorY()));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -227,12 +235,12 @@ public class DungeonGen {
 						RandomAccessFile raf = new RandomAccessFile(new File("./res/collisions/" + dir + "/"
 								+ String.join(".", Arrays.copyOf(sp, sp.length - 1))
 								+ ".collisionbox"), "rws");
-						raf.seek(0l);
+						raf.seek(0L);
 						int length = raf.readInt();
 						t.poly = new ArrayList<>();
 						boolean s = false;
 						for (int ij = 0; ij < length; ij++)
-							t.poly.add(raf.readDouble() * ( (s = !s) ? WindowManager.getInstance().getScalingFactorX() : WindowManager.getInstance().getScalingFactorY()));
+							t.poly.add(raf.readDouble() * ( (s = !s) ? WindowManager.INSTANCE.getScalingFactorX() : WindowManager.INSTANCE.getScalingFactorY()));
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -325,10 +333,10 @@ public class DungeonGen {
 						joB.put("type", new StringValue("Building"));
 						JsonArray position = new JsonArray();
 						position.add(new DoubleValue(
-								j * (WindowManager.getInstance().getBlockSizeX() / WindowManager.getInstance().getScalingFactorX())
+								j * (WindowManager.INSTANCE.getBlockSizeX() / WindowManager.INSTANCE.getScalingFactorX())
 								+ ((NumberValue) object.getValue().getValue().get(0)).getValue().intValue()));
 						position.add(new DoubleValue(
-								i * (WindowManager.getInstance().getBlockSizeY() / WindowManager.getInstance().getScalingFactorY())
+								i * (WindowManager.INSTANCE.getBlockSizeY() / WindowManager.INSTANCE.getScalingFactorY())
 								+ ((NumberValue) object.getValue().getValue().get(1)).getValue().intValue()));
 						joB.put("position", position);
 						JsonArray originalSize = new JsonArray();
@@ -361,10 +369,10 @@ public class DungeonGen {
 					joB.put("type", new StringValue("Building"));
 					JsonArray position = new JsonArray();
 					position.add(new DoubleValue(
-							j * (WindowManager.getInstance().getBlockSizeX() / WindowManager.getInstance().getScalingFactorX())
+							j * (WindowManager.INSTANCE.getBlockSizeX() / WindowManager.INSTANCE.getScalingFactorX())
 							+ ((NumberValue) object.getValue().getValue().get(0)).getValue().intValue()));
 					position.add(new DoubleValue(
-							i * (WindowManager.getInstance().getBlockSizeY() / WindowManager.getInstance().getScalingFactorY())
+							i * (WindowManager.INSTANCE.getBlockSizeY() / WindowManager.INSTANCE.getScalingFactorY())
 							+ ((NumberValue) object.getValue().getValue().get(1)).getValue().intValue()));
 					joB.put("position", position);
 					JsonArray originalSize = new JsonArray();
@@ -404,9 +412,9 @@ public class DungeonGen {
 						joB.put("type", new StringValue("Building"));
 						JsonArray position = new JsonArray();
 						position.add(new DoubleValue(
-								en.getKey() * (WindowManager.getInstance().getBlockSizeX() / WindowManager.getInstance().getScalingFactorX())));
+								en.getKey() * (WindowManager.INSTANCE.getBlockSizeX() / WindowManager.INSTANCE.getScalingFactorX())));
 						position.add(new DoubleValue(
-								en.getValue() * (WindowManager.getInstance().getBlockSizeY() / WindowManager.getInstance().getScalingFactorY())));
+								en.getValue() * (WindowManager.INSTANCE.getBlockSizeY() / WindowManager.INSTANCE.getScalingFactorY())));
 						joB.put("position", position);
 						JsonArray	originalSize	= new JsonArray();
 						JsonArray	background		= new JsonArray();
@@ -445,9 +453,9 @@ public class DungeonGen {
 						joB.put("type", new StringValue("Building"));
 						JsonArray position = new JsonArray();
 						position.add(new DoubleValue(
-								en.getKey() * WindowManager.getInstance().getBlockSizeX()));
+								en.getKey() * WindowManager.INSTANCE.getBlockSizeX()));
 						position.add(new DoubleValue(
-								en.getValue() * WindowManager.getInstance().getBlockSizeY()));
+								en.getValue() * WindowManager.INSTANCE.getBlockSizeY()));
 						joB.put("position", position);
 						JsonArray	originalSize	= new JsonArray();
 						JsonArray	background		= new JsonArray();
@@ -486,9 +494,9 @@ public class DungeonGen {
 						joB.put("type", new StringValue("Building"));
 						JsonArray position = new JsonArray();
 						position.add(new DoubleValue(
-								en.getKey() * WindowManager.getInstance().getBlockSizeX()));
+								en.getKey() * WindowManager.INSTANCE.getBlockSizeX()));
 						position.add(new DoubleValue(
-								en.getValue() * WindowManager.getInstance().getBlockSizeY()));
+								en.getValue() * WindowManager.INSTANCE.getBlockSizeY()));
 						joB.put("position", position);
 						JsonArray	originalSize	= new JsonArray();
 						JsonArray	background		= new JsonArray();
@@ -565,8 +573,8 @@ public class DungeonGen {
 					distance = spot.distance(startPoint);
 				}
 				position.clear();
-				position.add(new IntegerValue(en.getKey()*WindowManager.getInstance().getBlockSizeX()));
-				position.add(new IntegerValue(en.getValue()*WindowManager.getInstance().getBlockSizeY()));
+				position.add(new IntegerValue(en.getKey()*WindowManager.INSTANCE.getBlockSizeX()));
+				position.add(new IntegerValue(en.getValue()*WindowManager.INSTANCE.getBlockSizeY()));
 				new MobRan(joB, gp, gp.getLgp().getMobRans(),
 						gp.getTileManager().getCM(), gp.getTileManager().getRequestorM());
 			}
@@ -579,8 +587,8 @@ public class DungeonGen {
 					distance = spot.distance(startPoint);
 				}
 				position.clear();
-				position.add(new IntegerValue(en.getKey()*WindowManager.getInstance().getBlockSizeX()));
-				position.add(new IntegerValue(en.getValue()*WindowManager.getInstance().getBlockSizeY()));
+				position.add(new IntegerValue(en.getKey()*WindowManager.INSTANCE.getBlockSizeX()));
+				position.add(new IntegerValue(en.getValue()*WindowManager.INSTANCE.getBlockSizeY()));
 				new MobRan(joB, gp, gp.getLgp().getMobRans(),
 						gp.getTileManager().getCM(), gp.getTileManager().getRequestorM());
 			}
@@ -593,8 +601,8 @@ public class DungeonGen {
 					distance = spot.distance(startPoint);
 				}
 				position.clear();
-				position.add(new IntegerValue(en.getKey()*WindowManager.getInstance().getBlockSizeX()));
-				position.add(new IntegerValue(en.getValue()*WindowManager.getInstance().getBlockSizeY()));
+				position.add(new IntegerValue(en.getKey()*WindowManager.INSTANCE.getBlockSizeX()));
+				position.add(new IntegerValue(en.getValue()*WindowManager.INSTANCE.getBlockSizeY()));
 				new MobRan(joB, gp, gp.getLgp().getMobRans(),
 						gp.getTileManager().getCM(), gp.getTileManager().getRequestorM());
 				distance = 0.0;
@@ -605,8 +613,8 @@ public class DungeonGen {
 					distance = spot.distance(startPoint);
 				}
 				position.clear();
-				position.add(new IntegerValue(en.getKey()*WindowManager.getInstance().getBlockSizeX()));
-				position.add(new IntegerValue(en.getValue()*WindowManager.getInstance().getBlockSizeY()));
+				position.add(new IntegerValue(en.getKey()*WindowManager.INSTANCE.getBlockSizeX()));
+				position.add(new IntegerValue(en.getValue()*WindowManager.INSTANCE.getBlockSizeY()));
 				new MobRan(joB, gp, gp.getLgp().getMobRans(),
 						gp.getTileManager().getCM(), gp.getTileManager().getRequestorM());
 				distance = 0.0;
@@ -617,8 +625,8 @@ public class DungeonGen {
 					distance = spot.distance(startPoint);
 				}
 				position.clear();
-				position.add(new IntegerValue(en.getKey()*WindowManager.getInstance().getBlockSizeX()));
-				position.add(new IntegerValue(en.getValue()*WindowManager.getInstance().getBlockSizeY()));
+				position.add(new IntegerValue(en.getKey()*WindowManager.INSTANCE.getBlockSizeX()));
+				position.add(new IntegerValue(en.getValue()*WindowManager.INSTANCE.getBlockSizeY()));
 				new MobRan(joB, gp, gp.getLgp().getMobRans(),
 						gp.getTileManager().getCM(), gp.getTileManager().getRequestorM());
 			}
@@ -1055,8 +1063,8 @@ public class DungeonGen {
 			Point2D p = mapPositions.get(en.getKey());
 			for (Object building : en.getValue()) {
 				JsonArray position = (JsonArray) ((JsonObject) building).get("position");
-				position.set(0, new DoubleValue(((NumberValue) position.get(0)).getValue().doubleValue()+p.getX()*WindowManager.getInstance().getBlockSizeX()));
-				position.set(1, new DoubleValue(((NumberValue) position.get(1)).getValue().doubleValue()+p.getY()*WindowManager.getInstance().getBlockSizeY()));
+				position.set(0, new DoubleValue(((NumberValue) position.get(0)).getValue().doubleValue()+p.getX()*WindowManager.INSTANCE.getBlockSizeX()));
+				position.set(1, new DoubleValue(((NumberValue) position.get(1)).getValue().doubleValue()+p.getY()*WindowManager.INSTANCE.getBlockSizeY()));
 			}
 		});
 		List<JsonObject> builds = buildings.entrySet().parallelStream().map(Entry::getValue).flatMap(JsonArray::parallelStream).map(v->(JsonObject)v).collect(Collectors.toList());
@@ -1164,13 +1172,13 @@ public class DungeonGen {
 				RandomAccessFile raf = new RandomAccessFile(new File("./res/collisions/Insel/"
 						+ String.join(".", Arrays.copyOf(sp, sp.length - 1))
 						+ ".collisionbox"), "rws");
-				raf.seek(0l);
+				raf.seek(0L);
 				int length = raf.readInt();
 				gp.getTileManager().getTiles().get(gp.getTileManager().getTiles().size() - 2).poly = new ArrayList<>();
 				boolean s = false;
 				for (int ij = 0; ij < length; ij++)
 					gp.getTileManager().getTiles().get(gp.getTileManager().getTiles().size() - 2).poly
-					.add(raf.readDouble() * ( (s = !s) ? WindowManager.getInstance().getScalingFactorX() : WindowManager.getInstance().getScalingFactorY()));
+					.add(raf.readDouble() * ( (s = !s) ? WindowManager.INSTANCE.getScalingFactorX() : WindowManager.INSTANCE.getScalingFactorY()));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -1181,13 +1189,13 @@ public class DungeonGen {
 				RandomAccessFile raf = new RandomAccessFile(new File("./res/collisions/Insel/"
 						+ String.join(".", Arrays.copyOf(sp, sp.length - 1))
 						+ ".collisionbox"), "rws");
-				raf.seek(0l);
+				raf.seek(0L);
 				int length = raf.readInt();
 				gp.getTileManager().getTiles().get(gp.getTileManager().getTiles().size() - 1).poly = new ArrayList<>();
 				boolean s = false;
 				for (int ij = 0; ij < length; ij++)
 					gp.getTileManager().getTiles().get(gp.getTileManager().getTiles().size() - 1).poly
-					.add(raf.readDouble() * ( (s = !s) ? WindowManager.getInstance().getScalingFactorX() : WindowManager.getInstance().getScalingFactorY()));
+					.add(raf.readDouble() * ( (s = !s) ? WindowManager.INSTANCE.getScalingFactorX() : WindowManager.INSTANCE.getScalingFactorY()));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -1197,7 +1205,7 @@ public class DungeonGen {
 			((NumberValue) startingPosition.get(0)).getValue().longValue(), ((NumberValue) startingPosition.get(1)).getValue().longValue()
 		};
 		gp.getTileManager().setStartingPosition(new double[] {
-				(x - xOffset) * 48 + startPosition[0], (y - yOffset) * 48 + startPosition[1]
+				(x - xOffset) * 48L + startPosition[0], (y - yOffset) * 48L + startPosition[1]
 		});
 
 		Map<Direction, List<Tile>>	replacements	= new HashMap<>();
@@ -1218,12 +1226,12 @@ public class DungeonGen {
 						RandomAccessFile raf = new RandomAccessFile(new File("./res/collisions/Insel/"
 								+ String.join(".", Arrays.copyOf(sp, sp.length - 1))
 								+ ".collisionbox"), "rws");
-						raf.seek(0l);
+						raf.seek(0L);
 						int length = raf.readInt();
 						tile.poly = new ArrayList<>();
 						boolean s = false;
 						for (int ij = 0; ij < length; ij++)
-							tile.poly.add(raf.readDouble() * ( (s = !s) ? WindowManager.getInstance().getScalingFactorX() : WindowManager.getInstance().getScalingFactorY()));
+							tile.poly.add(raf.readDouble() * ( (s = !s) ? WindowManager.INSTANCE.getScalingFactorX() : WindowManager.INSTANCE.getScalingFactorY()));
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -1241,12 +1249,12 @@ public class DungeonGen {
 						RandomAccessFile raf = new RandomAccessFile(new File("./res/collisions/Insel/"
 								+ String.join(".", Arrays.copyOf(sp, sp.length - 1))
 								+ ".collisionbox"), "rws");
-						raf.seek(0l);
+						raf.seek(0L);
 						int length = raf.readInt();
 						tile.poly = new ArrayList<>();
 						boolean s = false;
 						for (int ij = 0; ij < length; ij++)
-							tile.poly.add(raf.readDouble() * ( (s = !s) ? WindowManager.getInstance().getScalingFactorX() : WindowManager.getInstance().getScalingFactorY()));
+							tile.poly.add(raf.readDouble() * ( (s = !s) ? WindowManager.INSTANCE.getScalingFactorX() : WindowManager.INSTANCE.getScalingFactorY()));
 					} catch (IOException e) {
 						e.printStackTrace();
 					}

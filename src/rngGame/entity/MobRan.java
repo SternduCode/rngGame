@@ -54,7 +54,7 @@ public class MobRan extends NPC {
 	private static int fire = 0, water = 0, plant = 0, light = 0, shadow = 0, voidi = 0, dimensionMaster = 0;
 
 	/** The demons. */
-	private static Map<String, Integer> demons = new HashMap<>();
+	private static final Map<String, Integer> demons = new HashMap<>();
 
 	/** The diff. */
 	private final double[] diff = new double[2];
@@ -273,8 +273,8 @@ public class MobRan extends NPC {
 		Player	p	= sp.getPlayer();
 		double	x	= p.getX() + p.getColliBoxX(), y = p.getY() + p.getColliBoxY() / 2;
 
-		int	tileX	= (int) Math.round(x / WindowManager.getInstance().getBlockSizeX());
-		int	tileY	= (int) Math.round(y / WindowManager.getInstance().getBlockSizeY());
+		int	tileX	= (int) Math.round(x / WindowManager.INSTANCE.getBlockSizeX());
+		int	tileY	= (int) Math.round(y / WindowManager.INSTANCE.getBlockSizeY());
 
 		List<List<TextureHolder>> map = sp.getTileManager().getMap();
 		if (!map.isEmpty()) {
@@ -331,8 +331,8 @@ public class MobRan extends NPC {
 
 			// System.out.println(pels);
 
-			int mobX = (int) Math.round(MobRan.this.x / WindowManager.getInstance().getBlockSizeX()),
-					mobY = (int) Math.round(MobRan.this.y / WindowManager.getInstance().getBlockSizeY());
+			int mobX = (int) Math.round(MobRan.this.x / WindowManager.INSTANCE.getBlockSizeX()),
+					mobY = (int) Math.round(MobRan.this.y / WindowManager.INSTANCE.getBlockSizeY());
 
 			// System.out.println(mobX + " " + mobY + " "
 			// + mobX * sp.BgX + " " + mobY * sp.BgY);
@@ -343,7 +343,7 @@ public class MobRan extends NPC {
 			if (pel.size() > 0) {
 				PathElement pe = pel.get(0);
 				return new Double[] {
-						(double) pe.x() * WindowManager.getInstance().getBlockSizeX(), (double) pe.y() * WindowManager.getInstance().getBlockSizeY()
+						(double) pe.x() * WindowManager.INSTANCE.getBlockSizeX(), (double) pe.y() * WindowManager.INSTANCE.getBlockSizeY()
 				};
 			}
 		}

@@ -65,7 +65,7 @@ public class TitleScreen extends Pane{
 		Point2D clousSize = ImgUtil.getoriginalSize(clous.getPath());
 		clous.setImgRequestedSize((int) (clousSize.getX() * 1.5), (int) (clousSize.getY() * 1.5));
 		clous.scaleF11();
-		KotlinExtensionFunctionsKt.setPosition(clous, WindowManager.getInstance().getGameWidth() * .99 - clous.getWidth(), WindowManager.getInstance().getGameHeight() * .885);
+		KotlinExtensionFunctionsKt.setPosition(clous, WindowManager.INSTANCE.getGameWidth() * .99 - clous.getWidth(), WindowManager.INSTANCE.getGameHeight() * .885);
 		clous.setOnPressed(e -> clous.init("./res/backgrounds/Clous2.png"));
 		clous.setOnReleased(e -> {
 			clous.init("./res/backgrounds/Clous.png");
@@ -76,7 +76,7 @@ public class TitleScreen extends Pane{
 		Point2D ploySize = ImgUtil.getoriginalSize(ploy.getPath());
 		ploy.setImgRequestedSize((int) (ploySize.getX() * 2), (int) (ploySize.getY() * 2));
 		ploy.scaleF11();
-		KotlinExtensionFunctionsKt.setPosition(ploy, WindowManager.getInstance().getGameWidth() / 2.0 - ploy.getWidth() / 2.0, WindowManager.getInstance().getGameHeight() * .85);
+		KotlinExtensionFunctionsKt.setPosition(ploy, WindowManager.INSTANCE.getGameWidth() / 2.0 - ploy.getWidth() / 2.0, WindowManager.INSTANCE.getGameHeight() * .85);
 		ploy.setOnMousePressed(e -> ploy.init("./res/backgrounds/Ploy2.png"));
 		ploy.setOnMouseReleased(e -> {
 			SoundHandler.getInstance().makeSound("click.wav");
@@ -85,7 +85,7 @@ public class TitleScreen extends Pane{
 			try {
 				gp = new GamePanel();
 				Input.getInstance().setGamePanel(gp.getVgp()); // pass instance of GamePanel to the Instance of Input
-				WindowManager.getInstance().setGamePanel(gp.getVgp()); // pass instance of GamePanel to WindowManager
+				WindowManager.INSTANCE.setGamePanel(gp.getVgp()); // pass instance of GamePanel to WindowManager
 				getChildren().clear();
 				getChildren().addAll(gp.getVgp());
 				gp.getVgp().setBlockUserInputs(false);
@@ -130,9 +130,9 @@ public class TitleScreen extends Pane{
 		Point2D settinsSize = ImgUtil.getoriginalSize(settins.getPath());
 		settins.setImgRequestedSize((int) (settinsSize.getX() * 1.5), (int) (settinsSize.getY() * 1.5));
 		settins.scaleF11();
-		KotlinExtensionFunctionsKt.setPosition(settins, WindowManager.getInstance().getGameWidth() * .01, WindowManager.getInstance().getGameHeight() * .885);
+		KotlinExtensionFunctionsKt.setPosition(settins, WindowManager.INSTANCE.getGameWidth() * .01, WindowManager.INSTANCE.getGameHeight() * .885);
 		pfail	= new Button("./res/backgrounds/Pfail.png");
-		KotlinExtensionFunctionsKt.setPosition(pfail, WindowManager.getInstance().getGameWidth() - pfail.getWidth() * 1.1, WindowManager.getInstance().getGameHeight() * .01);
+		KotlinExtensionFunctionsKt.setPosition(pfail, WindowManager.INSTANCE.getGameWidth() - pfail.getWidth() * 1.1, WindowManager.INSTANCE.getGameHeight() * .01);
 		pfail.setVisible(false);
 		settins.setOnPressed(e -> {
 			settins.init("./res/backgrounds/Settins2.png");
@@ -162,7 +162,7 @@ public class TitleScreen extends Pane{
 
 	public void updateLogic() {
 		if (!destroy) {
-			storyView.update();
+			storyView.updateUI();
 		}
 	}
 
@@ -183,7 +183,7 @@ public class TitleScreen extends Pane{
         destroy = true;
 		frames = null;
 		iv.setImage(null);
-		WindowManager.getInstance().removeAnimatedImage(storyView);
+		WindowManager.INSTANCE.removeAnimatedImage(storyView);
 		storyView = null;
 		ploy = null;
 		settins = null;
@@ -196,7 +196,7 @@ public class TitleScreen extends Pane{
 	 * Scale F 11.
 	 */
 	public void scaleF11() {
-		frames = ImgUtil.getScaledImages("./res/backgrounds/Main BG.gif", WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight());
+		frames = ImgUtil.getScaledImages("./res/backgrounds/Main BG.gif", WindowManager.INSTANCE.getGameWidth(), WindowManager.INSTANCE.getGameHeight());
 		iv.setImage(frames[0]);
 		Input.getInstance().setBlockInputs(true);
 

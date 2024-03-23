@@ -39,7 +39,10 @@ public class Player extends Entity {
 	/** The colli box height. */
 	private final double colliBoxX = 40, colliBoxY = 90, colliBoxWidth = 46.5, colliBoxHeight = 40;
 
-	private AtomicBoolean w = new AtomicBoolean(false), a = new AtomicBoolean(false), s = new AtomicBoolean(false), d = new AtomicBoolean(false);
+	private final AtomicBoolean w = new AtomicBoolean(false);
+	private final AtomicBoolean a = new AtomicBoolean(false);
+	private final AtomicBoolean s = new AtomicBoolean(false);
+	private final AtomicBoolean d = new AtomicBoolean(false);
 
 	private Direction direction = Direction.E;
 
@@ -70,8 +73,8 @@ public class Player extends Entity {
 
 		gamepanel = gamePanel;
 
-		screenX	= WindowManager.getInstance().getGameWidth() / 2 - getSize() / 2;	// Place the player in the middle of the screen
-		screenY	= WindowManager.getInstance().getGameHeight() / 2 - getSize() / 2;
+		screenX	= WindowManager.INSTANCE.getGameWidth() / 2 - getSize() / 2;	// Place the player in the middle of the screen
+		screenY	= WindowManager.INSTANCE.getGameHeight() / 2 - getSize() / 2;
 
 		setPosition(0, 0); // Put player on upper left corner of the map; can be overridden in map file
 
@@ -108,13 +111,13 @@ public class Player extends Entity {
 		collisionBoxes.forEach((key, poly) -> {
 			poly.getPoints().clear();
 			poly.setFill(Color.color(1, 0, 1, 0.75));
-			poly.getPoints().addAll(colliBoxX * WindowManager.getInstance().getScalingFactorX() - 0.5,
-					colliBoxY * WindowManager.getInstance().getScalingFactorY() - 0.5, colliBoxX * WindowManager.getInstance().getScalingFactorX() - 0.5,
-					(colliBoxY + colliBoxHeight) * WindowManager.getInstance().getScalingFactorY() + 0.5,
-					(colliBoxX + colliBoxWidth) * WindowManager.getInstance().getScalingFactorX() + 0.5,
-					(colliBoxY + colliBoxHeight) * WindowManager.getInstance().getScalingFactorY() + 0.5,
-					(colliBoxX + colliBoxWidth) * WindowManager.getInstance().getScalingFactorX() + 0.5,
-					colliBoxY * WindowManager.getInstance().getScalingFactorY() - 0.5);
+			poly.getPoints().addAll(colliBoxX * WindowManager.INSTANCE.getScalingFactorX() - 0.5,
+					colliBoxY * WindowManager.INSTANCE.getScalingFactorY() - 0.5, colliBoxX * WindowManager.INSTANCE.getScalingFactorX() - 0.5,
+					(colliBoxY + colliBoxHeight) * WindowManager.INSTANCE.getScalingFactorY() + 0.5,
+					(colliBoxX + colliBoxWidth) * WindowManager.INSTANCE.getScalingFactorX() + 0.5,
+					(colliBoxY + colliBoxHeight) * WindowManager.INSTANCE.getScalingFactorY() + 0.5,
+					(colliBoxX + colliBoxWidth) * WindowManager.INSTANCE.getScalingFactorX() + 0.5,
+					colliBoxY * WindowManager.INSTANCE.getScalingFactorY() - 0.5);
 		});
 	}
 
@@ -123,28 +126,28 @@ public class Player extends Entity {
 	 *
 	 * @return the colli box height
 	 */
-	public double getColliBoxHeight() { return colliBoxHeight * WindowManager.getInstance().getScalingFactorY(); }
+	public double getColliBoxHeight() { return colliBoxHeight * WindowManager.INSTANCE.getScalingFactorY(); }
 
 	/**
 	 * Gets the colli box width.
 	 *
 	 * @return the colli box width
 	 */
-	public double getColliBoxWidth() { return colliBoxWidth * WindowManager.getInstance().getScalingFactorX(); }
+	public double getColliBoxWidth() { return colliBoxWidth * WindowManager.INSTANCE.getScalingFactorX(); }
 
 	/**
 	 * Gets the colli box X.
 	 *
 	 * @return the colli box X
 	 */
-	public double getColliBoxX() { return colliBoxX * WindowManager.getInstance().getScalingFactorX(); }
+	public double getColliBoxX() { return colliBoxX * WindowManager.INSTANCE.getScalingFactorX(); }
 
 	/**
 	 * Gets the colli box Y.
 	 *
 	 * @return the colli box Y
 	 */
-	public double getColliBoxY() { return colliBoxY * WindowManager.getInstance().getScalingFactorY(); }
+	public double getColliBoxY() { return colliBoxY * WindowManager.INSTANCE.getScalingFactorY(); }
 
 	/**
 	 * Gets the player image.
@@ -313,8 +316,8 @@ public class Player extends Entity {
 				xDir -= 1;
 			}
 			direction = Direction.Companion.getDirectionFromAngle(Math.atan2(yDir, xDir));
-			x += updateSpeed * xDir * WindowManager.getInstance().getScalingFactorX();
-			y += updateSpeed * yDir * WindowManager.getInstance().getScalingFactorY();
+			x += updateSpeed * xDir * WindowManager.INSTANCE.getScalingFactorX();
+			y += updateSpeed * yDir * WindowManager.INSTANCE.getScalingFactorY();
 			switch (direction){
 				case N -> setCurrentKey("N_run");
 				case NE -> setCurrentKey("NE_run");
@@ -372,8 +375,8 @@ public class Player extends Entity {
 		oldX = x;
 		oldY = y;
 
-		screenX	= (int) (WindowManager.getInstance().getGameWidth() / 2 - iv.getImage().getWidth() / 2);
-		screenY	= (int) (WindowManager.getInstance().getGameHeight() / 2 - iv.getImage().getHeight() / 2);
+		screenX	= (int) (WindowManager.INSTANCE.getGameWidth() / 2 - iv.getImage().getWidth() / 2);
+		screenY	= (int) (WindowManager.INSTANCE.getGameHeight() / 2 - iv.getImage().getHeight() / 2);
 
 	}
 }

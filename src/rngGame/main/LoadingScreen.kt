@@ -15,8 +15,8 @@ object LoadingScreen: AnimatedImage() {
 	}
 
 	override fun scaleF11() {
-		imgRequestedWidth = WindowManager.getInstance().gameWidth
-		imgRequestedHeight = WindowManager.getInstance().gameHeight
+		imgRequestedWidth = WindowManager.gameWidth
+		imgRequestedHeight = WindowManager.gameHeight
 		super.scaleF11()
 	}
 
@@ -26,8 +26,8 @@ object LoadingScreen: AnimatedImage() {
 
 	fun goIntoLoadingScreen() {
 		if (!isInLoadingScreen()) {
-			fitWidth = image.width * WindowManager.getInstance().scalingFactorX
-			fitHeight = image.height * WindowManager.getInstance().scalingFactorY
+			fitWidth = image.width * WindowManager.scalingFactorX
+			fitHeight = image.height * WindowManager.scalingFactorY
 			val ft = FadeTransition(Duration.millis(250.0), this)
 			ft.fromValue = 0.0
 			ft.toValue = 1.0
@@ -37,8 +37,8 @@ object LoadingScreen: AnimatedImage() {
 
 	fun goOutOfLoadingScreen() {
 		if (isInLoadingScreen()) {
-			fitWidth = image.width * WindowManager.getInstance().scalingFactorX
-			fitHeight = image.height * WindowManager.getInstance().scalingFactorY
+			fitWidth = image.width * WindowManager.scalingFactorX
+			fitHeight = image.height * WindowManager.scalingFactorY
 			val ft = FadeTransition(Duration.millis(250.0), this)
 			ft.fromValue = 1.0
 			ft.toValue = 0.0

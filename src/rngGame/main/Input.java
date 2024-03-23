@@ -160,7 +160,7 @@ public class Input {
 			raf.writeInt(t.getPoints().size());
 			boolean s = false;
 			for (Double element: t.getPoints())
-				raf.writeDouble((long) (element / ( ( s = !s ) ? WindowManager.getInstance().getScalingFactorX() : WindowManager.getInstance().getScalingFactorY())));
+				raf.writeDouble((long) (element / ( ( s = !s ) ? WindowManager.INSTANCE.getScalingFactorX() : WindowManager.INSTANCE.getScalingFactorY())));
 			raf.setLength(4L + t.getPoints().size() * 8L);
 			raf.close();
 
@@ -480,9 +480,9 @@ public class Input {
 		scaleFactorX = gamepanel.getScene().getWidth();
 		scaleFactorY = gamepanel.getScene().getHeight();
 		((Stage) gamepanel.getScene().getWindow()).setFullScreen(!( (Stage) gamepanel.getScene().getWindow() ).isFullScreen());
-		if (WindowManager.getInstance().getScalingFactorX() > 1) scaleFactorX = 1;
+		if (WindowManager.INSTANCE.getScalingFactorX() > 1) scaleFactorX = 1;
 		else scaleFactorX = gamepanel.getScene().getWidth() / scaleFactorX;
-		if (WindowManager.getInstance().getScalingFactorY() > 1) scaleFactorY = 1;
+		if (WindowManager.INSTANCE.getScalingFactorY() > 1) scaleFactorY = 1;
 		else scaleFactorY = gamepanel.getScene().getHeight() / scaleFactorY;
 		System.out.println(scaleFactorX + " " + scaleFactorY);
 		gamepanel.changeScalingFactor(scaleFactorX, scaleFactorY);

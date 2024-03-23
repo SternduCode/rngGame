@@ -136,16 +136,16 @@ public class ContractsTable extends Building {
 		Image ka = Text.getInstance().convertText("Underwater Caverns", 48);
 		ka = ImgUtil.resizeImage(
 				ka, (int) ka.getWidth(), (int) ka.getHeight(),
-				(int) (ka.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-				(int) (ka.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+				(int) (ka.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+				(int) (ka.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 		Image ausbc = ImgUtil.getScaledImage("./res/Contractstuff/MapAuswahlBackground.png");
 
 		Image lvlb = ImgUtil.getScaledImage("./res/lvl/richtig/LvLBorder.png");
 		lvlb = ImgUtil.resizeImage(
 				lvlb, (int) lvlb.getWidth(), (int) lvlb.getHeight(),
-				(int) (96 * WindowManager.getInstance().getScalingFactorX()),
-				(int) (96 * WindowManager.getInstance().getScalingFactorY()));
+				(int) (96 * WindowManager.INSTANCE.getScalingFactorX()),
+				(int) (96 * WindowManager.INSTANCE.getScalingFactorY()));
 
 		Image buttonRL = ImgUtil.getScaledImage("./res/Contractstuff/pfeilRLeu.png");
 		Image buttonLL = ImgUtil.getScaledImage("./res/Contractstuff/pfeilLLeu.png");
@@ -201,7 +201,7 @@ public class ContractsTable extends Building {
 
 
 
-		ugSachen1	= new LevelSelectionScrollPaneElement(gamepanel, this, " Eingang", index * 25 + 0, "Icon_Eingang", Difficulty.EASY);
+		ugSachen1	= new LevelSelectionScrollPaneElement(gamepanel, this, " Eingang", index * 25, "Icon_Eingang", Difficulty.EASY);
 		ugSachen2	= new LevelSelectionScrollPaneElement(gamepanel, this, " Passage", index * 25 + 5, "Icon_Passage", Difficulty.EASY);
 		ugSachen3	= new LevelSelectionScrollPaneElement(gamepanel, this, " Kreuzung", index * 25 + 10, "Icon_Kreuzung", Difficulty.MIDDLE);
 		ugSachen4	= new LevelSelectionScrollPaneElement(gamepanel, this, " Untergrund", index * 25 + 15, "Icon_Untergrund", Difficulty.MIDDLE);
@@ -213,11 +213,11 @@ public class ContractsTable extends Building {
 			TranslateTransition tth = new TranslateTransition(Duration.millis(1000), contractBackground);
 
 			// tt.setFromX(gamepanel.SpielLaenge*-index);
-			tt.setToX(-WindowManager.getInstance().getGameWidth() - WindowManager.getInstance().getGameWidth() * index);
+			tt.setToX(-WindowManager.INSTANCE.getGameWidth() - WindowManager.INSTANCE.getGameWidth() * index);
 
 			// tth.setFromX(gamepanel.SpielLaenge / 2 * -index + gamepanel.SpielLaenge);
-			tth.setToX(WindowManager.getInstance().getGameWidth() / 2 * - (index + 1) + WindowManager.getInstance().getGameWidth()
-			+ WindowManager.getInstance().getScalingFactorX() * 24);
+			tth.setToX(WindowManager.INSTANCE.getGameWidth() / 2 * - (index + 1) + WindowManager.INSTANCE.getGameWidth()
+			+ WindowManager.INSTANCE.getScalingFactorX() * 24);
 
 			new Thread(() -> {
 				try {
@@ -285,10 +285,10 @@ public class ContractsTable extends Building {
 			TranslateTransition tth = new TranslateTransition(Duration.millis(1000), contractBackground);
 
 			// tt.setFromX(gamepanel.SpielLaenge*-index);
-			tt.setToX(WindowManager.getInstance().getGameWidth() + WindowManager.getInstance().getGameWidth() * -index);
+			tt.setToX(WindowManager.INSTANCE.getGameWidth() + WindowManager.INSTANCE.getGameWidth() * -index);
 
 			// tth.setFromX(gamepanel.SpielLaenge / 2 * -index + gamepanel.SpielLaenge);
-			tth.setToX(WindowManager.getInstance().getGameWidth() / 2 * - (index - 1) + WindowManager.getInstance().getGameWidth());
+			tth.setToX(WindowManager.INSTANCE.getGameWidth() / 2 * - (index - 1) + WindowManager.INSTANCE.getGameWidth());
 
 			new Thread(() -> {
 				try {
@@ -355,9 +355,9 @@ public class ContractsTable extends Building {
 			TranslateTransition tt = new TranslateTransition(Duration.millis(750), p1);
 			TranslateTransition tth = new TranslateTransition(Duration.millis(750), contractBackground);
 
-			tt.setToX(-WindowManager.getInstance().getGameWidth() / 4 - WindowManager.getInstance().getGameWidth() * index);
-			tth.setToX(WindowManager.getInstance().getGameWidth() / 2 * - (index + 1) + WindowManager.getInstance().getGameWidth() / 1.5
-					+ WindowManager.getInstance().getScalingFactorX() * 24);
+			tt.setToX(-WindowManager.INSTANCE.getGameWidth() / 4 - WindowManager.INSTANCE.getGameWidth() * index);
+			tth.setToX(WindowManager.INSTANCE.getGameWidth() / 2 * - (index + 1) + WindowManager.INSTANCE.getGameWidth() / 1.5
+					+ WindowManager.INSTANCE.getScalingFactorX() * 24);
 
 			ugSachen1.setBackgroundImageToDefaullt();
 			ugSachen2.setBackgroundImageToDefaullt();
@@ -469,8 +469,8 @@ public class ContractsTable extends Building {
 			TranslateTransition tt = new TranslateTransition(Duration.millis(750), p1);
 			TranslateTransition tth = new TranslateTransition(Duration.millis(750), contractBackground);
 
-			tt.setToX(WindowManager.getInstance().getGameWidth() + WindowManager.getInstance().getGameWidth() * (-index - 1));
-			tth.setToX(WindowManager.getInstance().getGameWidth() / 2 * -index + WindowManager.getInstance().getGameWidth());
+			tt.setToX(WindowManager.INSTANCE.getGameWidth() + WindowManager.INSTANCE.getGameWidth() * (-index - 1));
+			tth.setToX(WindowManager.INSTANCE.getGameWidth() / 2 * -index + WindowManager.INSTANCE.getGameWidth());
 
 			FadeTransition UG = new FadeTransition(Duration.millis(200), allPanes);
 			UG.setFromValue(1);
@@ -568,25 +568,25 @@ public class ContractsTable extends Building {
 		// contractNebel.setY(gamepanel.getPlayer().getScreenY() -
 		// contractNebel.getImage().getHeight() / 2 + 32);
 
-		contractNebel.setLayoutX(WindowManager.getInstance().getGameWidth());
-		contractGalactus.setLayoutX(WindowManager.getInstance().getGameWidth() * 2);
-		contractNova.setLayoutX(WindowManager.getInstance().getGameWidth() * 3);
+		contractNebel.setLayoutX(WindowManager.INSTANCE.getGameWidth());
+		contractGalactus.setLayoutX(WindowManager.INSTANCE.getGameWidth() * 2);
+		contractNova.setLayoutX(WindowManager.INSTANCE.getGameWidth() * 3);
 
 //		titlebanner2.setLayoutX(gamepanel.getGameWidth());
 //		titlebanner3.setLayoutX(gamepanel.getGameWidth() * 2);
 //		titlebanner4.setLayoutX(gamepanel.getGameWidth() * 3);
 
-		hud2.setLayoutX(WindowManager.getInstance().getGameWidth());
-		hud3.setLayoutX(WindowManager.getInstance().getGameWidth() * 2);
-		hud4.setLayoutX(WindowManager.getInstance().getGameWidth() * 3);
+		hud2.setLayoutX(WindowManager.INSTANCE.getGameWidth());
+		hud3.setLayoutX(WindowManager.INSTANCE.getGameWidth() * 2);
+		hud4.setLayoutX(WindowManager.INSTANCE.getGameWidth() * 3);
 
 		// add
 		p1.setVisible(false);
 		p1.getChildren().addAll(contractSaturn, contractNebel, contractGalactus, contractNova, hud, hud2, hud3, hud4,
 				titlebanner, text);
 
-		text.setX(WindowManager.getInstance().getGameWidth() / 2 - 164 * WindowManager.getInstance().getScalingFactorX());
-		text.setY(WindowManager.getInstance().getGameHeight() / 4 + WindowManager.getInstance().getGameHeight() / 2 + 20 * WindowManager.getInstance().getScalingFactorY());
+		text.setX(WindowManager.INSTANCE.getGameWidth() / 2 - 164 * WindowManager.INSTANCE.getScalingFactorX());
+		text.setY(WindowManager.INSTANCE.getGameHeight() / 4 + WindowManager.INSTANCE.getGameHeight() / 2 + 20 * WindowManager.INSTANCE.getScalingFactorY());
 
 		text.setVisible(false);
 
@@ -598,7 +598,7 @@ public class ContractsTable extends Building {
 		p2.getChildren().addAll(ugSachen1,ugSachen2,ugSachen3,ugSachen4,ugSachen5);
 
 		// Infos
-		infos.setLayoutX(WindowManager.getInstance().getGameWidth() / 2 + 11 * WindowManager.getInstance().getScalingFactorX());
+		infos.setLayoutX(WindowManager.INSTANCE.getGameWidth() / 2 + 11 * WindowManager.INSTANCE.getScalingFactorX());
 		infos.getChildren().add(lvlBorder);
 		infos.getChildren().add(ugSachen1.getVlvl());
 		infos.getChildren().add(ugSachen2.getVlvl());
@@ -620,7 +620,7 @@ public class ContractsTable extends Building {
 			
 			gamepanel.getAktionbutton().setInteractionbuttonKann(true, mod -> {
 
-					contractBackground.setTranslateX(WindowManager.getInstance().getGameWidth());
+					contractBackground.setTranslateX(WindowManager.INSTANCE.getGameWidth());
 					gamepanel.setBlockUserInputs(true);
 					contractBackground.setVisible(true);
 					p1.setVisible(true);
@@ -730,7 +730,7 @@ public class ContractsTable extends Building {
 			if (!gamepanel.getChildren().contains(contractBackground))
 				gamepanel.getChildren().add(contractBackground);
 
-			p1.setLayoutX(gamepanel.getPlayer().getScreenX() - WindowManager.getInstance().getGameWidth() / 2
+			p1.setLayoutX(gamepanel.getPlayer().getScreenX() - WindowManager.INSTANCE.getGameWidth() / 2
 					+ gamepanel.getPlayer().getWidth() / 2);
 			//			p1.setLayoutY(
 			//					gamepanel.getPlayer().getScreenY() - p1.getHeight() / 2 + gamepanel.getPlayer().getHeight() / 2);
@@ -743,16 +743,16 @@ public class ContractsTable extends Building {
 			if (!gamepanel.getChildren().contains(allPanes))
 				gamepanel.getChildren().add(allPanes);
 
-			p2.setLayoutX(WindowManager.getInstance().getGameWidth() / 2 + 11 * WindowManager.getInstance().getScalingFactorX());
-			p2.setLayoutY(108 * WindowManager.getInstance().getScalingFactorY());
+			p2.setLayoutX(WindowManager.INSTANCE.getGameWidth() / 2 + 11 * WindowManager.INSTANCE.getScalingFactorX());
+			p2.setLayoutY(108 * WindowManager.INSTANCE.getScalingFactorY());
 
-			ugSachen2.setLayoutY(82 * WindowManager.getInstance().getScalingFactorY());
-			ugSachen3.setLayoutY(82 * 2 * WindowManager.getInstance().getScalingFactorY());
-			ugSachen4.setLayoutY(82 * 3 * WindowManager.getInstance().getScalingFactorY());
-			ugSachen5.setLayoutY(82 * 4 * WindowManager.getInstance().getScalingFactorY());
+			ugSachen2.setLayoutY(82 * WindowManager.INSTANCE.getScalingFactorY());
+			ugSachen3.setLayoutY(82 * 2 * WindowManager.INSTANCE.getScalingFactorY());
+			ugSachen4.setLayoutY(82 * 3 * WindowManager.INSTANCE.getScalingFactorY());
+			ugSachen5.setLayoutY(82 * 4 * WindowManager.INSTANCE.getScalingFactorY());
 
 			//////////////////////////////////////////////
-			button_R.setLayoutX(WindowManager.getInstance().getGameWidth() - button_R.getImage().getWidth());
+			button_R.setLayoutX(WindowManager.INSTANCE.getGameWidth() - button_R.getImage().getWidth());
 			button_R.setLayoutY(gamepanel.getPlayer().getScreenY() - button_R.getImage().getHeight() / 2
 					+ gamepanel.getPlayer().getHeight() / 2);
 			if (!gamepanel.getChildren().contains(button_R))
@@ -792,7 +792,7 @@ public class ContractsTable extends Building {
 		gamepanel.setBlockUserInputs(false);
 		index = 0;
 		p1.setTranslateX(0);
-		contractBackground.setTranslateX(WindowManager.getInstance().getGameWidth());
+		contractBackground.setTranslateX(WindowManager.INSTANCE.getGameWidth());
 	}
 
 }

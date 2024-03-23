@@ -65,12 +65,12 @@ public class SelectTool extends Rectangle {
 				Boolean[] matrix = pfd.getMatrix();
 				System.out.println(Arrays.toString(matrix));
 				int matrixIdx = 0;
-				for (int i = 0; i < getHeight(); i += WindowManager.getInstance().getBlockSizeY()) for (int j = 0; j < getWidth(); j += WindowManager.getInstance().getBlockSizeX(), matrixIdx++)
+				for (int i = 0; i < getHeight(); i += WindowManager.INSTANCE.getBlockSizeY()) for (int j = 0; j < getWidth(); j += WindowManager.INSTANCE.getBlockSizeX(), matrixIdx++)
 					if (matrix[matrixIdx]) gp.getTileManager().getTileAt(x + j, y + i)
 					.setTile(((MenuItemWTile) e.getSource()).getTile());
 			}
-		} else if ( ((MenuItem) e.getSource()).getParentMenu() == fill) for (int i = 0; i < getWidth(); i += WindowManager.getInstance().getBlockSizeX())
-			for (int j = 0; j < getHeight(); j += WindowManager.getInstance().getBlockSizeY()) gp.getTileManager().getTileAt(x + i,
+		} else if ( ((MenuItem) e.getSource()).getParentMenu() == fill) for (int i = 0; i < getWidth(); i += WindowManager.INSTANCE.getBlockSizeX())
+			for (int j = 0; j < getHeight(); j += WindowManager.INSTANCE.getBlockSizeY()) gp.getTileManager().getTileAt(x + i,
 					y + j)
 			.setTile(((MenuItemWTile) e.getSource()).getTile());
 		else if (e.getSource()==saveAsMap) {
@@ -169,14 +169,14 @@ public class SelectTool extends Rectangle {
 	 * @param me the me
 	 */
 	public void drawOutlines(MouseEvent me) {
-		setWidth(WindowManager.getInstance().getBlockSizeX());
-		setHeight(WindowManager.getInstance().getBlockSizeY());
-		double xPos = (me.getSceneX() + gp.getPlayer().getX() - gp.getPlayer().getScreenX()) / WindowManager.getInstance().getBlockSizeX(),
-				yPos = (me.getSceneY() + gp.getPlayer().getY() - gp.getPlayer().getScreenY()) / WindowManager.getInstance().getBlockSizeY();
+		setWidth(WindowManager.INSTANCE.getBlockSizeX());
+		setHeight(WindowManager.INSTANCE.getBlockSizeY());
+		double xPos = (me.getSceneX() + gp.getPlayer().getX() - gp.getPlayer().getScreenX()) / WindowManager.INSTANCE.getBlockSizeX(),
+				yPos = (me.getSceneY() + gp.getPlayer().getY() - gp.getPlayer().getScreenY()) / WindowManager.INSTANCE.getBlockSizeY();
 		if (xPos < 0) xPos -= 1;
 		if (yPos < 0) yPos -= 1;
-		x	= (int) xPos * WindowManager.getInstance().getBlockSizeX();
-		y	= (int) yPos * WindowManager.getInstance().getBlockSizeY();
+		x	= (int) xPos * WindowManager.INSTANCE.getBlockSizeX();
+		y	= (int) yPos * WindowManager.INSTANCE.getBlockSizeY();
 		setVisible(true);
 	}
 
@@ -185,7 +185,7 @@ public class SelectTool extends Rectangle {
 	 */
 	public void endDrag() {
 		dragging = false;
-		if (getWidth() <= WindowManager.getInstance().getBlockSizeX() && getHeight() <= WindowManager.getInstance().getBlockSizeY()) return;// Make dragging not drag if only short drag
+		if (getWidth() <= WindowManager.INSTANCE.getBlockSizeX() && getHeight() <= WindowManager.INSTANCE.getBlockSizeY()) return;// Make dragging not drag if only short drag
 		ContextMenu cm = gp.getTileManager().getCM();
 		cm.getItems().clear();
 		cm.getItems().add(select);
@@ -258,11 +258,9 @@ public class SelectTool extends Rectangle {
 	 * Update.
 	 */
 	public void update() {
-		boolean moveCm = false;
-		if (gp.getTileManager().getCM().isShowing()
-				&& gp.getTileManager().getCM().getAnchorX() == getLayoutX() + getScene().getWindow().getX()
-				&& gp.getTileManager().getCM().getAnchorY() == getLayoutY() + getScene().getWindow().getY())
-			moveCm = true;
+		boolean moveCm = gp.getTileManager().getCM().isShowing()
+				                 && gp.getTileManager().getCM().getAnchorX() == getLayoutX() + getScene().getWindow().getX()
+				                 && gp.getTileManager().getCM().getAnchorY() == getLayoutY() + getScene().getWindow().getY();
 		double screenX = x - gp.getPlayer().getX() + gp.getPlayer().getScreenX();
 		double screenY = y - gp.getPlayer().getY() + gp.getPlayer().getScreenY();
 		setLayoutX(screenX);

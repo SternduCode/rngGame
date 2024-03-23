@@ -9,8 +9,8 @@ fun Node.setPosition(x: Double, y: Double) {
 }
 
 fun Node.setPositionScaling(x: Double, y: Double) {
-	this.layoutX = x * WindowManager.getInstance().scalingFactorX
-	this.layoutY = y * WindowManager.getInstance().scalingFactorY
+	this.layoutX = x * WindowManager.scalingFactorX
+	this.layoutY = y * WindowManager.scalingFactorY
 }
 
 operator fun Point.component1() = getX()

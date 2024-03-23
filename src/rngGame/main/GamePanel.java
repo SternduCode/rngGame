@@ -298,7 +298,7 @@ public class GamePanel extends Pane {
 		Timeline					tl			= new Timeline(
 				new KeyFrame(Duration.millis(1000 / FPS),
 						event -> {
-							update();
+							updateLogic();
 							if ("true".equals(System.getProperty("alternateUpdate"))) {
 								arTl.get().stop();
 								Platform.runLater(runnable.get());
@@ -307,7 +307,7 @@ public class GamePanel extends Pane {
 		arTl.set(tl);
 		tl.setCycleCount(Animation.INDEFINITE);
 		Runnable r = () -> {
-			update();
+			updateLogic();
 			if (!MainClass.Companion.isStopping() && "true".equals(System.getProperty("alternateUpdate")))
 				Platform.runLater(runnable.get());
 			else arTl.get().play();
@@ -332,10 +332,18 @@ public class GamePanel extends Pane {
 				+ "]";
 	}
 
+	public void scaleF11() {
+
+	}
+
+	public void updateUI() {
+
+	}
+
 	/**
 	 * Update.
 	 */
-	public void update() {
+	public void updateLogic() {
 
 		long lastFrameTime = frameTimes.size() > 0 ? frameTimes.get(frameTimes.size() - 1) : 0;
 

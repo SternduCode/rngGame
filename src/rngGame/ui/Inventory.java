@@ -31,7 +31,7 @@ public class Inventory extends Pane {
 		/** The armor. */
 		ARMOR,
 		/** The key. */
-		KEY;
+		KEY
 	}
 
 	/** The Constant currentDemonIndex. */
@@ -301,7 +301,7 @@ public class Inventory extends Pane {
 				i				= j;
 				continue loop;
 			}
-			break loop;
+			break;
 		}
 
 		moveFromArrayToView();
@@ -320,7 +320,7 @@ public class Inventory extends Pane {
 		namePane	= new Pane();
 
 		// invBackround
-		invBackround		= new ImageView(ImgUtil.getScaledImage("./res/gui/InvBackround.png", WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight()));
+		invBackround		= new ImageView(ImgUtil.getScaledImage("./res/gui/InvBackround.png", WindowManager.INSTANCE.getGameWidth(), WindowManager.INSTANCE.getGameHeight()));
 		textBackroundCT		= new ImageView(ImgUtil.getScaledImage("./res/gui/invNameTitle.png"));
 		elementView			= new ImageView(ImgUtil.getScaledImage("./res/gui/invElementFire.png"));
 		itemOverlay			= new ImageView(ImgUtil.getScaledImage("./res/gui/ItemAuswahlOverlay.png"));
@@ -432,32 +432,32 @@ public class Inventory extends Pane {
 		Pane	p2			= new Pane();
 		Pane	itemStuff	= new Pane();
 
-		p.setLayoutX(8 * WindowManager.getInstance().getScalingFactorX());
-		p.setLayoutY(268 * WindowManager.getInstance().getScalingFactorY());
+		p.setLayoutX(8 * WindowManager.INSTANCE.getScalingFactorX());
+		p.setLayoutY(268 * WindowManager.INSTANCE.getScalingFactorY());
 		for (int i = 0; i < 620; i += 62)
 			for (int j = 0; j < 247; j += 62) {
 				ImageView iv = new ImageView();
-				iv.setLayoutX(i * WindowManager.getInstance().getScalingFactorX());
-				iv.setLayoutY(j * WindowManager.getInstance().getScalingFactorY());
+				iv.setLayoutX(i * WindowManager.INSTANCE.getScalingFactorX());
+				iv.setLayoutY(j * WindowManager.INSTANCE.getScalingFactorY());
 				invSlots[i / 62][j / 62] = iv;
 				int _i = i;
 				int _j = j;
 
 				iv.setOnMousePressed(me -> {
-					itemOverlay.setLayoutX( (_i + 8) * WindowManager.getInstance().getScalingFactorX());
-					itemOverlay.setLayoutY( (_j + 268) * WindowManager.getInstance().getScalingFactorY());
+					itemOverlay.setLayoutX( (_i + 8) * WindowManager.INSTANCE.getScalingFactorX());
+					itemOverlay.setLayoutY( (_j + 268) * WindowManager.INSTANCE.getScalingFactorY());
 					itemOverlay.setVisible(true);
 				});
 
 				iv.setOnMouseReleased(me -> {
 					ImageView itemShowcase = new ImageView(iv.getImage());
 
-					itemShowcase.setLayoutX(329 * WindowManager.getInstance().getScalingFactorX());
-					itemShowcase.setLayoutY(45 * WindowManager.getInstance().getScalingFactorY());
-					backButton.setLayoutX(302 * WindowManager.getInstance().getScalingFactorX());
-					backButton.setLayoutY( (125 + 64) * WindowManager.getInstance().getScalingFactorY());
-					applyButton.setLayoutX(302 * WindowManager.getInstance().getScalingFactorX());
-					applyButton.setLayoutY(125 * WindowManager.getInstance().getScalingFactorY());
+					itemShowcase.setLayoutX(329 * WindowManager.INSTANCE.getScalingFactorX());
+					itemShowcase.setLayoutY(45 * WindowManager.INSTANCE.getScalingFactorY());
+					backButton.setLayoutX(302 * WindowManager.INSTANCE.getScalingFactorX());
+					backButton.setLayoutY( (125 + 64) * WindowManager.INSTANCE.getScalingFactorY());
+					applyButton.setLayoutX(302 * WindowManager.INSTANCE.getScalingFactorX());
+					applyButton.setLayoutY(125 * WindowManager.INSTANCE.getScalingFactorY());
 
 					itemStuff.getChildren().clear();
 					itemStuff.getChildren().add(itemShowcase);
@@ -479,14 +479,14 @@ public class Inventory extends Pane {
 						Image itemhpText = Text.getInstance().convertText("HP:" + pp.hp, 48);
 						itemhpText = ImgUtil.resizeImage(
 								itemhpText, (int) itemhpText.getWidth(), (int) itemhpText.getHeight(),
-								(int) (itemhpText.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-								(int) (itemhpText.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+								(int) (itemhpText.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+								(int) (itemhpText.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 						Image itemRarityText = Text.getInstance().convertText("Rarity:" + (pp.getRarity() + "").replace("_", " "), 48);
 						itemRarityText = ImgUtil.resizeImage(
 								itemRarityText, (int) itemRarityText.getWidth(), (int) itemRarityText.getHeight(),
-								(int) (itemRarityText.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-								(int) (itemRarityText.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+								(int) (itemRarityText.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+								(int) (itemRarityText.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 						hpView2 = new ImageView(itemhpText);
 
@@ -633,10 +633,10 @@ public class Inventory extends Pane {
 
 
 
-						hpView2.setLayoutX(25 * WindowManager.getInstance().getScalingFactorX());
-						hpView2.setLayoutY( (16 + 48) * WindowManager.getInstance().getScalingFactorY());
-						rarityView2.setLayoutX(25 * WindowManager.getInstance().getScalingFactorX());
-						rarityView2.setLayoutY(16 * WindowManager.getInstance().getScalingFactorY());
+						hpView2.setLayoutX(25 * WindowManager.INSTANCE.getScalingFactorX());
+						hpView2.setLayoutY( (16 + 48) * WindowManager.INSTANCE.getScalingFactorY());
+						rarityView2.setLayoutX(25 * WindowManager.INSTANCE.getScalingFactorX());
+						rarityView2.setLayoutY(16 * WindowManager.INSTANCE.getScalingFactorY());
 
 						itemStuff.getChildren().addAll(hpView2, rarityView2);
 
@@ -650,32 +650,32 @@ public class Inventory extends Pane {
 						Image itemhpText = Text.getInstance().convertText("HP:" + g.getHp(), 48);
 						itemhpText = ImgUtil.resizeImage(
 								itemhpText, (int) itemhpText.getWidth(), (int) itemhpText.getHeight(),
-								(int) (itemhpText.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-								(int) (itemhpText.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+								(int) (itemhpText.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+								(int) (itemhpText.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 						Image itematkText = Text.getInstance().convertText("ATK:" + g.getAtk(), 48);
 						itematkText = ImgUtil.resizeImage(
 								itematkText, (int) itematkText.getWidth(), (int) itematkText.getHeight(),
-								(int) (itematkText.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-								(int) (itematkText.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+								(int) (itematkText.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+								(int) (itematkText.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 						Image itemresText = Text.getInstance().convertText(String.format("RES:%.2f%%", g.getRes()), 48);
 						itemresText = ImgUtil.resizeImage(
 								itemresText, (int) itemresText.getWidth(), (int) itemresText.getHeight(),
-								(int) (itemresText.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-								(int) (itemresText.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+								(int) (itemresText.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+								(int) (itemresText.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 						Image itemdgcText = Text.getInstance().convertText(String.format("DGC:%.2f%%", g.getDgc()), 48);
 						itemdgcText = ImgUtil.resizeImage(
 								itemdgcText, (int) itemdgcText.getWidth(), (int) itemdgcText.getHeight(),
-								(int) (itemdgcText.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-								(int) (itemdgcText.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+								(int) (itemdgcText.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+								(int) (itemdgcText.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 						Image itemRarityText = Text.getInstance().convertText("Rarity:" + g.getRarity().toString().replace('_', ' '), 48);
 						itemRarityText = ImgUtil.resizeImage(
 								itemRarityText, (int) itemRarityText.getWidth(), (int) itemRarityText.getHeight(),
-								(int) (itemRarityText.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-								(int) (itemRarityText.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+								(int) (itemRarityText.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+								(int) (itemRarityText.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 						applyButton.setOnMouseReleased(me2 -> {
 							applyButton.init(apply1);
@@ -691,20 +691,20 @@ public class Inventory extends Pane {
 						dgcView2 = new ImageView(itemdgcText);
 						rarityView2 = new ImageView(itemRarityText);
 
-						rarityView2.setLayoutX(25 * WindowManager.getInstance().getScalingFactorX());
-						rarityView2.setLayoutY(16 * WindowManager.getInstance().getScalingFactorY());
+						rarityView2.setLayoutX(25 * WindowManager.INSTANCE.getScalingFactorX());
+						rarityView2.setLayoutY(16 * WindowManager.INSTANCE.getScalingFactorY());
 
-						hpView2.setLayoutX(25 * WindowManager.getInstance().getScalingFactorX());
-						hpView2.setLayoutY( (16 + 48) * WindowManager.getInstance().getScalingFactorY());
+						hpView2.setLayoutX(25 * WindowManager.INSTANCE.getScalingFactorX());
+						hpView2.setLayoutY( (16 + 48) * WindowManager.INSTANCE.getScalingFactorY());
 
-						atkView2.setLayoutX(25 * WindowManager.getInstance().getScalingFactorX());
-						atkView2.setLayoutY( (16 + 96) * WindowManager.getInstance().getScalingFactorY());
+						atkView2.setLayoutX(25 * WindowManager.INSTANCE.getScalingFactorX());
+						atkView2.setLayoutY( (16 + 96) * WindowManager.INSTANCE.getScalingFactorY());
 
-						resView2.setLayoutX(25 * WindowManager.getInstance().getScalingFactorX());
-						resView2.setLayoutY( (16 + 144) * WindowManager.getInstance().getScalingFactorY());
+						resView2.setLayoutX(25 * WindowManager.INSTANCE.getScalingFactorX());
+						resView2.setLayoutY( (16 + 144) * WindowManager.INSTANCE.getScalingFactorY());
 
-						dgcView2.setLayoutX(25 * WindowManager.getInstance().getScalingFactorX());
-						dgcView2.setLayoutY( (16 + 192) * WindowManager.getInstance().getScalingFactorY());
+						dgcView2.setLayoutX(25 * WindowManager.INSTANCE.getScalingFactorX());
+						dgcView2.setLayoutY( (16 + 192) * WindowManager.INSTANCE.getScalingFactorY());
 
 						itemStuff.getChildren().addAll(hpView2, atkView2, resView2, dgcView2, rarityView2);
 
@@ -718,38 +718,38 @@ public class Inventory extends Pane {
 						Image itemhpText = Text.getInstance().convertText("HP:" + d.getCurrenthp()+"/"+d.getMaxHp(), 48);
 						itemhpText = ImgUtil.resizeImage(
 								itemhpText, (int) itemhpText.getWidth(), (int) itemhpText.getHeight(),
-								(int) (itemhpText.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-								(int) (itemhpText.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+								(int) (itemhpText.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+								(int) (itemhpText.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 						Image itematkText = Text.getInstance().convertText("ATK:" + d.getAtk(), 48);
 						itematkText = ImgUtil.resizeImage(
 								itematkText, (int) itematkText.getWidth(), (int) itematkText.getHeight(),
-								(int) (itematkText.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-								(int) (itematkText.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+								(int) (itematkText.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+								(int) (itematkText.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 						Image itemresText = Text.getInstance().convertText(String.format("RES:%.2f%%", d.getRes()), 48);
 						itemresText = ImgUtil.resizeImage(
 								itemresText, (int) itemresText.getWidth(), (int) itemresText.getHeight(),
-								(int) (itemresText.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-								(int) (itemresText.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+								(int) (itemresText.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+								(int) (itemresText.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 						Image itemdgcText = Text.getInstance().convertText(String.format("DGC:%.2f%%", d.getDgc()), 48);
 						itemdgcText = ImgUtil.resizeImage(
 								itemdgcText, (int) itemdgcText.getWidth(), (int) itemdgcText.getHeight(),
-								(int) (itemdgcText.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-								(int) (itemdgcText.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+								(int) (itemdgcText.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+								(int) (itemdgcText.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 						Image itemElementText = Text.getInstance().convertText("Element:" + d.getElement(), 48);
 						itemElementText = ImgUtil.resizeImage(
 								itemElementText, (int) itemElementText.getWidth(), (int) itemElementText.getHeight(),
-								(int) (itemElementText.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-								(int) (itemElementText.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+								(int) (itemElementText.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+								(int) (itemElementText.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 						Image itemNameText = Text.getInstance().convertText("Name: "+d.getMobName(), 48);
 						itemNameText = ImgUtil.resizeImage(
 								itemNameText, (int) itemNameText.getWidth(), (int) itemNameText.getHeight(),
-								(int) (itemNameText.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-								(int) (itemNameText.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+								(int) (itemNameText.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+								(int) (itemNameText.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 						hpView3	= new ImageView(itemhpText);
 						atkView3 = new ImageView(itematkText);
@@ -758,23 +758,23 @@ public class Inventory extends Pane {
 						elementView3 = new ImageView(itemElementText);
 						nameView = new ImageView(itemNameText);
 
-						nameView.setLayoutX(25 * WindowManager.getInstance().getScalingFactorX());
-						nameView.setLayoutY(20 * WindowManager.getInstance().getScalingFactorY());
+						nameView.setLayoutX(25 * WindowManager.INSTANCE.getScalingFactorX());
+						nameView.setLayoutY(20 * WindowManager.INSTANCE.getScalingFactorY());
 
-						elementView3.setLayoutX(25 * WindowManager.getInstance().getScalingFactorX());
-						elementView3.setLayoutY(20+32 * WindowManager.getInstance().getScalingFactorY());
+						elementView3.setLayoutX(25 * WindowManager.INSTANCE.getScalingFactorX());
+						elementView3.setLayoutY(20+32 * WindowManager.INSTANCE.getScalingFactorY());
 
-						hpView3.setLayoutX(25 * WindowManager.getInstance().getScalingFactorX());
-						hpView3.setLayoutY(20+ (32 + 32) * WindowManager.getInstance().getScalingFactorY());
+						hpView3.setLayoutX(25 * WindowManager.INSTANCE.getScalingFactorX());
+						hpView3.setLayoutY(20+ (32 + 32) * WindowManager.INSTANCE.getScalingFactorY());
 
-						atkView3.setLayoutX(25 * WindowManager.getInstance().getScalingFactorX());
-						atkView3.setLayoutY(20+ (32 + 64) * WindowManager.getInstance().getScalingFactorY());
+						atkView3.setLayoutX(25 * WindowManager.INSTANCE.getScalingFactorX());
+						atkView3.setLayoutY(20+ (32 + 64) * WindowManager.INSTANCE.getScalingFactorY());
 
-						resView3.setLayoutX(25 * WindowManager.getInstance().getScalingFactorX());
-						resView3.setLayoutY(20+ (32 + 96) * WindowManager.getInstance().getScalingFactorY());
+						resView3.setLayoutX(25 * WindowManager.INSTANCE.getScalingFactorX());
+						resView3.setLayoutY(20+ (32 + 96) * WindowManager.INSTANCE.getScalingFactorY());
 
-						dgcView3.setLayoutX(25 * WindowManager.getInstance().getScalingFactorX());
-						dgcView3.setLayoutY(20+ (32 + 128) * WindowManager.getInstance().getScalingFactorY());
+						dgcView3.setLayoutX(25 * WindowManager.INSTANCE.getScalingFactorX());
+						dgcView3.setLayoutY(20+ (32 + 128) * WindowManager.INSTANCE.getScalingFactorY());
 
 						itemStuff.getChildren().addAll(hpView3, atkView3, resView3, dgcView3, elementView3, nameView);
 
@@ -939,20 +939,20 @@ public class Inventory extends Pane {
 			}
 			Item4Slots[i] = iv;
 			iv.setOnMousePressed(me -> {
-				itemOverlay.setLayoutX(6 * WindowManager.getInstance().getScalingFactorX());
-				itemOverlay.setLayoutY(iv.getLayoutY() + 6 * WindowManager.getInstance().getScalingFactorY());
+				itemOverlay.setLayoutX(6 * WindowManager.INSTANCE.getScalingFactorX());
+				itemOverlay.setLayoutY(iv.getLayoutY() + 6 * WindowManager.INSTANCE.getScalingFactorY());
 				itemOverlay.setVisible(true);
 			});
 
 			iv.setOnMouseReleased(me -> {
 				ImageView itemShowcase = new ImageView(iv.getImage());
 
-				itemShowcase.setLayoutX(329 * WindowManager.getInstance().getScalingFactorX());
-				itemShowcase.setLayoutY(45 * WindowManager.getInstance().getScalingFactorY());
-				backButton.setLayoutX(302 * WindowManager.getInstance().getScalingFactorX());
-				backButton.setLayoutY( (125 + 64) * WindowManager.getInstance().getScalingFactorY());
-				removeButton.setLayoutX(302 * WindowManager.getInstance().getScalingFactorX());
-				removeButton.setLayoutY(125 * WindowManager.getInstance().getScalingFactorY());
+				itemShowcase.setLayoutX(329 * WindowManager.INSTANCE.getScalingFactorX());
+				itemShowcase.setLayoutY(45 * WindowManager.INSTANCE.getScalingFactorY());
+				backButton.setLayoutX(302 * WindowManager.INSTANCE.getScalingFactorX());
+				backButton.setLayoutY( (125 + 64) * WindowManager.INSTANCE.getScalingFactorY());
+				removeButton.setLayoutX(302 * WindowManager.INSTANCE.getScalingFactorX());
+				removeButton.setLayoutY(125 * WindowManager.INSTANCE.getScalingFactorY());
 
 				itemStuff.getChildren().clear();
 				itemStuff.getChildren().add(itemShowcase);
@@ -968,32 +968,32 @@ public class Inventory extends Pane {
 				Image itemhpText = Text.getInstance().convertText("HP:" + g.getHp(), 48);
 				itemhpText = ImgUtil.resizeImage(
 						itemhpText, (int) itemhpText.getWidth(), (int) itemhpText.getHeight(),
-						(int) (itemhpText.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-						(int) (itemhpText.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+						(int) (itemhpText.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+						(int) (itemhpText.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 				Image itematkText = Text.getInstance().convertText("ATK:" + g.getAtk(), 48);
 				itematkText = ImgUtil.resizeImage(
 						itematkText, (int) itematkText.getWidth(), (int) itematkText.getHeight(),
-						(int) (itematkText.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-						(int) (itematkText.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+						(int) (itematkText.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+						(int) (itematkText.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 				Image itemresText = Text.getInstance().convertText(String.format("RES:%.2f%%", g.getRes()), 48);
 				itemresText = ImgUtil.resizeImage(
 						itemresText, (int) itemresText.getWidth(), (int) itemresText.getHeight(),
-						(int) (itemresText.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-						(int) (itemresText.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+						(int) (itemresText.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+						(int) (itemresText.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 				Image itemdgcText = Text.getInstance().convertText(String.format("DGC:%.2f%%", g.getDgc()), 48);
 				itemdgcText = ImgUtil.resizeImage(
 						itemdgcText, (int) itemdgcText.getWidth(), (int) itemdgcText.getHeight(),
-						(int) (itemdgcText.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-						(int) (itemdgcText.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+						(int) (itemdgcText.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+						(int) (itemdgcText.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 				Image itemRarityText = Text.getInstance().convertText("Rarity:" + g.getRarity().toString().replace('_', ' '), 48);
 				itemRarityText = ImgUtil.resizeImage(
 						itemRarityText, (int) itemRarityText.getWidth(), (int) itemRarityText.getHeight(),
-						(int) (itemRarityText.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-						(int) (itemRarityText.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+						(int) (itemRarityText.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+						(int) (itemRarityText.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 				hpView2	= new ImageView(itemhpText);
 				atkView2 = new ImageView(itematkText);
@@ -1001,20 +1001,20 @@ public class Inventory extends Pane {
 				dgcView2 = new ImageView(itemdgcText);
 				rarityView2 = new ImageView(itemRarityText);
 
-				rarityView2.setLayoutX(25 * WindowManager.getInstance().getScalingFactorX());
-				rarityView2.setLayoutY(16 * WindowManager.getInstance().getScalingFactorY());
+				rarityView2.setLayoutX(25 * WindowManager.INSTANCE.getScalingFactorX());
+				rarityView2.setLayoutY(16 * WindowManager.INSTANCE.getScalingFactorY());
 
-				hpView2.setLayoutX(25 * WindowManager.getInstance().getScalingFactorX());
-				hpView2.setLayoutY( (16 + 48) * WindowManager.getInstance().getScalingFactorY());
+				hpView2.setLayoutX(25 * WindowManager.INSTANCE.getScalingFactorX());
+				hpView2.setLayoutY( (16 + 48) * WindowManager.INSTANCE.getScalingFactorY());
 
-				atkView2.setLayoutX(25 * WindowManager.getInstance().getScalingFactorX());
-				atkView2.setLayoutY( (16 + 96) * WindowManager.getInstance().getScalingFactorY());
+				atkView2.setLayoutX(25 * WindowManager.INSTANCE.getScalingFactorX());
+				atkView2.setLayoutY( (16 + 96) * WindowManager.INSTANCE.getScalingFactorY());
 
-				resView2.setLayoutX(25 * WindowManager.getInstance().getScalingFactorX());
-				resView2.setLayoutY( (16 + 144) * WindowManager.getInstance().getScalingFactorY());
+				resView2.setLayoutX(25 * WindowManager.INSTANCE.getScalingFactorX());
+				resView2.setLayoutY( (16 + 144) * WindowManager.INSTANCE.getScalingFactorY());
 
-				dgcView2.setLayoutX(25 * WindowManager.getInstance().getScalingFactorX());
-				dgcView2.setLayoutY( (16 + 192) * WindowManager.getInstance().getScalingFactorY());
+				dgcView2.setLayoutX(25 * WindowManager.INSTANCE.getScalingFactorX());
+				dgcView2.setLayoutY( (16 + 192) * WindowManager.INSTANCE.getScalingFactorY());
 
 				itemStuff.getChildren().addAll(hpView2, atkView2, resView2, dgcView2, rarityView2);
 
@@ -1056,31 +1056,31 @@ public class Inventory extends Pane {
 			p2.getChildren().add(iv);
 		}
 
-		Item4Slots[1].setLayoutY( (61 + 3) * WindowManager.getInstance().getScalingFactorY());
-		Item4Slots[2].setLayoutY( (122 + 6) * WindowManager.getInstance().getScalingFactorY());
-		Item4Slots[3].setLayoutY( (183 + 8) * WindowManager.getInstance().getScalingFactorY());
+		Item4Slots[1].setLayoutY( (61 + 3) * WindowManager.INSTANCE.getScalingFactorY());
+		Item4Slots[2].setLayoutY( (122 + 6) * WindowManager.INSTANCE.getScalingFactorY());
+		Item4Slots[3].setLayoutY( (183 + 8) * WindowManager.INSTANCE.getScalingFactorY());
 
 		// System.out.println(getCurrentDemon().getItem4List()[3].toString());
 
 
 
 
-		p2.setLayoutX(6 * WindowManager.getInstance().getScalingFactorX());
-		p2.setLayoutY(6 * WindowManager.getInstance().getScalingFactorY());
+		p2.setLayoutX(6 * WindowManager.INSTANCE.getScalingFactorX());
+		p2.setLayoutY(6 * WindowManager.INSTANCE.getScalingFactorY());
 
 		getChildren().add(invBackround);
 
 		elementView	= new ImageView(showElementbr(getCurrentDemon().getElement()));
 		eIconView	= new ImageView(showElementIcon(getCurrentDemon().getElement()));
-		eIconView.setLayoutX(785 * WindowManager.getInstance().getScalingFactorX());
-		eIconView.setLayoutY(100 * WindowManager.getInstance().getScalingFactorY());
+		eIconView.setLayoutX(785 * WindowManager.INSTANCE.getScalingFactorX());
+		eIconView.setLayoutY(100 * WindowManager.INSTANCE.getScalingFactorY());
 		getChildren().add(eIconView);
 		getChildren().add(elementView);
 
 
 		nameView = new ImageView();
-		nameView.setLayoutX(100 * WindowManager.getInstance().getScalingFactorX());
-		nameView.setLayoutY(9 * WindowManager.getInstance().getScalingFactorY());
+		nameView.setLayoutX(100 * WindowManager.INSTANCE.getScalingFactorX());
+		nameView.setLayoutY(9 * WindowManager.INSTANCE.getScalingFactorY());
 		namePane.getChildren().addAll(textBackroundCT, nameView);
 
 		getChildren().add(namePane);
@@ -1095,27 +1095,27 @@ public class Inventory extends Pane {
 
 		statsImages(0);
 
-		expBar.setLayoutX(-30 * WindowManager.getInstance().getScalingFactorX());
-		// expBar.setLayoutY(5*WindowManager.getInstance().getScalingFactorY());
-		expText.setLayoutX(290 * WindowManager.getInstance().getScalingFactorX());
-		expText.setLayoutY(17 * WindowManager.getInstance().getScalingFactorY());
+		expBar.setLayoutX(-30 * WindowManager.INSTANCE.getScalingFactorX());
+		// expBar.setLayoutY(5*WindowManager.INSTANCE.getScalingFactorY());
+		expText.setLayoutX(290 * WindowManager.INSTANCE.getScalingFactorX());
+		expText.setLayoutY(17 * WindowManager.INSTANCE.getScalingFactorY());
 
 		getChildren().add(status);
 		status.getChildren().addAll(hpView, atkView, resView, dgcView, expBar, expText, lvlView);
 
-		lvlView.setLayoutX( (10 + 32) * WindowManager.getInstance().getScalingFactorX());
-		lvlView.setLayoutY( (15 + 32) * WindowManager.getInstance().getScalingFactorY());
-		hpView.setLayoutX( (10 + 50) * WindowManager.getInstance().getScalingFactorX());
-		hpView.setLayoutY( (15 + 64) * WindowManager.getInstance().getScalingFactorY());
-		atkView.setLayoutX( (10 + 32) * WindowManager.getInstance().getScalingFactorX());
-		atkView.setLayoutY( (15 + 64 + 32) * WindowManager.getInstance().getScalingFactorY());
-		resView.setLayoutX( (10 + 32) * WindowManager.getInstance().getScalingFactorX());
-		resView.setLayoutY( (15 + 64 + 32 * 2) * WindowManager.getInstance().getScalingFactorY());
-		dgcView.setLayoutX( (10 + 32) * WindowManager.getInstance().getScalingFactorX());
-		dgcView.setLayoutY( (15 + 64 + 32 * 3) * WindowManager.getInstance().getScalingFactorY());
+		lvlView.setLayoutX( (10 + 32) * WindowManager.INSTANCE.getScalingFactorX());
+		lvlView.setLayoutY( (15 + 32) * WindowManager.INSTANCE.getScalingFactorY());
+		hpView.setLayoutX( (10 + 50) * WindowManager.INSTANCE.getScalingFactorX());
+		hpView.setLayoutY( (15 + 64) * WindowManager.INSTANCE.getScalingFactorY());
+		atkView.setLayoutX( (10 + 32) * WindowManager.INSTANCE.getScalingFactorX());
+		atkView.setLayoutY( (15 + 64 + 32) * WindowManager.INSTANCE.getScalingFactorY());
+		resView.setLayoutX( (10 + 32) * WindowManager.INSTANCE.getScalingFactorX());
+		resView.setLayoutY( (15 + 64 + 32 * 2) * WindowManager.INSTANCE.getScalingFactorY());
+		dgcView.setLayoutX( (10 + 32) * WindowManager.INSTANCE.getScalingFactorX());
+		dgcView.setLayoutY( (15 + 64 + 32 * 3) * WindowManager.INSTANCE.getScalingFactorY());
 
-		status.setLayoutX( (WindowManager.getInstance().getGameWidth() / 2 + 10) * WindowManager.getInstance().getScalingFactorX());
-		status.setLayoutY(10 * WindowManager.getInstance().getScalingFactorY());
+		status.setLayoutX( (WindowManager.INSTANCE.getGameWidth() / 2 + 10) * WindowManager.INSTANCE.getScalingFactorX());
+		status.setLayoutY(10 * WindowManager.INSTANCE.getScalingFactorY());
 
 		getChildren().add(ausXb);
 
@@ -1152,8 +1152,8 @@ public class Inventory extends Pane {
 		itemSureBackroundm1.setVisible(false);
 		itemSureBackroundm2.setVisible(false);
 
-		itemStuff.setLayoutX(240 * WindowManager.getInstance().getScalingFactorX());
-		itemStuff.setLayoutY(130 * WindowManager.getInstance().getScalingFactorY());
+		itemStuff.setLayoutX(240 * WindowManager.INSTANCE.getScalingFactorX());
+		itemStuff.setLayoutY(130 * WindowManager.INSTANCE.getScalingFactorY());
 		itemStuff.setVisible(false);
 		setVisible(false);
 
@@ -1461,40 +1461,40 @@ public class Inventory extends Pane {
 		getCurrentDemon().getDemon().setReqHeight(192);
 		getCurrentDemon().getDemon().setReqWidth(192);
 		getCurrentDemon().getDemon().reloadTextures();
-		getCurrentDemon().getDemon().setLayoutX(180 * WindowManager.getInstance().getScalingFactorX());
-		getCurrentDemon().getDemon().setLayoutY(50 * WindowManager.getInstance().getScalingFactorX());
+		getCurrentDemon().getDemon().setLayoutX(180 * WindowManager.INSTANCE.getScalingFactorX());
+		getCurrentDemon().getDemon().setLayoutY(50 * WindowManager.INSTANCE.getScalingFactorX());
 
 		Image hpText1 = Text.getInstance().convertText("HP:" + getCurrentDemon().getCurrenthp()+"/"+getCurrentDemon().getMaxHp(), 48);
 		hpText1 = ImgUtil.resizeImage(
 				hpText1, (int) hpText1.getWidth(), (int) hpText1.getHeight(),
-				(int) (hpText1.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-				(int) (hpText1.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+				(int) (hpText1.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+				(int) (hpText1.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 		Image atkText1 = Text.getInstance().convertText("ATK:" + getCurrentDemon().getAtk(), 48);
 		atkText1 = ImgUtil.resizeImage(
 				atkText1, (int) atkText1.getWidth(), (int) atkText1.getHeight(),
-				(int) (atkText1.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-				(int) (atkText1.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+				(int) (atkText1.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+				(int) (atkText1.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 		Image resText1 = Text.getInstance().convertText(String.format("RES:%.2f%%", getCurrentDemon().getRes()),
 				48);
 		resText1 = ImgUtil.resizeImage(
 				resText1, (int) resText1.getWidth(), (int) resText1.getHeight(),
-				(int) (resText1.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-				(int) (resText1.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+				(int) (resText1.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+				(int) (resText1.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 		Image dgcText1 = Text.getInstance().convertText(String.format("DGC:%.2f%%", getCurrentDemon().getDgc()),
 				48);
 		dgcText1 = ImgUtil.resizeImage(
 				dgcText1, (int) dgcText1.getWidth(), (int) dgcText1.getHeight(),
-				(int) (dgcText1.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-				(int) (dgcText1.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+				(int) (dgcText1.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+				(int) (dgcText1.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
-		Image nameText1 = Text.getInstance().convertText("" + getCurrentDemon().getMobName(), 48);
+		Image nameText1 = Text.getInstance().convertText(getCurrentDemon().getMobName(), 48);
 		nameText1 = ImgUtil.resizeImage(
 				nameText1, (int) nameText1.getWidth(), (int) nameText1.getHeight(),
-				(int) (nameText1.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-				(int) (nameText1.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+				(int) (nameText1.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+				(int) (nameText1.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 		Image expMaxText1 = Text.getInstance()
 				.convertText(
@@ -1502,14 +1502,14 @@ public class Inventory extends Pane {
 						32);
 		expMaxText1 = ImgUtil.resizeImage(
 				expMaxText1, (int) expMaxText1.getWidth(), (int) expMaxText1.getHeight(),
-				(int) (expMaxText1.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-				(int) (expMaxText1.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+				(int) (expMaxText1.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+				(int) (expMaxText1.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 		Image lvlText1 = Text.getInstance().convertText("lvl:" + getCurrentDemon().getLvl(), 48);
 		lvlText1 = ImgUtil.resizeImage(
 				lvlText1, (int) lvlText1.getWidth(), (int) lvlText1.getHeight(),
-				(int) (lvlText1.getWidth() * WindowManager.getInstance().getScalingFactorX()),
-				(int) (lvlText1.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+				(int) (lvlText1.getWidth() * WindowManager.INSTANCE.getScalingFactorX()),
+				(int) (lvlText1.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
 
 		moveFromArrayToView();
 

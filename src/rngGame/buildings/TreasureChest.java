@@ -157,8 +157,8 @@ public class TreasureChest extends Building {
 					gamepanel.getBubbleText().getChildren().clear();
 				});
 				gamepanel.getBubbleText().getChildren().add(at);
-				gamepanel.getBubbleText().setLayoutX(WindowManager.getInstance().getGameWidth() / 2 - at.getImgWidth() / 2);
-				gamepanel.getBubbleText().setLayoutY(WindowManager.getInstance().getGameHeight() / 1.3 - at.getImgHeight() / 2.0);
+				gamepanel.getBubbleText().setLayoutX(WindowManager.INSTANCE.getGameWidth() / 2 - at.getImgWidth() / 2);
+				gamepanel.getBubbleText().setLayoutY(WindowManager.INSTANCE.getGameHeight() / 1.3 - at.getImgHeight() / 2.0);
 			}
 		} else {
 			SoundHandler.getInstance().makeSound("chest.wav");
@@ -174,8 +174,8 @@ public class TreasureChest extends Building {
 	 */
 	public void init() {
 		if (!getMiscBoxHandler().containsKey("action")) addMiscBox("action",
-				new Ellipse(getReqWidth() * WindowManager.getInstance().getScalingFactorX() / 2, getReqHeight() * WindowManager.getInstance().getScalingFactorY() / 2,
-						WindowManager.getInstance().getBlockSizeX() / 2, WindowManager.getInstance().getBlockSizeY() / 2),
+				new Ellipse(getReqWidth() * WindowManager.INSTANCE.getScalingFactorX() / 2, getReqHeight() * WindowManager.INSTANCE.getScalingFactorY() / 2,
+						WindowManager.INSTANCE.getBlockSizeX() / 2, WindowManager.INSTANCE.getBlockSizeY() / 2),
 				(gpt, self) -> {
 					if (!isOpen)
 						gpt.getAktionbutton().setInteractionbuttonKann(true, gp2 -> {

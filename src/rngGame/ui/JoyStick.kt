@@ -51,8 +51,8 @@ object JoyStick: Pane() {
 
 		children.addAll(background, line, joyStick)
 
-		layoutX = WindowManager.getInstance().gameWidth * .1
-		layoutY = WindowManager.getInstance().gameHeight * .8
+		layoutX = WindowManager.gameWidth * .1
+		layoutY = WindowManager.gameHeight * .8
 
 
 
@@ -84,7 +84,7 @@ object JoyStick: Pane() {
 			joyStick.layoutX = it.x - joyStick.imgRequestedWidth * .5
 			joyStick.layoutY = it.y - joyStick.imgRequestedHeight * .5
 
-			val x = calculateX(it.x, it.y);
+			val x = calculateX(it.x, it.y)
 
 			val y1 = calculateY(x, it.x, it.y) * joyStick.imgRequestedHeight / 2
 

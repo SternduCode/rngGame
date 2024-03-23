@@ -160,8 +160,8 @@ public class NPC extends Entity implements JsonValue {
 					
 					// gp2.getBubbleText().setImage(Text.getInstance().convertText(line.replace("<<", "\n"),64));
 					gp2.getBubbleText().getChildren().add(at);
-					gp2.getBubbleText().setLayoutX(WindowManager.getInstance().getGameWidth() / 2 - at.getImgWidth() / 2);
-					gp2.getBubbleText().setLayoutY(WindowManager.getInstance().getGameHeight() / 1.4 - at.getImgHeight() / 2.0);
+					gp2.getBubbleText().setLayoutX(WindowManager.INSTANCE.getGameWidth() / 2 - at.getImgWidth() / 2);
+					gp2.getBubbleText().setLayoutY(WindowManager.INSTANCE.getGameHeight() / 1.4 - at.getImgHeight() / 2.0);
 					
 					System.out.println(at.getWidth());
 					System.out.println(line);

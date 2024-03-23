@@ -18,7 +18,7 @@ public class AnimatedImage extends ImageView {
 	private String path;
 
 	/** The last frame time. */
-	private long lastFrameTime = 0l;
+	private long lastFrameTime = 0L;
 
 	/** The frames. */
 	private Image[] frames;
@@ -33,7 +33,7 @@ public class AnimatedImage extends ImageView {
 		imgRequestedWidth        = -1;
         imgRequestedHeight        = -1;
 		fps = 7;
-		WindowManager.getInstance().addAnimatedImage(this);
+		WindowManager.INSTANCE.addAnimatedImage(this);
 	}
 
 	/**
@@ -46,9 +46,9 @@ public class AnimatedImage extends ImageView {
         imgRequestedHeight        = -1;
 		this.path		= path;
 		fps				= 7;
-		WindowManager.getInstance().addAnimatedImage(this);
+		WindowManager.INSTANCE.addAnimatedImage(this);
 		scaleF11();
-		update();
+		updateUI();
 	}
 
 	/**
@@ -62,9 +62,9 @@ public class AnimatedImage extends ImageView {
         imgRequestedHeight        = -1;
 		this.path		= path;
 		this.fps		= fps;
-		WindowManager.getInstance().addAnimatedImage(this);
+		WindowManager.INSTANCE.addAnimatedImage(this);
 		scaleF11();
-		update();
+		updateUI();
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class AnimatedImage extends ImageView {
 	public void init(String path) {
 		this.path		= path;
 		scaleF11();
-		update();
+		updateUI();
 	}
 
 	/**
@@ -102,7 +102,7 @@ public class AnimatedImage extends ImageView {
 		this.path		= path;
 		this.fps		= fps;
 		scaleF11();
-		update();
+		updateUI();
 	}
 
 	/**
@@ -119,10 +119,10 @@ public class AnimatedImage extends ImageView {
             Image img = frames[i];
             if (imgRequestedWidth != -1 && imgRequestedHeight != -1)
                 frames[i] = ImgUtil.resizeImage(img, (int) img.getWidth(), (int) img.getHeight(),
-                        (int) (imgRequestedWidth * WindowManager.getInstance().getScalingFactorX()), (int) (imgRequestedHeight * WindowManager.getInstance().getScalingFactorY()));
+                        (int) (imgRequestedWidth * WindowManager.INSTANCE.getScalingFactorX()), (int) (imgRequestedHeight * WindowManager.INSTANCE.getScalingFactorY()));
             else
                 frames[i] = ImgUtil.resizeImage(img, (int) img.getWidth(), (int) img.getHeight(),
-                        (int) (img.getWidth() * WindowManager.getInstance().getScalingFactorX()), (int) (img.getHeight() * WindowManager.getInstance().getScalingFactorY()));
+                        (int) (img.getWidth() * WindowManager.INSTANCE.getScalingFactorX()), (int) (img.getHeight() * WindowManager.INSTANCE.getScalingFactorY()));
         }
 		setImage(frames[frameIndex]);
 	}
@@ -140,13 +140,13 @@ public class AnimatedImage extends ImageView {
 	public void uninit() {
 		frames = null;
 		frameIndex	= 0;
-		WindowManager.getInstance().removeAnimatedImage(this);
+		WindowManager.INSTANCE.removeAnimatedImage(this);
 	}
 
 	/**
 	 * Update.
 	 */
-	public void update() {
+	public void updateUI() {
 		if (frames != null && System.currentTimeMillis() >= lastFrameTime + 1000.0 / fps) {
 			frameIndex++;
 			if (frameIndex >= frames.length) frameIndex = 0;

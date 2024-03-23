@@ -6,7 +6,7 @@ import javafx.scene.paint.Color
 import rngGame.main.Text
 import rngGame.main.WindowManager
 
-class AnimatedText constructor(val text: String, val fontHeight: Int, val showOneByOne: Boolean = false, textColor: Color = Color.WHITE): Pane() {
+class AnimatedText(val text: String, val fontHeight: Int, val showOneByOne: Boolean = false, textColor: Color = Color.WHITE): Pane() {
 
 	private val textColor: Color = textColor
 
@@ -15,9 +15,9 @@ class AnimatedText constructor(val text: String, val fontHeight: Int, val showOn
 	private var iv: ImageView? = null
 
 	init {
-		WindowManager.getInstance().addAnimatedText(this)
+		WindowManager.addAnimatedText(this)
 		scaleF11()
-		update()
+		updateUI()
 	}
 
 	fun scaleF11() {
@@ -83,7 +83,7 @@ class AnimatedText constructor(val text: String, val fontHeight: Int, val showOn
 		return valr + valg + valb
 	}
 
-	fun update() {
+	fun updateUI() {
 		if (iv == null) {
 			iv = ImageView()
 			children.add(iv)

@@ -153,8 +153,8 @@ public class ImgUtil {
 
 				for (int i = 0; i < out.length; i++) out[i] = ImgUtil.resizeImage(
 						awtToFx[i], (int) awtToFx[i].getWidth(), (int) awtToFx[i].getHeight(),
-						(int) (width * WindowManager.getInstance().getScalingFactorX()),
-						(int) (height * WindowManager.getInstance().getScalingFactorY()), flip);
+						(int) (width * WindowManager.INSTANCE.getScalingFactorX()),
+						(int) (height * WindowManager.INSTANCE.getScalingFactorY()), flip);
 
 				return out;
 			}
@@ -163,8 +163,8 @@ public class ImgUtil {
 			for (int k = 0; k < imgs.length; k++) {
 				imgs[k] = ImgUtil.resizeImage(
 							wi, (int) wi.getWidth(), (int) wi.getHeight(),
-							(int) (width * WindowManager.getInstance().getScalingFactorX()),
-							(int) (height * WindowManager.getInstance().getScalingFactorY()), flip);
+							(int) (width * WindowManager.INSTANCE.getScalingFactorX()),
+							(int) (height * WindowManager.INSTANCE.getScalingFactorY()), flip);
 			}
 			return imgs;
 		} catch (IOException e) {

@@ -66,31 +66,31 @@ public class TabMenu extends Pane {
 	 * @throws FileNotFoundException the file not found exception
 	 */
 	public TabMenu(GamePanel gamepanel) throws FileNotFoundException {
-		gamemenu = new ImageView(ImgUtil.getScaledImage("./res/gui/gamemenubackround.png", WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight()));
+		gamemenu = new ImageView(ImgUtil.getScaledImage("./res/gui/gamemenubackround.png", WindowManager.INSTANCE.getGameWidth(), WindowManager.INSTANCE.getGameHeight()));
 
-		blank = new ImageView(ImgUtil.getScaledImage("./res/gui/blackTransparent.png", WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight()));
+		blank = new ImageView(ImgUtil.getScaledImage("./res/gui/blackTransparent.png", WindowManager.INSTANCE.getGameWidth(), WindowManager.INSTANCE.getGameHeight()));
 
 
 		invB = new Button("./res/gui/invAbutton1.png");
-		invB.setImgRequestedSize(WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight());
+		invB.setImgRequestedSize(WindowManager.INSTANCE.getGameWidth(), WindowManager.INSTANCE.getGameHeight());
 		invB.scaleF11();
 
 		queB = new Button("./res/gui/queAbutton1.png");
-		queB.setImgRequestedSize(WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight());
+		queB.setImgRequestedSize(WindowManager.INSTANCE.getGameWidth(), WindowManager.INSTANCE.getGameHeight());
 		queB.scaleF11();
 
 		leavB = new Button("./res/gui/leavAbutton1.png");
-		leavB.setImgRequestedSize(WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight());
+		leavB.setImgRequestedSize(WindowManager.INSTANCE.getGameWidth(), WindowManager.INSTANCE.getGameHeight());
 		leavB.scaleF11();
 
-		surebackround = new ImageView(ImgUtil.getScaledImage("./res/gui/Sure.png", WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight()));
+		surebackround = new ImageView(ImgUtil.getScaledImage("./res/gui/Sure.png", WindowManager.INSTANCE.getGameWidth(), WindowManager.INSTANCE.getGameHeight()));
 
 		sureY = new Button("./res/gui/SureY.png");
-		sureY.setImgRequestedSize(WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight());
+		sureY.setImgRequestedSize(WindowManager.INSTANCE.getGameWidth(), WindowManager.INSTANCE.getGameHeight());
 		sureY.scaleF11();
 
 		sureN = new Button("./res/gui/SureN.png");
-		sureN.setImgRequestedSize(WindowManager.getInstance().getGameWidth(), WindowManager.getInstance().getGameHeight());
+		sureN.setImgRequestedSize(WindowManager.INSTANCE.getGameWidth(), WindowManager.INSTANCE.getGameHeight());
 		sureN.scaleF11();
 
 
@@ -179,8 +179,8 @@ public class TabMenu extends Pane {
 					});
 
 
-					ft.setFromY(WindowManager.getInstance().getGameHeight() / 2);
-					ib1.setFromY(WindowManager.getInstance().getGameHeight() / 2);
+					ft.setFromY(WindowManager.INSTANCE.getGameHeight() / 2);
+					ib1.setFromY(WindowManager.INSTANCE.getGameHeight() / 2);
 					ft.setToY(0);
 					ib1.setToY(0);
 					ft.play();
@@ -188,8 +188,8 @@ public class TabMenu extends Pane {
 
 
 				} else {
-					ft.setToY(WindowManager.getInstance().getGameHeight() / 2);
-					ib1.setToY(WindowManager.getInstance().getGameHeight() / 2);
+					ft.setToY(WindowManager.INSTANCE.getGameHeight() / 2);
+					ib1.setToY(WindowManager.INSTANCE.getGameHeight() / 2);
 					ft.play();
 					ib1.play();
 					closeTabm(false);

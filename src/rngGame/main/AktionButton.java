@@ -25,7 +25,7 @@ public class AktionButton extends Pane {
 	private boolean ifc = false;
 
 	/** The time the button was last set to true. */
-	private long lastSetToTrue = 0l;
+	private long lastSetToTrue = 0L;
 
 	/** The handler. */
 	private Consumer<GamePanel> handler = null;
@@ -65,8 +65,8 @@ public class AktionButton extends Pane {
 	public void f11Scale() {
 		aktionbutton.init("./res/gui/always/InteractionNichts.png");
 
-		setLayoutX(WindowManager.getInstance().getGameWidth() * .9 - aktionbutton.getImgRequestedWidth() * WindowManager.getInstance().getScalingFactorX());
-		setLayoutY(WindowManager.getInstance().getGameHeight() * .8);
+		setLayoutX(WindowManager.INSTANCE.getGameWidth() * .9 - aktionbutton.getImgRequestedWidth() * WindowManager.INSTANCE.getScalingFactorX());
+		setLayoutY(WindowManager.INSTANCE.getGameHeight() * .8);
 
 	}
 
