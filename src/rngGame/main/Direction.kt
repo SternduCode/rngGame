@@ -42,11 +42,12 @@ enum class Direction(val minAngle: Double, val maxAngle: Double) {
 							newAngle > it.minAngle && newAngle < it.maxAngle
 					} ?: E)
 				} else {
-					if (angle < it.maxAngle - VARIABLE_THETA_ANGLE && angle > it.minAngle + VARIABLE_THETA_ANGLE) {
-						it.active = true
-						println(it.name)
+					it.also {
+						if (angle < it.maxAngle - VARIABLE_THETA_ANGLE && angle > it.minAngle + VARIABLE_THETA_ANGLE) {
+							it.active = true
+
+						}
 					}
-					it
 				}
 		}
 	}
