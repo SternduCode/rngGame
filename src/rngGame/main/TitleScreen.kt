@@ -4,24 +4,19 @@ import javafx.application.Platform
 import javafx.event.EventHandler
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
-import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Pane
 import rngGame.main.LoadingScreen.goIntoLoadingScreen
 import rngGame.main.LoadingScreen.goOutOfLoadingScreen
 import rngGame.main.WindowManager.gameHeight
 import rngGame.main.WindowManager.gameWidth
 import rngGame.main.WindowManager.removeAnimatedImage
-import rngGame.main.WindowManager.setGamePanel
 import rngGame.tile.ImgUtil
 import rngGame.ui.Button
 import rngGame.ui.SoundHandler
 import rngGame.visual.AnimatedImage
-import java.io.FileNotFoundException
+import rngGame.visual.VisualRoot
 import kotlin.system.exitProcess
 
-/**
- * The Class TitleScreen.
- */
 class TitleScreen : Pane() {
 
 	private var destroy = false
@@ -47,17 +42,8 @@ class TitleScreen : Pane() {
 		onMouseReleased = EventHandler { _ ->
 			SoundHandler.getInstance().makeSound("click.wav")
 			goIntoLoadingScreen()
-			val gp: GamePanel
-			try {
-				gp = GamePanel()
-				Input.getInstance().setGamePanel(gp.vgp) // pass instance of GamePanel to the Instance of Input
-				setGamePanel(gp.vgp) // pass instance of GamePanel to WindowManager
-				children.clear()
-				children.addAll(gp.vgp)
-				gp.vgp.isBlockUserInputs = false
-			} catch (ex: FileNotFoundException) {
-				ex.printStackTrace()
-			}
+			VisualRoot.startGamePanel()
+			children.clear()
 			destroy()
 			Input.getInstance().isBlockInputs = false
 			Thread {

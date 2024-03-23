@@ -55,7 +55,7 @@ object VisualRoot: Pane() {
 		cursorPosition = Point2D(x, y).subtract(localToScreen(Point2D(0.0, 0.0)))
 		cursor_.setPosition(cursorPosition.x - cursor_.width / 2, cursorPosition.y - cursor_.height / 2)
 		titleScreen.updateLogic()
-		gamePanel?.updateLogic()
+		//gamePanel?.updateLogic()
 	}
 
 	fun scaleF11() {
@@ -65,7 +65,14 @@ object VisualRoot: Pane() {
 
 	fun updateUI() {
 		titleScreen.updateUI()
-		gamePanel?.updateUI()
+		gamePanel?.vgp?.update()
+	}
+
+	fun startGamePanel() {
+		gamePanel = GamePanel()
+		Input.getInstance().setGamePanel(gamePanel!!.vgp) // pass instance of GamePanel to the Instance of Input
+		gamePanel!!.vgp.isBlockUserInputs = false
+		children[0] = gamePanel!!.vgp
 	}
 
 }

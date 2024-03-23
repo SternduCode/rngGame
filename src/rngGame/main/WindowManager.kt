@@ -6,7 +6,6 @@ import javafx.geometry.Point2D
 import javafx.util.Duration
 import rngGame.main.MainClass.Companion.isStopping
 import rngGame.visual.*
-import rngGame.visual.GamePanel
 import rngGame.visual.VisualRoot.updateLogic
 import rngGame.visual.VisualRoot.updateUI
 import java.util.concurrent.atomic.AtomicReference
@@ -15,8 +14,6 @@ object WindowManager {
 
 	private val animatedImages = ArrayList<AnimatedImage>()
 	private val animatedTexts = ArrayList<AnimatedText>()
-
-	private var gamePanel: GamePanel? = null
 
 	val targetFPS: Int = 120
 
@@ -46,10 +43,6 @@ object WindowManager {
 
 	var screenCenter = Point2D(gameWidth/2.0, gameHeight/2.0)
 		private set
-
-	fun setGamePanel(gamePanel: GamePanel) {
-		this.gamePanel = gamePanel
-	}
 
 	fun addAnimatedImage(animatedImage: AnimatedImage) {
 		animatedImages.add(animatedImage)
@@ -102,8 +95,6 @@ object WindowManager {
 	fun update() {
 		animatedImages.forEach(AnimatedImage::updateUI)
 		animatedTexts.forEach(AnimatedText::updateUI)
-
-		gamePanel?.update()
 
 		updateUI()
 

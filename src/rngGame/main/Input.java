@@ -177,7 +177,7 @@ public class Input {
 	 *
 	 * @param gp the new game panel
 	 */
-	protected void setGamePanel(GamePanel gp) {
+	public void setGamePanel(GamePanel gp) {
 		gamepanel=gp;
 	}
 
