@@ -26,29 +26,11 @@ enum class Direction(val minAngle: Double, val maxAngle: Double) {
 		}
 
 	companion object {
-		fun getDirectionFromAngle(angle: Double) = (entries.firstOrNull {
+		fun getDirectionFromAngle(angle: Double) = entries.firstOrNull {
 				if (it.minAngle > it.maxAngle)
 					angle > it.minAngle || angle < it.maxAngle
 				else
 					angle > it.minAngle && angle < it.maxAngle
-			} ?: E).let {
-				if (it.active && (angle > it.maxAngle - VARIABLE_THETA_ANGLE || angle < it.minAngle + VARIABLE_THETA_ANGLE)) {
-					// Variable Theta logic
-					val newAngle = if (angle > it.maxAngle - VARIABLE_THETA_ANGLE) angle + VARIABLE_THETA_ANGLE else angle - VARIABLE_THETA_ANGLE
-					(entries.firstOrNull {
-						if (it.minAngle > it.maxAngle)
-							newAngle > it.minAngle || newAngle < it.maxAngle
-						else
-							newAngle > it.minAngle && newAngle < it.maxAngle
-					} ?: E)
-				} else {
-					it.also {
-						if (angle < it.maxAngle - VARIABLE_THETA_ANGLE && angle > it.minAngle + VARIABLE_THETA_ANGLE) {
-							it.active = true
-
-						}
-					}
-				}
-		}
+			} ?: E
 	}
 }
